@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇬🇧🇺🇬 English-Luganda Translator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .status-badge.ready {
+            background: #4caf50;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .translator-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .flag {
+            font-size: 1.5em;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea::placeholder {
+            color: #999;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-translate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-translate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-translate:active {
+            transform: translateY(0);
+        }
+
+        .btn-translate:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-clear {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-clear:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-copy {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #45a049;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .translate-button-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .examples-section {
+            background: #f8f9ff;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .examples-section h3 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .examples-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .example-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .example-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .example-luganda {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .example-english {
+            font-size: 0.95em;
+            color: #666;
+        }
+
+        .error-message {
+            display: none;
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c62828;
+        }
+
+        .success-message {
+            display: none;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .char-count {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .translator-section {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-translate, .btn-clear {
+                width: 100%;
+            }
+        }
+
+        .language-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 2em;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🇬🇧🇺🇬 English-Luganda Translator</h1>
+            <p>Translate between English and Luganda instantly using AI</p>
+            <div class="status-badge ready" id="statusBadge">
+                ✅ Ready to translate
+            </div>
+        </header>
+
+        <div class="content">
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <div class="translator-section">
+                <div class="input-group">
+                    <label>
+                        <span class="language-info">
+                            <span class="flag">🇬🇧</span>
+                            <span>English Text</span>
+                        </span>
+                    </label>
+                    <textarea id="englishText" placeholder="Enter English text here..." maxlength="1000"></textarea>
+                    <div class="char-count">
+                        <span id="englishCount">0</span>/1000 characters
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        <span class="language-info">
+                            <span class="flag">🇺🇬</span>
+                            <span>Luganda Translation</span>
+                        </span>
+                    </label>
+                    <textarea id="lugandaText" placeholder="Luganda translation will appear here..." readonly></textarea>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-translate" id="translateBtn">
+                    <div class="translate-button-content">
+                        <span class="loading-spinner" id="spinner"></span>
+                        <span id="btnText">🔄 Translate</span>
+                    </div>
+                </button>
+                <button class="btn-clear" id="clearBtn">Clear All</button>
+                <button class="btn-copy" id="copyBtn">📋 Copy Translation</button>
+            </div>
+
+            <div class="examples-section">
+                <h3>📚 Example Translations</h3>
+                <div class="examples-list" id="examplesList"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🚀 Powered by Helsinki-NLP OPUS-MT Model | AI Translation Technology</p>
+            <p>© 2024 English-Luganda Translator | Built with ❤️ for cultural exchange</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const englishText = document.getElementById('englishText');
+        const lugandaText = document.getElementById('lugandaText');
+        const translateBtn = document.getElementById('translateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const spinner = document.getElementById('spinner');
+        const btnText = document.getElementById('btnText');
+        const englishCount = document.getElementById('englishCount');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const examplesList = document.getElementById('examplesList');
+
+        // Update character count
+        englishText.addEventListener('input', () => {
+            englishCount.textContent = englishText.value.length;
+        });
+
+        // Clear all
+        clearBtn.addEventListener('click', () => {
+            englishText.value = '';
+            lugandaText.value = '';
+            englishCount.textContent = '0';
+            hideMessages();
+        });
+
+        // Copy translation
+        copyBtn.addEventListener('click', () => {
+            if (lugandaText.value) {
+                navigator.clipboard.writeText(lugandaText.value).then(() => {
+                    showSuccess('✅ Copied to clipboard!');
+                });
+            }
+        });
+
+        // Translate function
+        async function translate() {
+            const text = englishText.value.trim();
+
+            if (!text) {
+                showError('⚠️ Please enter some text to translate');
+                return;
+            }
+
+            translateBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.textContent = ' Translating...';
+            hideMessages();
+
+            try {
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    lugandaText.value = data.translation;
+                    showSuccess('✅ Translation successful!');
+                } else {
+                    showError('❌ Translation failed: ' + data.error);
+                }
+            } catch (error) {
+                showError('❌ Error: ' + error.message);
+            } finally {
+                translateBtn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = '🔄 Translate';
+            }
+        }
+
+        // Translate button
+        translateBtn.addEventListener('click', translate);
+
+        // Enter key
+        englishText.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                translate();
+            }
+        });
+
+        // Show/hide messages
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        // Load examples
+        async function loadExamples() {
+            try {
+                const response = await fetch('/api/examples');
+                const examples = await response.json();
+
+                examplesList.innerHTML = examples.map(ex => `
+                    <div class="example-item" onclick="setExample('${ex.luganda.replace(/'/g, "\\'")}')">
+                        <div class="example-luganda">🇺🇬 ${ex.luganda}</div>
+                        <div class="example-english">🇬🇧 ${ex.english}</div>
+                        <div style="font-size: 0.8em; color: #999; margin-top: 5px;">${ex.category}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading examples:', error);
+            }
+        }
+
+        // Set example
+        function setExample(text) {
+            englishText.value = text;
+            englishCount.textContent = text.length;
+            englishText.focus();
+        }
+
+        // Initialize
+        loadExamples();
+    </script>
+</body>
+</html>

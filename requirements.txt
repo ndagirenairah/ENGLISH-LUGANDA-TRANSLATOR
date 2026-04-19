@@ -1,0 +1,30 @@
+# Requirements for Luganda-English Translator Project
+# Install with: pip install -r requirements.txt
+
+# Core NLP & ML Libraries
+transformers==4.35.2           # Hugging Face transformers library
+datasets==2.14.5               # Dataset loading and processing
+torch>=2.0.0                   # PyTorch deep learning framework
+sentencepiece==0.1.99          # Tokenization library
+
+# Evaluation Metrics
+sacrebleu==2.3.1               # BLEU score calculation
+scikit-learn==1.3.2            # Machine learning utilities
+
+# Data Processing
+pandas==2.1.3                  # Data manipulation
+numpy==1.24.3                  # Numerical operations
+
+# Web Application
+gradio==4.11.0                 # Interactive web interface
+
+# Utilities
+tqdm==4.66.1                   # Progress bars
+requests==2.31.0               # HTTP requests
+
+# Optional: For GPU acceleration
+# If you have CUDA, install the GPU version:
+# torch-cuda (consult docs for your CUDA version)
+
+# Optional: For development
+jupyter==1.0.0                 # Jupyter notebooks
