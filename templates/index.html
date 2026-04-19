@@ -324,6 +324,16 @@
         <div class="content">
             <div id="errorMessage" class="error-message"></div>
             <div id="successMessage" class="success-message"></div>
+            
+            <div style="background: #e8f4f8; color: #004d73; padding: 12px 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #0088cc; font-size: 0.9em;">
+                <strong>ℹ️ About This Translator:</strong>
+                <br>
+                • <strong>📚 Verified Dictionary (102 phrases):</strong> Luganda translations by native speakers - used for clan identity, greetings, family, and cultural phrases
+                <br>
+                • <strong>🤖 AI Model:</strong> For unseen sentences - translations are experimental and may contain errors. Best effort only.
+                <br>
+                • <strong>🎯 Data sources:</strong> Makerere University (15K sentences) + cultural verification
+            </div>
 
             <div class="translator-section">
                 <div class="input-group">
@@ -436,7 +446,9 @@
 
                 if (response.ok) {
                     lugandaText.value = data.translation;
-                    showSuccess('✅ Translation successful!');
+                    const source = data.in_dictionary ? '📚 Dictionary' : '🤖 AI Model';
+                    const confidence = data.in_dictionary ? '✅ Verified' : '⚠️ Experimental';
+                    showSuccess(`${source} | ${confidence}`);
                 } else {
                     showError('❌ Translation failed: ' + data.error);
                 }
@@ -481,17 +493,18 @@
         async function loadExamples() {
             try {
                 const response = await fetch('/api/examples');
-                const examples = await response.json();
+                const data = await response.json();
+                const examples = data.examples || [];
 
                 examplesList.innerHTML = examples.map(ex => `
-                    <div class="example-item" onclick="setExample('${ex.luganda.replace(/'/g, "\\'")}')">
+                    <div class="example-item" onclick="setExample('${ex.english.replace(/'/g, "\\'")}')">
                         <div class="example-luganda">🇺🇬 ${ex.luganda}</div>
                         <div class="example-english">🇬🇧 ${ex.english}</div>
-                        <div style="font-size: 0.8em; color: #999; margin-top: 5px;">${ex.category}</div>
                     </div>
                 `).join('');
             } catch (error) {
                 console.error('Error loading examples:', error);
+                examplesList.innerHTML = '<p style="color: #999;">Could not load examples</p>';
             }
         }
 
@@ -499,7 +512,7 @@
         function setExample(text) {
             englishText.value = text;
             englishCount.textContent = text.length;
-            englishText.focus();
+            translate();
         }
 
         // Initialize

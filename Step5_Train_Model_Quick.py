@@ -14,23 +14,30 @@ import torch
 import numpy as np
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 import os
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
 # Create models directory if it doesn't exist
 os.makedirs('models/trained_model', exist_ok=True)
 os.makedirs('checkpoints', exist_ok=True)
 
-print("\n📥 Loading preprocessed datasets and model...\n")
+print("\n📥 Loading MAKERERE AI LAB DATASET (15,020 sentences)...\n")
 
-# Load datasets
-with open('data/train_dataset.pkl', 'rb') as f:
-    train_dataset = pickle.load(f)
+# Load the MAKERERE DATASET - HIGH QUALITY FROM MAKERERE UNIVERSITY
+df = pd.read_csv('luganda_training_data.csv')
 
-with open('data/val_dataset.pkl', 'rb') as f:
-    val_dataset = pickle.load(f)
+print(f"✅ COMBINED DATASET LOADED:")
+print(f"   - Total sentences: {len(df)}")
+print(f"   - Columns: {df.columns.tolist()}")
+print(f"   - English sample: {df['english'].iloc[0]}")
+print(f"   - Luganda sample: {df['luganda'].iloc[0]}")
 
-print(f"✅ Datasets loaded:")
-print(f"   - Train samples: {len(train_dataset)}")
-print(f"   - Validation samples: {len(val_dataset)}")
+# Split into train/validation (90/10 split)
+train_df, val_df = train_test_split(df, test_size=0.1, random_state=42)
+
+print(f"\n✅ Data split:")
+print(f"   - Train samples: {len(train_df)}")
+print(f"   - Validation samples: {len(val_df)}")
 
 # ============================================================================
 # LOAD MODEL & TOKENIZER
@@ -153,8 +160,8 @@ model_config = {
     "num_layers": 12,
     "hidden_size": 768,
     "num_attention_heads": 12,
-    "training_samples": len(train_dataset),
-    "validation_samples": len(val_dataset),
+    "training_samples": len(train_df),
+    "validation_samples": len(val_df),
     "training_epochs": 2,
     "batch_size": 4,
     "learning_rate": 2e-5
