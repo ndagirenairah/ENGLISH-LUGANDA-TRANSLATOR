@@ -140,14 +140,26 @@ GUARANTEED_TRANSLATIONS = {
 }
 
 def load_model():
-    """Load the MarianMT model and tokenizer"""
+    """Load the MarianMT model and tokenizer - preferring trained model"""
     global model, tokenizer
     if model is None:
-        logger.info("Loading model opus-mt-en-mul...")
-        model_name = "Helsinki-NLP/opus-mt-en-mul"
-        tokenizer = MarianTokenizer.from_pretrained(model_name)
-        model = MarianMTModel.from_pretrained(model_name)
-        logger.info("Model loaded successfully")
+        # First try to load our custom-trained model
+        trained_model_path = "models/trained_model"
+        try:
+            if os.path.exists(trained_model_path):
+                logger.info(f"✅ Loading TRAINED model from {trained_model_path}...")
+                tokenizer = MarianTokenizer.from_pretrained(trained_model_path)
+                model = MarianMTModel.from_pretrained(trained_model_path)
+                logger.info("✅ TRAINED MODEL LOADED SUCCESSFULLY - Using custom-fine-tuned weights")
+            else:
+                raise FileNotFoundError("No trained model found")
+        except:
+            # Fall back to base model if training hasn't been run
+            logger.warning("⚠️ No trained model found, loading BASE model from HuggingFace...")
+            model_name = "Helsinki-NLP/opus-mt-en-mul"
+            tokenizer = MarianTokenizer.from_pretrained(model_name)
+            model = MarianMTModel.from_pretrained(model_name)
+            logger.info("⚠️ BASE MODEL LOADED - To use custom-trained model, run: python Step5_Train_Model.py")
     return model, tokenizer
 
 def translate_to_luganda(english_text):
