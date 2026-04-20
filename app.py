@@ -193,6 +193,50 @@ def translate_to_luganda(english_text):
         logger.error(f"Translation error: {str(e)}")
         return f"[Translation error: {str(e)}]"
 
+def translate_to_english(luganda_text):
+    """Translate Luganda text to English using guaranteed dictionary or AI model"""
+    # Normalize input
+    text_lower = luganda_text.lower().strip()
+    
+    # Create reverse dictionary mapping
+    reverse_translations = {v.lower(): k for k, v in GUARANTEED_TRANSLATIONS.items()}
+    
+    # Check guaranteed translations first
+    if text_lower in reverse_translations:
+        return reverse_translations[text_lower]
+    
+    # Check partial matches
+    for value, key in reverse_translations.items():
+        if value in text_lower or text_lower in value:
+            return key
+    
+    # Fall back to AI model
+    try:
+        model, tokenizer = load_model()
+        
+        # Add English language tag
+        input_text = f">>eng<< {luganda_text}"
+        
+        # Tokenize and translate
+        input_ids = tokenizer.encode(input_text, return_tensors="pt")
+        outputs = model.generate(input_ids, max_length=100, num_beams=4)
+        translation = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+        return translation
+    except Exception as e:
+        logger.error(f"Translation error: {str(e)}")
+        return f"[Translation error: {str(e)}]"
+
+def translate(text, source_language, target_language):
+    """Bidirectional translation function"""
+    if source_language == 'english' and target_language == 'luganda':
+        return translate_to_luganda(text), text.lower() in GUARANTEED_TRANSLATIONS
+    elif source_language == 'luganda' and target_language == 'english':
+        is_in_dict = text.lower() in {v.lower() for v in GUARANTEED_TRANSLATIONS.values()}
+        return translate_to_english(text), is_in_dict
+    else:
+        raise ValueError(f"Unsupported language pair: {source_language} -> {target_language}")
+
 @app.route('/')
 def index():
     """Serve the web interface"""
@@ -200,20 +244,27 @@ def index():
 
 @app.route('/api/translate', methods=['POST'])
 def api_translate():
-    """API endpoint for translations"""
+    """API endpoint for bidirectional translations"""
     try:
         data = request.json
-        english_text = data.get('text', '').strip()
+        text = data.get('text', '').strip()
+        source_language = data.get('source_language', 'english').lower()
+        target_language = data.get('target_language', 'luganda').lower()
         
-        if not english_text:
+        if not text:
             return jsonify({'error': 'No text provided'}), 400
         
-        luganda_text = translate_to_luganda(english_text)
+        if source_language == target_language:
+            return jsonify({'error': 'Source and target languages must be different'}), 400
+        
+        translation, in_dictionary = translate(text, source_language, target_language)
         
         return jsonify({
-            'english': english_text,
-            'translation': luganda_text,
-            'in_dictionary': english_text.lower() in GUARANTEED_TRANSLATIONS
+            'text': text,
+            'translation': translation,
+            'source_language': source_language,
+            'target_language': target_language,
+            'in_dictionary': in_dictionary
         })
     except Exception as e:
         logger.error(f"API error: {str(e)}")

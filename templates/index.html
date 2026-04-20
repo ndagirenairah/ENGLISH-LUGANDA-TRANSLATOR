@@ -18,14 +18,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
             background: white;
-            border-radius: 20px;
+            border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 900px;
+            max-width: 700px;
             width: 100%;
             overflow: hidden;
         }
@@ -33,28 +33,28 @@
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 40px;
+            padding: 25px 30px;
             text-align: center;
         }
 
         header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 1.8em;
+            margin-bottom: 5px;
             font-weight: 700;
         }
 
         header p {
-            font-size: 1.1em;
+            font-size: 0.95em;
             opacity: 0.9;
         }
 
         .status-badge {
             display: inline-block;
             background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 20px;
-            margin-top: 15px;
-            font-size: 0.9em;
+            margin-top: 10px;
+            font-size: 0.8em;
         }
 
         .status-badge.ready {
@@ -62,14 +62,76 @@
         }
 
         .content {
-            padding: 40px;
+            padding: 25px;
         }
 
+        /* Language selection bar */
+        .language-bar {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .lang-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .lang-selector select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 2px solid #e0e0e0;
+            font-size: 0.9em;
+            cursor: pointer;
+            background: white;
+            color: #333;
+        }
+
+        .lang-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .swap-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        #swapBtn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            padding: 0;
+        }
+
+        #swapBtn:hover {
+            background: #5568d3;
+            transform: scale(1.1);
+        }
+
+        /* Translator section */
         .translator-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         .input-group {
@@ -78,23 +140,19 @@
         }
 
         .input-group label {
-            font-size: 1.1em;
+            font-size: 0.9em;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             color: #333;
-        }
-
-        .flag {
-            font-size: 1.5em;
         }
 
         textarea {
             width: 100%;
-            min-height: 150px;
-            padding: 15px;
+            min-height: 120px;
+            padding: 12px;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1em;
+            border-radius: 8px;
+            font-size: 0.95em;
             font-family: inherit;
             resize: vertical;
             transition: border-color 0.3s;
@@ -110,14 +168,223 @@
             color: #999;
         }
 
+        textarea[readonly] {
+            background: #f8f9ff;
+            color: #333;
+        }
+
+        .char-count {
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 4px;
+        }
+
         .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 7px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-translate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-translate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-translate:active {
+            transform: translateY(0);
+        }
+
+        .btn-translate:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-clear {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-clear:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-copy {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #45a049;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .translate-button-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-message {
+            display: none;
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 7px;
+            margin-bottom: 15px;
+            border-left: 4px solid #c62828;
+            font-size: 0.9em;
+        }
+
+        .success-message {
+            display: none;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 7px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4caf50;
+            font-size: 0.9em;
+        }
+
+        .info-box {
+            background: #e8f4f8;
+            color: #004d73;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #0088cc;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .examples-section {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .examples-section h3 {
+            font-size: 0.95em;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .examples-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+        }
+
+        .example-item {
+            background: white;
+            padding: 10px;
+            border-radius: 7px;
+            border-left: 3px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85em;
+        }
+
+        .example-item:hover {
+            transform: translateX(3px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .example-text {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 3px;
+        }
+
+        .example-translation {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        footer {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: center;
+            color: #666;
+            font-size: 0.8em;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                max-width: 100%;
+                border-radius: 10px;
+            }
+
+            header h1 {
+                font-size: 1.4em;
+            }
+
+            header p {
+                font-size: 0.85em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .language-bar {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .translator-section {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            textarea {
+                min-height: 100px;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .examples-list {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+
             padding: 12px 24px;
             border: none;
             border-radius: 8px;
@@ -309,15 +576,31 @@
                 margin: 10px 0;
             }
         }
+
+        #swapBtn {
+            transition: transform 0.3s ease !important;
+        }
+
+        #sourceLanguage, #targetLanguage {
+            background: white;
+            color: #333;
+            border-color: #ddd;
+        }
+
+        #sourceLanguage:focus, #targetLanguage:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>🇬🇧🇺🇬 English-Luganda Translator</h1>
-            <p>Translate between English and Luganda instantly using AI</p>
+            <p>Instant translation between English and Luganda</p>
             <div class="status-badge ready" id="statusBadge">
-                ✅ Ready to translate
+                ✅ Ready
             </div>
         </header>
 
@@ -325,41 +608,53 @@
             <div id="errorMessage" class="error-message"></div>
             <div id="successMessage" class="success-message"></div>
             
-            <div style="background: #e8f4f8; color: #004d73; padding: 12px 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #0088cc; font-size: 0.9em;">
-                <strong>ℹ️ About This Translator:</strong>
-                <br>
-                • <strong>📚 Verified Dictionary (102 phrases):</strong> Luganda translations by native speakers - used for clan identity, greetings, family, and cultural phrases
-                <br>
-                • <strong>🤖 AI Model:</strong> For unseen sentences - translations are experimental and may contain errors. Best effort only.
-                <br>
-                • <strong>🎯 Data sources:</strong> Makerere University (15K sentences) + cultural verification
+            <div class="info-box">
+                <strong>ℹ️ How it works:</strong>
+                • <strong>Dictionary:</strong> 102+ verified cultural phrases
+                • <strong>AI:</strong> For new sentences (experimental)
+                • <strong>Data:</strong> Makerere University + cultural verification
             </div>
 
+            <!-- Language Selection Bar -->
+            <div class="language-bar">
+                <div class="lang-selector">
+                    <span id="sourceFlag">🇬🇧</span>
+                    <select id="sourceLanguage">
+                        <option value="english">English</option>
+                        <option value="luganda">Luganda</option>
+                    </select>
+                </div>
+
+                <div class="swap-container">
+                    <button id="swapBtn" title="Swap languages">⇅</button>
+                </div>
+
+                <div class="lang-selector">
+                    <span id="targetFlag">🇺🇬</span>
+                    <select id="targetLanguage">
+                        <option value="luganda">Luganda</option>
+                        <option value="english">English</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Translation Boxes -->
             <div class="translator-section">
                 <div class="input-group">
-                    <label>
-                        <span class="language-info">
-                            <span class="flag">🇬🇧</span>
-                            <span>English Text</span>
-                        </span>
-                    </label>
-                    <textarea id="englishText" placeholder="Enter English text here..." maxlength="1000"></textarea>
+                    <label id="sourceLabel">English Text</label>
+                    <textarea id="sourceText" placeholder="Type here..." maxlength="1000"></textarea>
                     <div class="char-count">
-                        <span id="englishCount">0</span>/1000 characters
+                        <span id="sourceCount">0</span>/1000
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label>
-                        <span class="language-info">
-                            <span class="flag">🇺🇬</span>
-                            <span>Luganda Translation</span>
-                        </span>
-                    </label>
-                    <textarea id="lugandaText" placeholder="Luganda translation will appear here..." readonly></textarea>
+                    <label id="targetLabel">Luganda Translation</label>
+                    <textarea id="targetText" placeholder="Translation appears here..." readonly></textarea>
                 </div>
             </div>
 
+            <!-- Buttons -->
             <div class="button-group">
                 <button class="btn-translate" id="translateBtn">
                     <div class="translate-button-content">
@@ -367,12 +662,13 @@
                         <span id="btnText">🔄 Translate</span>
                     </div>
                 </button>
-                <button class="btn-clear" id="clearBtn">Clear All</button>
-                <button class="btn-copy" id="copyBtn">📋 Copy Translation</button>
+                <button class="btn-clear" id="clearBtn">🗑️ Clear</button>
+                <button class="btn-copy" id="copyBtn">📋 Copy</button>
             </div>
 
+            <!-- Examples -->
             <div class="examples-section">
-                <h3>📚 Example Translations</h3>
+                <h3>📚 Try These Examples</h3>
                 <div class="examples-list" id="examplesList"></div>
             </div>
         </div>
@@ -385,35 +681,96 @@
 
     <script>
         // DOM Elements
-        const englishText = document.getElementById('englishText');
-        const lugandaText = document.getElementById('lugandaText');
+        const sourceText = document.getElementById('sourceText');
+        const targetText = document.getElementById('targetText');
+        const sourceLanguage = document.getElementById('sourceLanguage');
+        const targetLanguage = document.getElementById('targetLanguage');
+        const sourceFlag = document.getElementById('sourceFlag');
+        const targetFlag = document.getElementById('targetFlag');
+        const swapBtn = document.getElementById('swapBtn');
         const translateBtn = document.getElementById('translateBtn');
         const clearBtn = document.getElementById('clearBtn');
         const copyBtn = document.getElementById('copyBtn');
         const spinner = document.getElementById('spinner');
         const btnText = document.getElementById('btnText');
-        const englishCount = document.getElementById('englishCount');
+        const sourceCount = document.getElementById('sourceCount');
         const errorMessage = document.getElementById('errorMessage');
         const successMessage = document.getElementById('successMessage');
         const examplesList = document.getElementById('examplesList');
 
+        const flagMap = {
+            'english': '🇬🇧',
+            'luganda': '🇺🇬'
+        };
+
         // Update character count
-        englishText.addEventListener('input', () => {
-            englishCount.textContent = englishText.value.length;
+        sourceText.addEventListener('input', () => {
+            sourceCount.textContent = sourceText.value.length;
+        });
+
+        // Update flags and labels when language changes
+        sourceLanguage.addEventListener('change', () => {
+            sourceFlag.textContent = flagMap[sourceLanguage.value];
+            sourceText.placeholder = sourceLanguage.value === 'english' ? 'Type English...' : 'Type Luganda...';
+            document.getElementById('sourceLabel').textContent = sourceLanguage.value === 'english' ? 'English Text' : 'Luganda Text';
+            
+            // Ensure target is different
+            if (targetLanguage.value === sourceLanguage.value) {
+                targetLanguage.value = sourceLanguage.value === 'english' ? 'luganda' : 'english';
+                targetFlag.textContent = flagMap[targetLanguage.value];
+                document.getElementById('targetLabel').textContent = targetLanguage.value === 'english' ? 'English Translation' : 'Luganda Translation';
+            }
+        });
+
+        targetLanguage.addEventListener('change', () => {
+            targetFlag.textContent = flagMap[targetLanguage.value];
+            document.getElementById('targetLabel').textContent = targetLanguage.value === 'english' ? 'English Translation' : 'Luganda Translation';
+            
+            // Ensure target is different from source
+            if (targetLanguage.value === sourceLanguage.value) {
+                sourceLanguage.value = targetLanguage.value === 'english' ? 'luganda' : 'english';
+                sourceFlag.textContent = flagMap[sourceLanguage.value];
+                document.getElementById('sourceLabel').textContent = sourceLanguage.value === 'english' ? 'English Text' : 'Luganda Text';
+            }
+        });
+
+        // Swap languages and text
+        swapBtn.addEventListener('click', () => {
+            // Swap dropdown values
+            let temp = sourceLanguage.value;
+            sourceLanguage.value = targetLanguage.value;
+            targetLanguage.value = temp;
+
+            // Update flags
+            sourceFlag.textContent = flagMap[sourceLanguage.value];
+            targetFlag.textContent = flagMap[targetLanguage.value];
+
+            // Swap text
+            let tempText = sourceText.value;
+            sourceText.value = targetText.value;
+            targetText.value = tempText;
+
+            // Update character count
+            sourceCount.textContent = sourceText.value.length;
+
+            swapBtn.style.transform = 'rotate(180deg)';
+            setTimeout(() => {
+                swapBtn.style.transform = 'rotate(0deg)';
+            }, 300);
         });
 
         // Clear all
         clearBtn.addEventListener('click', () => {
-            englishText.value = '';
-            lugandaText.value = '';
-            englishCount.textContent = '0';
+            sourceText.value = '';
+            targetText.value = '';
+            sourceCount.textContent = '0';
             hideMessages();
         });
 
         // Copy translation
         copyBtn.addEventListener('click', () => {
-            if (lugandaText.value) {
-                navigator.clipboard.writeText(lugandaText.value).then(() => {
+            if (targetText.value) {
+                navigator.clipboard.writeText(targetText.value).then(() => {
                     showSuccess('✅ Copied to clipboard!');
                 });
             }
@@ -421,7 +778,7 @@
 
         // Translate function
         async function translate() {
-            const text = englishText.value.trim();
+            const text = sourceText.value.trim();
 
             if (!text) {
                 showError('⚠️ Please enter some text to translate');
@@ -434,18 +791,25 @@
             hideMessages();
 
             try {
+                const sourceLang = sourceLanguage.value;
+                const targetLang = targetLanguage.value;
+
                 const response = await fetch('/api/translate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ text: text })
+                    body: JSON.stringify({ 
+                        text: text,
+                        source_language: sourceLang,
+                        target_language: targetLang
+                    })
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    lugandaText.value = data.translation;
+                    targetText.value = data.translation;
                     const source = data.in_dictionary ? '📚 Dictionary' : '🤖 AI Model';
                     const confidence = data.in_dictionary ? '✅ Verified' : '⚠️ Experimental';
                     showSuccess(`${source} | ${confidence}`);
@@ -465,7 +829,7 @@
         translateBtn.addEventListener('click', translate);
 
         // Enter key
-        englishText.addEventListener('keydown', (e) => {
+        sourceText.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 translate();
             }
@@ -489,6 +853,13 @@
             successMessage.style.display = 'none';
         }
 
+        // Set example
+        function setExample(text) {
+            sourceText.value = text;
+            sourceCount.textContent = sourceText.value.length;
+            translate();
+        }
+
         // Load examples
         async function loadExamples() {
             try {
@@ -497,14 +868,14 @@
                 const examples = data.examples || [];
 
                 examplesList.innerHTML = examples.map(ex => `
-                    <div class="example-item" onclick="setExample('${ex.english.replace(/'/g, "\\'")}')">
-                        <div class="example-luganda">🇺🇬 ${ex.luganda}</div>
-                        <div class="example-english">🇬🇧 ${ex.english}</div>
+                    <div class="example-item" onclick="setExample('${ex.english.replace(/'/g, "\\'")}')" title="Click to translate">
+                        <div class="example-text">${ex.english}</div>
+                        <div class="example-translation">→ ${ex.luganda}</div>
                     </div>
                 `).join('');
             } catch (error) {
                 console.error('Error loading examples:', error);
-                examplesList.innerHTML = '<p style="color: #999;">Could not load examples</p>';
+                examplesList.innerHTML = '<p style="color: #999; padding: 10px;">Could not load examples</p>';
             }
         }
 
