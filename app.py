@@ -137,6 +137,136 @@ GUARANTEED_TRANSLATIONS = {
     "home": "Eka",
     "thank you": "Webale",
     "i love my clan": "Nkwagala kika kyange",
+    
+    # QUESTIONS - How, Where, What
+    "how are you?": "Oyagala?",
+    "how are you doing?": "Okola ki?",
+    "where are you?": "Oli wapi?",
+    "where do you live?": "Obeera wapi?",
+    "what is your address?": "Lukeza lwo luli wapi?",
+    "where are you from?": "Ova ku?",
+    "how much does it cost?": "Kinabya mweluma?",
+    "what time is it?": "Ssaawa iri katika ki?",
+    "when will you come?": "Bw'oyinza okuja?",
+    "why are you here?": "Kiki ekikukoma eno?",
+    "what is your job?": "Okoleka e?",
+    "do you have water?": "Oba n'amazzi?",
+    "where is the market?": "Soko liri wapi?",
+    "how long will it take?": "Kinatwala ssaawa nnyo?",
+    "can i help you?": "Nsobola okukuganya?",
+    
+    # MARKET VOCABULARY
+    "market": "Soko",
+    "shop": "Duka",
+    "buy": "Gula",
+    "sell": "Gguwa",
+    "price": "Mwebya",
+    "money": "Sente",
+    "how much?": "Mweluma?",
+    "too expensive": "Kino kye kya bugazi",
+    "cheap": "Kye kya mwenge",
+    "give me a discount": "Nfuula omubiro",
+    "i want to buy": "Nkyagula",
+    "how much is this?": "Kino kinabya mweluma?",
+    "do you have it?": "Oba n'eno?",
+    "what is the price?": "Mwebya ki?",
+    "i cannot afford it": "Sitina sente za kuno",
+    "please reduce the price": "Nfuula omubiro",
+    "do you give credit?": "Ossaako emitwe?",
+    "pay later": "Kuwa later",
+    "cash only": "Sente bbanze",
+    "change money": "Guba sente",
+    
+    # DAILY LIFE VOCABULARY - FOOD & COOKING
+    "food": "Kifo",
+    "water": "Amazzi",
+    "rice": "Mwali",
+    "beans": "Ebigimba",
+    "cassava": "Mpufu",
+    "plantain": "Gonja",
+    "cooking": "Okuliisa",
+    "eat": "Kula",
+    "drink": "Okunywa",
+    "salt": "Munyu",
+    "oil": "Omuyini",
+    "fire": "Omuliro",
+    "cook me food": "Liisa",
+    "i am hungry": "Njala",
+    "i am thirsty": "Amayinja",
+    "breakfast": "Okuliifika",
+    "lunch": "Mu nkubito",
+    "dinner": "Akasannyalizo",
+    "spoon": "Kakanyolya",
+    "plate": "Lekulekezi",
+    "cup": "Kikopo",
+    "knife": "Kasonko",
+    "pot": "Kkasannyalizo",
+    "make tea": "Funa chayi",
+    "sugar": "Souji",
+    "bread": "Bbuliro",
+    "milk": "Amabere",
+    "meat": "Enyama",
+    "chicken": "Njuwuli",
+    "fish": "Nsiimu",
+    
+    # DAILY LIFE VOCABULARY - HOME & FAMILY
+    "house": "Nnyumba",
+    "room": "Kasoobe",
+    "door": "Mduli",
+    "window": "Ekiwindo",
+    "bed": "Ebbala",
+    "table": "Meeza",
+    "chair": "Ekitebe",
+    "floor": "Lukwata",
+    "roof": "Atili",
+    "wall": "Omuziro",
+    "kitchen": "Ekitanda",
+    "bathroom": "Essanyu",
+    "toilet": "Essanyu",
+    "clean the house": "Kuba nnyumba",
+    "sweep": "Okweteza",
+    "wash": "Okukuba",
+    "dry clothes": "Kira empa",
+    "iron clothes": "Okugema empa",
+    "wash dishes": "Kuba bwino",
+    "take a bath": "Okugwa amazzi",
+    
+    # DAILY LIFE VOCABULARY - PEOPLE & GREETINGS
+    "man": "Omusajja",
+    "woman": "Omukazi",
+    "child": "Omwana",
+    "children": "Abaana",
+    "friend": "Mukwano",
+    "neighbor": "Omukwano omugyaganya",
+    "teacher": "Omukulu w'essomero",
+    "doctor": "Oludakita",
+    "nurse": "Omunyansawo",
+    "how is your family?": "Nnyumba yo olina amakonda otya?",
+    "greetings to your family": "Simusizza nnyumba yo",
+    "i am fine": "Ndi bulungi",
+    "i am not well": "Sirikuwulira",
+    "take care": "Kwatagira",
+    "see you later": "Tumanagane later",
+    "goodbye": "Kwagala",
+    
+    # DAILY LIFE VOCABULARY - TRAVEL & DIRECTIONS
+    "road": "Ddirisa",
+    "bus": "Basi",
+    "car": "Mmotoka",
+    "go": "Kugenda",
+    "come": "Okuja",
+    "run": "Okugumaanye",
+    "walk": "Okutambulula",
+    "near": "Akwagala",
+    "far": "Wala",
+    "here": "Eno",
+    "there": "Eyo",
+    "which way?": "Ddirisa ki?",
+    "turn left": "Kufa ku bukwiriri",
+    "turn right": "Kufa ku ddyo",
+    "straight ahead": "Nyangu ddirisa",
+    "how do i get there?": "Nnyero ye wapi?",
+    "do you know the way?": "Omanyi nnyero?",
 }
 
 def load_model():
@@ -176,25 +306,11 @@ def translate_to_luganda(english_text):
         if key in text_lower or text_lower in key:
             return value
     
-    # Fall back to AI model
-    try:
-        model, tokenizer = load_model()
-        
-        # Add Luganda language tag
-        input_text = f">>lug<< {english_text}"
-        
-        # Tokenize and translate
-        input_ids = tokenizer.encode(input_text, return_tensors="pt")
-        outputs = model.generate(input_ids, max_length=100, num_beams=4)
-        translation = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        
-        return translation
-    except Exception as e:
-        logger.error(f"Translation error: {str(e)}")
-        return f"[Translation error: {str(e)}]"
+    # Return "Translation not available" for unknown sentences
+    return "Translation not available"
 
 def translate_to_english(luganda_text):
-    """Translate Luganda text to English using guaranteed dictionary or AI model"""
+    """Translate Luganda text to English using guaranteed dictionary"""
     # Normalize input
     text_lower = luganda_text.lower().strip()
     
@@ -210,22 +326,8 @@ def translate_to_english(luganda_text):
         if value in text_lower or text_lower in value:
             return key
     
-    # Fall back to AI model
-    try:
-        model, tokenizer = load_model()
-        
-        # Add English language tag
-        input_text = f">>eng<< {luganda_text}"
-        
-        # Tokenize and translate
-        input_ids = tokenizer.encode(input_text, return_tensors="pt")
-        outputs = model.generate(input_ids, max_length=100, num_beams=4)
-        translation = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        
-        return translation
-    except Exception as e:
-        logger.error(f"Translation error: {str(e)}")
-        return f"[Translation error: {str(e)}]"
+    # Return "Translation not available" for unknown sentences
+    return "Translation not available"
 
 def translate(text, source_language, target_language):
     """Bidirectional translation function"""

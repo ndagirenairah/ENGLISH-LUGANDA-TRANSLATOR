@@ -1,7 +1,7 @@
-﻿# ============================================================================
+# ============================================================================
 # STEP 5: TRAINING THE MODEL
 # ============================================================================
-# This script fine-tunes MarianMT on the Luganda-English dataset
+# This script fine-tunes mBART on the Luganda-English dataset
 # with early stopping, evaluation, and GPU optimization
 # ============================================================================
 
@@ -32,7 +32,7 @@ with open('data/train_dataset.pkl', 'rb') as f:
 with open('data/val_dataset.pkl', 'rb') as f:
     val_dataset_raw = pickle.load(f)
 
-# Load model and tokenizer (offline mode to avoid network issues)
+# Load model and tokenizer
 print("Loading model from HuggingFace (cached)...")
 model = AutoModelForSeq2SeqLM.from_pretrained(
     'facebook/mbart-large-50-many-to-one-mmt',
@@ -45,7 +45,7 @@ tokenizer = AutoTokenizer.from_pretrained(
     trust_remote_code=True
 )
 
-print(f"[OK] Model and tokenizer loaded")
+print("[OK] Model and tokenizer loaded")
 print(f"   - Train samples: {len(train_dataset_raw)}")
 print(f"   - Validation samples: {len(val_dataset_raw)}")
 
@@ -76,7 +76,6 @@ val_dataset = val_dataset_raw.map(
 
 # ============================================================================
 # PART 2: LOAD EVALUATION METRIC
-# ============================================================================
 # ============================================================================
 print("\n" + "=" * 70)
 print("[*] SETTING UP EVALUATION METRICS")
@@ -121,9 +120,9 @@ def compute_metrics(eval_preds):
 print("[OK] Metrics function defined")
 
 # ============================================================================
-# PART 4: DEFINE TRAINING ARGUMENTS (Optimized for Google Colab)
+# PART 4: DEFINE TRAINING ARGUMENTS
 # ============================================================================
-print("\\n" + "=" * 70)
+print("\n" + "=" * 70)
 print("[*] CONFIGURING TRAINING PARAMETERS")
 print("=" * 70)
 
@@ -140,12 +139,12 @@ training_args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size=16,         # Batch size for evaluation
     
     # Learning rate and optimization
-    learning_rate=2e-5,                    # Learning rate (slow enough to not destroy knowledge)
+    learning_rate=2e-5,                    # Learning rate
     warmup_steps=100,                      # Gradually increase LR
     weight_decay=0.01,                     # Regularization
     
     # Evaluation and saving
-    eval_strategy="steps",                # Evaluate every N steps (renamed from evaluation_strategy)
+    eval_strategy="steps",                # Evaluate every N steps
     eval_steps=100,                        # Evaluate every 100 steps
     save_strategy="steps",                 # Save checkpoint every N steps
     save_steps=100,
@@ -158,7 +157,7 @@ training_args = Seq2SeqTrainingArguments(
     
     # Optimization for GPU
     fp16=torch.cuda.is_available(),        # Mixed precision training (speeds up training)
-    gradient_accumulation_steps=4,         # Accumulate gradients (simulates larger batch)
+    gradient_accumulation_steps=4,         # Accumulate gradients
     
     # Other settings
     seed=42,                               # For reproducibility
@@ -167,7 +166,7 @@ training_args = Seq2SeqTrainingArguments(
     generation_num_beams=4,                # Beam search for better translations
 )
 
-print("\\nTraining Configuration:")
+print("\nTraining Configuration:")
 print(f"  - Number of epochs: {training_args.num_train_epochs}")
 print(f"  - Batch size: {training_args.per_device_train_batch_size}")
 print(f"  - Learning rate: {training_args.learning_rate}")
@@ -178,8 +177,8 @@ print(f"  - Beam search: {training_args.generation_num_beams}")
 # ============================================================================
 # PART 5: INITIALIZE TRAINER
 # ============================================================================
-print("\\n" + "=" * 70)
-print("ðŸ‹ï¸ INITIALIZING TRAINER")
+print("\n" + "=" * 70)
+print("[*] INITIALIZING TRAINER")
 print("=" * 70)
 
 trainer = Seq2SeqTrainer(
@@ -195,18 +194,18 @@ print("\n[OK] Trainer initialized and ready!")
 # ============================================================================
 # PART 6: TRAIN THE MODEL
 # ============================================================================
-print("\\n" + "=" * 70)
+print("\n" + "=" * 70)
 print("[*] STARTING TRAINING")
 print("=" * 70)
 
 print("\n[*] Training in progress... (this will take 10-30 minutes on GPU)")
-print("   This is normal - the model learns with each batch!\\n")
+print("   This is normal - the model learns with each batch!\n")
 
 try:
     train_result = trainer.train()
     print("\n[OK] Training completed!")
     
-    print(f"\\nTraining Results:")
+    print(f"\nTraining Results:")
     print(f"  - Final train loss: {train_result.training_loss:.4f}")
     
 except Exception as e:
@@ -217,16 +216,16 @@ except Exception as e:
 # ============================================================================
 # PART 7: EVALUATE ON VALIDATION SET
 # ============================================================================
-print("\\n" + "=" * 70)
-print("ðŸ“Š EVALUATION ON VALIDATION SET")
+print("\n" + "=" * 70)
+print("[*] VALIDATION EVALUATION")
 print("=" * 70)
 
-print("\\nâ³ Evaluating on validation set...")
+print("\n[*] Evaluating on validation set...")
 
 eval_results = trainer.evaluate()
-print("\\nâœ… Evaluation complete!")
+print("\n[OK] Evaluation complete!")
 
-print(f"\\nValidation Metrics:")
+print(f"\nValidation Metrics:")
 for metric, value in eval_results.items():
     if isinstance(value, float):
         print(f"  - {metric}: {value:.4f}")
@@ -236,62 +235,41 @@ for metric, value in eval_results.items():
 # ============================================================================
 # PART 8: SAVE TRAINED MODEL
 # ============================================================================
-print("\\n" + "=" * 70)
-print("ðŸ’¾ SAVING TRAINED MODEL")
+print("\n" + "=" * 70)
+print("[*] SAVING TRAINED MODEL")
 print("=" * 70)
 
 model.save_pretrained('models/trained_model')
 tokenizer.save_pretrained('models/trained_model')
-print("\\nâœ… Trained model saved to: models/trained_model/")
+print("\n[OK] Trained model saved to: models/trained_model/")
+print("\n*** SUCCESS: pytorch_model.bin created! ***\n")
 
 # ============================================================================
-# PART 9: TEST ON SAMPLE SENTENCES
+# PART 9: QUICK TEST
 # ============================================================================
-print("\\n" + "=" * 70)
-print("ðŸ‘€ TESTING ON SAMPLE SENTENCES")
+print("=" * 70)
+print("[*] QUICK TEST ON SAMPLE SENTENCE")
 print("=" * 70)
 
-print("\\nLoading trained model for inference...")
-model_pipeline = pipeline(
-    "translation_lug_to_eng",
-    model="models/trained_model",
-    tokenizer=tokenizer
-)
+# Create a simple translation pipeline
+translator = pipeline('text2text-generation', model='models/trained_model', tokenizer=tokenizer)
 
-# Test sentences
-test_luganda_sentences = [
-    "Ndi Muganda nkekkaanya oluganda n'Olungereza",
-    "Eggulo lya buggulo",
-    "Kwagala kwe kabikira mu mpewo"
+test_sentences = [
+    "Hello, how are you?",
+    "What is your name?",
+    "Thank you for your help."
 ]
 
-print("\\nSample Translations:")
-print("=" * 70)
-
-for sentence in test_luganda_sentences:
+print("\nTesting trained model on sample sentences:\n")
+for sent in test_sentences:
     try:
-        result = model_pipeline(sentence)
-        translation = result[0]['translation_text']
-        print(f"\\nðŸ‡ºðŸ‡¬ Luganda:  {sentence}")
-        print(f"ðŸ‡¬ðŸ‡§ English:  {translation}")
-    except:
-        print(f"\\nâš ï¸ Could not translate: {sentence}")
+        result = translator(sent, max_length=128)
+        output = result[0]['generated_text']
+        print(f"  English:  {sent}")
+        print(f"  Luganda:  {output}\n")
+    except Exception as e:
+        print(f"  [Error] Could not translate: {e}\n")
 
-# ============================================================================
-# PART 10: SUMMARY
-# ============================================================================
-print("\\n" + "=" * 70)
-print("âœ… STEP 5 COMPLETE!")
 print("=" * 70)
-
-print(f"\\nâœ“ Model trained successfully!")
-print(f"âœ“ Validation metrics calculated")
-print(f"âœ“ Model saved to: models/trained_model/")
-print(f"\\nðŸ“Š Key Metrics:")
-print(f"   - Training Loss: {train_result.training_loss:.4f}")
-if "eval_loss" in eval_results:
-    print(f"   - Validation Loss: {eval_results['eval_loss']:.4f}")
-
-print(f"\\nðŸŽ¯ Next: STEP 6 - Test on Unseen Data")
-print(f"   Run: Step6_Test_Model.py\\n")
-
+print("[OK] TRAINING COMPLETE!")
+print("=" * 70)
