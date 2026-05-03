@@ -35,12 +35,12 @@ with open('data/val_dataset.pkl', 'rb') as f:
 # Load model and tokenizer (offline mode to avoid network issues)
 print("Loading model from HuggingFace (cached)...")
 model = AutoModelForSeq2SeqLM.from_pretrained(
-    'facebook/mbart-large-50-many-to-one-mmt',
+    'Helsinki-NLP/opus-mt-mul-en',
     local_files_only=False,
     trust_remote_code=True
 )
 tokenizer = AutoTokenizer.from_pretrained(
-    'facebook/mbart-large-50-many-to-one-mmt',
+     'Helsinki-NLP/opus-mt-mul-en',
     local_files_only=False,
     trust_remote_code=True
 )
@@ -52,7 +52,7 @@ print(f"   - Validation samples: {len(val_dataset_raw)}")
 # Preprocessing function to tokenize data
 def preprocess_function(examples):
     # Extract luganda and english from nested translation dict
-    inputs = [item['lug'] for item in examples['translation']]
+    inputs = [">>en<< " + item['lug'] for item in examples['translation']]
     targets = [item['eng'] for item in examples['translation']]
     
     model_inputs = tokenizer(inputs, max_length=512, truncation=True, padding='max_length')
@@ -111,7 +111,7 @@ def compute_metrics(eval_preds):
     
     # Compute BLEU
     if bleu is not None:
-        result = bleu.compute(predictions=pred_str, references=label_str)
+        result = bleu.compute(predictions=pred_str, references=[[l] for l in label_str])
         return {"bleu": result["score"]}
     else:
         # Simple alternative: just return accuracy
@@ -253,7 +253,7 @@ print("=" * 70)
 
 print("\\nLoading trained model for inference...")
 model_pipeline = pipeline(
-    "translation_lug_to_eng",
+    "translation",
     model="models/trained_model",
     tokenizer=tokenizer
 )

@@ -35,12 +35,12 @@ with open('data/val_dataset.pkl', 'rb') as f:
 # Load model and tokenizer
 print("Loading model from HuggingFace (cached)...")
 model = AutoModelForSeq2SeqLM.from_pretrained(
-    'facebook/mbart-large-50-many-to-one-mmt',
+    'Helsinki-NLP/opus-mt-mul-en',
     local_files_only=False,
     trust_remote_code=True
 )
 tokenizer = AutoTokenizer.from_pretrained(
-    'facebook/mbart-large-50-many-to-one-mmt',
+    'Helsinki-NLP/opus-mt-mul-en',
     local_files_only=False,
     trust_remote_code=True
 )

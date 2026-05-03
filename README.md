@@ -1,6 +1,6 @@
 # 🇬🇧🇺🇬 English-Luganda Translator
 
-A complete AI-powered translation system that translates between English and Luganda using state-of-the-art transformer models. Includes both a CLI tool and a web application.
+A machine learning translation project that translates between English and Luganda using state-of-the-art transformer models. The CLI and web app are just interfaces for testing the model functionality and demonstrating the project.
 
 ![Status](https://img.shields.io/badge/Status-Fully%20Functional-brightgreen)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)

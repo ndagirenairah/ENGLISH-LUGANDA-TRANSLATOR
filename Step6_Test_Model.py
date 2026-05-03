@@ -31,9 +31,7 @@ except Exception as e:
 translator = pipeline(
     "translation",
     model=model,
-    tokenizer=tokenizer,
-    src_lang="lug",
-    tgt_lang="eng"
+    tokenizer=tokenizer
 )
 print("âœ… Translation pipeline created")
 
@@ -75,11 +73,12 @@ for i in range(0, len(test_df), batch_size):
     # Translate each sentence
     for luganda_sent in luganda_batch:
         try:
-            result = translator(luganda_sent, max_length=128)
+            result = translator(">>en<< " + luganda_sent, max_length=128)
             translation = result[0]['translation_text']
             predictions.append(translation)
-        except:
-            predictions.append("[Translation Error]")
+        except Exception as e:
+            print(f"Translation error: {e}")
+            predictions.append("[Translation Error]") 
     
     references.extend(english_batch)
     
@@ -127,6 +126,9 @@ for idx in range(min(10, len(results_df))):
 print("\\n" + "=" * 70)
 print("ðŸ’¾ SAVING RESULTS")
 print("=" * 70)
+
+import os
+os.makedirs('outputs', exist_ok=True)
 
 output_csv = 'outputs/translation_results.csv'
 results_df.to_csv(output_csv, index=False)

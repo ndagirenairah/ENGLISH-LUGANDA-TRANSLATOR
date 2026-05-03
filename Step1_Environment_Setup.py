@@ -23,7 +23,6 @@ required_libraries = [
     'sentencepiece',     # For tokenization
     'torch',            # PyTorch (deep learning framework)
     'sacrebleu',        # For BLEU score calculation
-    'gradio',           # For web app
     'pandas',           # For data manipulation
     'numpy',            # For numerical operations
 ]
@@ -33,7 +32,7 @@ for lib in required_libraries:
     print(f"  ✓ {lib}")
 
 # Uncomment this line if running on Google Colab
-# subprocess.check_call([sys.executable, "-m", "pip", "install"] + required_libraries)
+subprocess.check_call([sys.executable, "-m", "pip", "install"] + required_libraries)
 
 # ============================================================================
 # PART 2: IMPORT ALL LIBRARIES
@@ -62,10 +61,6 @@ try:
     # Evaluation
     import sacrebleu
     print("✓ SacreBLEU imported successfully")
-    
-    # Web app
-    import gradio as gr
-    print("✓ Gradio imported successfully")
     
 except ImportError as e:
     print(f"❌ Error importing library: {e}")

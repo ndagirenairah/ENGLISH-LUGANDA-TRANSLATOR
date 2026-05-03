@@ -67,7 +67,7 @@ print("ðŸŽ¯ SELECTING MODEL")
 print("=" * 70)
 
 # Model identifier for Luganda-English translation
-model_name = "Helsinki-NLP/Tatoeba-MT-mul+eng-eng"  # Multilingual to English
+model_name = "Helsinki-NLP/opus-mt-mul-en"  # Multilingual to English
 # Alternative: "Helsinki-NLP/Tatoeba-MT-enb-eng" for pidgin to English
 
 print(f"\\nðŸ“¦ Model Selected: {model_name}")
@@ -167,7 +167,7 @@ def preprocess_function(examples):
     
     # Get source and target languages
     source_lang = "lug"
-    target_lang = "eng"
+    target_lang = "en"
     
     # Add language tags (required by MarianMT)
     inputs = [f">>{target_lang}<< " + example[source_lang] for example in examples['translation']]
@@ -177,9 +177,9 @@ def preprocess_function(examples):
     model_inputs = tokenizer(inputs, max_length=128, truncation=True, padding="max_length")
     
     # Tokenize targets
-    with tokenizer.as_target_tokenizer():
-        labels = tokenizer(targets, max_length=128, truncation=True, padding="max_length")
     
+    labels = tokenizer(text_target=targets, max_length=128, truncation=True, padding="max_length")    
+
     model_inputs["labels"] = labels["input_ids"]
     
     return model_inputs

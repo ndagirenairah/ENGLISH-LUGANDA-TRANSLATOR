@@ -283,7 +283,7 @@ def load_model():
                 logger.info("✅ TRAINED MODEL LOADED SUCCESSFULLY - Using custom-fine-tuned weights")
             else:
                 raise FileNotFoundError("No trained model found")
-        except:
+        except Exception as e:
             # Fall back to base model if training hasn't been run
             logger.warning("⚠️ No trained model found, loading BASE model from HuggingFace...")
             model_name = "Helsinki-NLP/opus-mt-en-mul"
@@ -293,8 +293,7 @@ def load_model():
     return model, tokenizer
 
 def translate_to_luganda(english_text):
-    """Translate English text to Luganda using guaranteed dictionary or AI model"""
-    # Normalize input
+    """Translate English text to Luganda using dictionary then ML model"""
     text_lower = english_text.lower().strip()
     
     # Check guaranteed translations first
@@ -306,18 +305,19 @@ def translate_to_luganda(english_text):
         if key in text_lower or text_lower in key:
             return value
     
-    # Return "Translation not available" for unknown sentences
-    return "Translation not available"
-
+    # Fall back to trained ML model
+    try:
+        inputs = tokenizer(english_text, return_tensors="pt", padding=True)
+        translated = model.generate(**inputs)
+        return tokenizer.decode(translated[0], skip_special_tokens=True)
+    except Exception as e:
+        return f"Translation error: {str(e)}"
 def translate_to_english(luganda_text):
-    """Translate Luganda text to English using guaranteed dictionary"""
-    # Normalize input
+    """Translate Luganda text to English using dictionary then ML model"""
     text_lower = luganda_text.lower().strip()
     
-    # Create reverse dictionary mapping
+    # Check dictionary first for guaranteed translations
     reverse_translations = {v.lower(): k for k, v in GUARANTEED_TRANSLATIONS.items()}
-    
-    # Check guaranteed translations first
     if text_lower in reverse_translations:
         return reverse_translations[text_lower]
     
@@ -326,8 +326,13 @@ def translate_to_english(luganda_text):
         if value in text_lower or text_lower in value:
             return key
     
-    # Return "Translation not available" for unknown sentences
-    return "Translation not available"
+    # Fall back to trained ML model
+    try:
+        inputs = tokenizer(">>en<< " + luganda_text, return_tensors="pt", padding=True)
+        translated = model.generate(**inputs)
+        return tokenizer.decode(translated[0], skip_special_tokens=True)
+    except Exception as e:
+        return f"Translation error: {str(e)}"
 
 def translate(text, source_language, target_language):
     """Bidirectional translation function"""

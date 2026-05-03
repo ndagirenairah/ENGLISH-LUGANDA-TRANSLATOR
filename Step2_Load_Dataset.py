@@ -100,8 +100,8 @@ try:
                     'english': english_text,
                     'source': 'JW300 Corpus'
                 })
-        except:
-            pass
+        except Exception as e:
+            print (f"Skipped row: {e}")
     
     all_datasets_info.append(f"JW300 Corpus: {len(dataset3):,} pairs ✓")
 except Exception as e:
