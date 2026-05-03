@@ -55,7 +55,6 @@ results/
 *.ipynb_checkpoints
 
 # Project specific
-*.csv
 *.txt
 *.json
 !requirements.txt
