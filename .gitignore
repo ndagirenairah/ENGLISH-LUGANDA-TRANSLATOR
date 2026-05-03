@@ -38,7 +38,7 @@ env/
 .DS_Store
 
 # Data & Models (Large Files)
-data/
+
 models/
 checkpoints/
 outputs/
