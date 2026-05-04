@@ -134,7 +134,7 @@ print(f"   ✅ HuggingFace datasets created")
 # PHASE 3: LOAD MODEL & TOKENIZER
 # ============================================================================
 print("\n" + "=" * 100)
-print("🤖 PHASE 3: LOAD MODEL & TOKENIZER")
+print(" PHASE 3: LOAD MODEL & TOKENIZER")
 print("=" * 100)
 
 print("\n📥 Loading model...")
@@ -196,7 +196,7 @@ print(f"   ✅ Validation data tokenized: {len(val_tokenized)} samples")
 # PHASE 5: TRAIN MODEL
 # ============================================================================
 print("\n" + "=" * 100)
-print("🏋️  PHASE 5: TRAIN MODEL")
+print(" PHASE 5: TRAIN MODEL")
 print("=" * 100)
 
 # Training arguments
