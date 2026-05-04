@@ -48,7 +48,7 @@ if not has_trained_weights:
     print("   ⚠️  NO TRAINED WEIGHTS FOUND - Will train from scratch")
 
 # Check available data
-print(f"\n📚 Data Availability:")
+print(f"\n Data Availability:")
 data_files = {
     "training": "data/train_data.csv",
     "validation": "data/val_data.csv",
@@ -161,7 +161,7 @@ except Exception as e:
 # PHASE 4: PREPARE DATA FOR TRAINING
 # ============================================================================
 print("\n" + "=" * 100)
-print("⚙️  PHASE 4: PREPARE DATA FOR TRAINING")
+print("  PHASE 4: PREPARE DATA FOR TRAINING")
 print("=" * 100)
 
 def preprocess_function(examples):
@@ -217,7 +217,7 @@ training_args = Seq2SeqTrainingArguments(
     gradient_accumulation_steps=2,
 )
 
-print("\n🎯 Training arguments:")
+print("\n Training arguments:")
 print(f"   - Learning rate: {training_args.learning_rate}")
 print(f"   - Batch size: {training_args.per_device_train_batch_size}")
 print(f"   - Epochs: {training_args.num_train_epochs}")
@@ -236,7 +236,7 @@ trainer = Seq2SeqTrainer(
     tokenizer=tokenizer,
 )
 
-print("\n🚀 Starting training...")
+print("\n Starting training...")
 print("   (This may take 5-30 minutes depending on dataset size and device)\n")
 
 train_result = trainer.train()
@@ -248,7 +248,7 @@ print(f"   - Final training loss: {train_result.training_loss:.4f}")
 # PHASE 6: EVALUATE ON TEST SET
 # ============================================================================
 print("\n" + "=" * 100)
-print("📊 PHASE 6: EVALUATE ON TEST SET")
+print(" PHASE 6: EVALUATE ON TEST SET")
 print("=" * 100)
 
 # Load test data
@@ -303,7 +303,7 @@ if os.path.exists("data/test_data.csv"):
         print(f"   ✅ BLEU Score:   {bleu.score:.1f}/100")
         
         quality = "EXCELLENT" if chrf.score >= 70 else "GOOD" if chrf.score >= 50 else "FAIR" if chrf.score >= 30 else "POOR"
-        print(f"   🎯 Quality Rating: {quality}")
+        print(f"    Quality Rating: {quality}")
     except ImportError:
         print("   ⚠️  sacrebleu not available")
 
@@ -311,10 +311,10 @@ if os.path.exists("data/test_data.csv"):
 # PHASE 7: SAVE MODEL & REPORT
 # ============================================================================
 print("\n" + "=" * 100)
-print("💾 PHASE 7: SAVE MODEL & REPORT")
+print(" PHASE 7: SAVE MODEL & REPORT")
 print("=" * 100)
 
-print(f"\n💾 Saving model to {trained_path}...")
+print(f"\n Saving model to {trained_path}...")
 model.save_pretrained(trained_path)
 tokenizer.save_pretrained(trained_path)
 print("   ✅ Model saved successfully")
@@ -355,13 +355,13 @@ print("=" * 100)
 print(f"""
 ✅ MODEL STATUS: TRAINED & READY
 
-🎯 Next Steps:
+ Next Steps:
    1. Test the model: python Step6_Test_Model.py
    2. Run full evaluation: python Step7_Evaluate_BLEU.py
    3. Deploy web app: python app.py
    4. Monitor performance: Check outputs/quick_test_results.csv
 
-📊 Performance Metrics:
+ Performance Metrics:
    - Model: TRAINED MODEL
    - Device: {'GPU (CUDA)' if torch.cuda.is_available() else 'CPU'}
    - Parameters: {model.num_parameters():,}
