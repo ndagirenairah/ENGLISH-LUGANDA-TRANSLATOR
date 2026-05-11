@@ -38,8 +38,9 @@ env/
 .DS_Store
 
 # Data & Models (Large Files)
-models/trained_model/
+models/trained_model*/
 checkpoints/
+*.pt
 logs/
 results/
 *.pkl
