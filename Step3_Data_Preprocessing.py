@@ -5,7 +5,7 @@
 # ============================================================================
 
 print("=" * 70)
-print("🚀 STEP 3: DATA PREPROCESSING")
+print(" STEP 3: DATA PREPROCESSING")
 print("=" * 70)
 
 import pandas as pd
@@ -17,11 +17,11 @@ from datasets import Dataset
 # ============================================================================
 # PART 1: LOAD THE DATASET
 # ============================================================================
-print("\n📥 Loading dataset...\n")
+print("\n Loading dataset...\n")
 
 # Load from combined dataset
 df = pd.read_csv('data/luganda_english_dataset_combined.csv')
-print(f"✅ Combined dataset loaded: {len(df)} samples")
+print(f" Combined dataset loaded: {len(df)} samples")
 print(f"\nDataset sources breakdown:")
 if 'source' in df.columns:
     for source, count in df['source'].value_counts().items():
@@ -34,7 +34,7 @@ print(df.head(3))
 # PART 2: TEXT CLEANING FUNCTIONS
 # ============================================================================
 print("\n" + "=" * 70)
-print("🧹 CLEANING TEXT")
+print(" CLEANING TEXT")
 print("=" * 70)
 
 def clean_text(text):
@@ -76,14 +76,14 @@ df['english_clean'] = df['english'].apply(clean_text)
 # Remove empty rows
 df = df[(df['luganda_clean'].str.len() > 0) & (df['english_clean'].str.len() > 0)]
 
-print(f"✅ Text cleaned!")
+print(f" Text cleaned!")
 print(f"   - Remaining samples after cleaning: {len(df)}")
 
 # ============================================================================
 # PART 3: REMOVE DUPLICATES & SHORT SENTENCES
 # ============================================================================
 print("\n" + "=" * 70)
-print("🔧 FILTERING DATA")
+print(" FILTERING DATA")
 print("=" * 70)
 
 print(f"\nBefore filtering: {len(df)} samples")
@@ -110,7 +110,7 @@ print(f"After removing long sentences: {len(df_filtered)} samples")
 # PART 4: CHARACTER & WORD STATISTICS
 # ============================================================================
 print("\n" + "=" * 70)
-print("📊 STATISTICS AFTER PREPROCESSING")
+print(" STATISTICS AFTER PREPROCESSING")
 print("=" * 70)
 
 print("\nLuganda:")
@@ -125,7 +125,7 @@ print(f"  - Avg words per sentence: {df_filtered['english_clean'].str.split().st
 # PART 5: CREATE TRAIN / VALIDATION / TEST SPLIT
 # ============================================================================
 print("\n" + "=" * 70)
-print("✂️  CREATING TRAIN / VALIDATION / TEST SPLIT")
+print("  CREATING TRAIN / VALIDATION / TEST SPLIT")
 print("=" * 70)
 
 from sklearn.model_selection import train_test_split
@@ -143,7 +143,7 @@ print(f"  - Test set: {len(test)} ({len(test)/len(df_filtered)*100:.1f}%)")
 # PART 6: PREPARE FOR HUGGINGFACE DATASETS
 # ============================================================================
 print("\n" + "=" * 70)
-print("📦 CREATING HUGGINGFACE DATASETS")
+print(" CREATING HUGGINGFACE DATASETS")
 print("=" * 70)
 
 # Create dataset with proper format for fine-tuning
@@ -165,7 +165,7 @@ train_dataset = create_translation_dataset(train)
 val_dataset = create_translation_dataset(val)
 test_dataset = create_translation_dataset(test)
 
-print(f"✅ Datasets created:")
+print(f" Datasets created:")
 print(f"   - Train dataset: {len(train_dataset)} samples")
 print(f"   - Validation dataset: {len(val_dataset)} samples")
 print(f"   - Test dataset: {len(test_dataset)} samples")
@@ -174,33 +174,33 @@ print(f"   - Test dataset: {len(test_dataset)} samples")
 # PART 7: SAVE PREPROCESSED DATA
 # ============================================================================
 print("\n" + "=" * 70)
-print("💾 SAVING PREPROCESSED DATA")
+print(" SAVING PREPROCESSED DATA")
 print("=" * 70)
 
 # Save datasets
 with open('data/train_dataset.pkl', 'wb') as f:
     pickle.dump(train_dataset, f)
-print(f"✅ Saved: data/train_dataset.pkl")
+print(f" Saved: data/train_dataset.pkl")
 
 with open('data/val_dataset.pkl', 'wb') as f:
     pickle.dump(val_dataset, f)
-print(f"✅ Saved: data/val_dataset.pkl")
+print(f" Saved: data/val_dataset.pkl")
 
 with open('data/test_dataset.pkl', 'wb') as f:
     pickle.dump(test_dataset, f)
-print(f"✅ Saved: data/test_dataset.pkl")
+print(f" Saved: data/test_dataset.pkl")
 
 # Also save as CSV for reference
 train.to_csv('data/train_data.csv', index=False)
 val.to_csv('data/val_data.csv', index=False)
 test.to_csv('data/test_data.csv', index=False)
-print(f"✅ Saved: data/train_data.csv, val_data.csv, test_data.csv")
+print(f" Saved: data/train_data.csv, val_data.csv, test_data.csv")
 
 # ============================================================================
 # PART 8: SAMPLE FROM PREPROCESSED DATA
 # ============================================================================
 print("\n" + "=" * 70)
-print("👀 SAMPLE FROM PREPROCESSED DATA")
+print(" SAMPLE FROM PREPROCESSED DATA")
 print("=" * 70)
 
 print("\nRandom samples from training data:\n")
@@ -215,13 +215,13 @@ for i in range(3):
 # PART 9: SUMMARY
 # ============================================================================
 print("=" * 70)
-print("✅ STEP 3 COMPLETE!")
+print(" STEP 3 COMPLETE!")
 print("=" * 70)
-print(f"\n📊 Summary:")
+print(f"\n Summary:")
 print(f"   - Total samples after preprocessing: {len(df_filtered):,}")
 print(f"   - Train samples: {len(train):,}")
 print(f"   - Validation samples: {len(val):,}")
 print(f"   - Test samples: {len(test):,}")
-print(f"\n💾 Files saved in data/ directory")
-print(f"\n🎯 Next: STEP 4 - Model Selection & MarianMT Setup")
+print(f"\n Files saved in data/ directory")
+print(f"\n Next: STEP 4 - Model Selection & MarianMT Setup")
 print(f"   Run: Step4_MarianMT_Setup.py\n")

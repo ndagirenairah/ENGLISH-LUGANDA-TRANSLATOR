@@ -27,7 +27,7 @@ class CulturalPostProcessor:
         with open(cultural_dict_path, 'r', encoding='utf-8') as f:
             self.cultural_dict = json.load(f)
         
-        print("✅ CulturalPostProcessor initialized")
+        print(" CulturalPostProcessor initialized")
         print(f"   - Clans: {len(self.cultural_dict['clans'])}")
         print(f"   - Terms: {len(self.cultural_dict['cultural_terms'])}")
     
@@ -184,6 +184,6 @@ if __name__ == "__main__":
         print(f"   Context: {test['context']}")
         print(f"   Model output: {test['translation']}")
         corrected = processor.post_process(test['translation'], test['input'], test['context'])
-        print(f"   ✅ Corrected: {corrected}\n")
+        print(f"    Corrected: {corrected}\n")
     
     print("=" * 70)

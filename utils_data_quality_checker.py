@@ -38,7 +38,7 @@ class LugandaDataCleaner:
             "eggwanga", "buganda",          # places
         ]
         
-        print("✅ Luganda Data Cleaner initialized")
+        print(" Luganda Data Cleaner initialized")
     
     def is_valid_length(self, text, min_words=2, max_words=25):
         """Check if sentence length is reasonable"""
@@ -126,31 +126,31 @@ class LugandaDataCleaner:
         # Check 1: Valid length
         if not self.is_valid_length(text):
             if verbose:
-                print(f"  ❌ Length: {text}")
+                print(f"   Length: {text}")
             return False
         
         # Check 2: No bad patterns
         if self.has_bad_patterns(text):
             if verbose:
-                print(f"  ❌ Bad pattern: {text}")
+                print(f"   Bad pattern: {text}")
             return False
         
         # Check 3: Not excessively repetitive
         if self.is_repetitive(text):
             if verbose:
-                print(f"  ❌ Repetitive: {text}")
+                print(f"   Repetitive: {text}")
             return False
         
         # Check 4: Reasonable case sensitivity
         if not self.is_mostly_lowercase(text):
             if verbose:
-                print(f"  ❌ Case issue: {text}")
+                print(f"   Case issue: {text}")
             return False
         
         # Check 5: Reasonable vowel ratio
         if not self.has_reasonable_vowels(text):
             if verbose:
-                print(f"  ❌ Vowel ratio: {text}")
+                print(f"   Vowel ratio: {text}")
             return False
         
         return True
@@ -173,7 +173,7 @@ class LugandaDataCleaner:
         print(f"{'='*70}")
         
         original_count = len(df)
-        print(f"\n📊 Starting with: {original_count} sentences")
+        print(f"\n Starting with: {original_count} sentences")
         
         # Apply cleaner
         mask = df[luganda_column].apply(
@@ -185,7 +185,7 @@ class LugandaDataCleaner:
         removed_count = original_count - len(df_clean)
         kept_count = len(df_clean)
         
-        print(f"\n✅ Results:")
+        print(f"\n Results:")
         print(f"   - Kept: {kept_count} sentences ({kept_count/original_count*100:.1f}%)")
         print(f"   - Removed: {removed_count} sentences ({removed_count/original_count*100:.1f}%)")
         print(f"   - Quality: {kept_count/original_count*100:.1f}% → 100%")
@@ -203,7 +203,7 @@ class LugandaDataCleaner:
         min_length = df[luganda_column].str.split().str.len().min()
         max_length = df[luganda_column].str.split().str.len().max()
         
-        print(f"📊 Sentence Length:")
+        print(f" Sentence Length:")
         print(f"   - Average: {avg_length:.1f} words")
         print(f"   - Min: {min_length} words")
         print(f"   - Max: {max_length} words")
@@ -239,14 +239,14 @@ if __name__ == "__main__":
     print("=" * 70)
     
     test_sentences = {
-        "✅ GOOD": [
+        " GOOD": [
             "Ndi Muganda",
             "Webale nnyo",
             "Kabaka yalambula abantu",
             "Ssegeza abakulu",
             "Nkekkaanya Oluganda",
         ],
-        "❌ BAD": [
+        " BAD": [
             "ere gye werebwamu",     # broken pattern
             "xxxx",                  # placeholder
             "a b c",                 # too short/weird
@@ -259,7 +259,7 @@ if __name__ == "__main__":
         print(f"\n{category} Examples:")
         for sent in sentences:
             result = cleaner.is_clean_luganda(sent)
-            status = "✅" if (("✅" in category and result) or ("❌" in category and not result)) else "⚠️"
+            status = "" if (("" in category and result) or ("" in category and not result)) else ""
             print(f"  {status} {sent}: {result}")
     
     # ========================================================================
@@ -273,31 +273,31 @@ if __name__ == "__main__":
     try:
         # Try to load your dataset
         df = pd.read_csv("data/luganda_english_dataset_combined.csv")
-        print(f"\n✅ Loaded: data/luganda_english_dataset_combined.csv")
+        print(f"\n Loaded: data/luganda_english_dataset_combined.csv")
         
         # Get statistics before
-        print("\n📊 BEFORE CLEANING:")
+        print("\n BEFORE CLEANING:")
         cleaner.get_statistics(df, luganda_column="luganda")
         
         # Clean dataset
         df_clean = cleaner.clean_dataset(df, luganda_column="luganda", verbose=False)
         
         # Get statistics after
-        print("\n📊 AFTER CLEANING:")
+        print("\n AFTER CLEANING:")
         cleaner.get_statistics(df_clean, luganda_column="luganda")
         
         # Remove duplicates
         print(f"\n🔄 Removing duplicates...")
         df_clean = df_clean.drop_duplicates(subset=["luganda"])
-        print(f"   ✅ Final count: {len(df_clean)} unique sentences")
+        print(f"    Final count: {len(df_clean)} unique sentences")
         
         # Save cleaned dataset
         output_path = "data/luganda_english_dataset_cleaned.csv"
         df_clean.to_csv(output_path, index=False)
-        print(f"\n✅ Cleaned dataset saved to: {output_path}")
+        print(f"\n Cleaned dataset saved to: {output_path}")
         
         # Show samples
-        print(f"\n📝 Sample of cleaned data:")
+        print(f"\n Sample of cleaned data:")
         print("-" * 70)
         for idx, row in df_clean.head(5).iterrows():
             print(f"  LG: {row['luganda']}")
@@ -305,7 +305,7 @@ if __name__ == "__main__":
             print()
         
     except FileNotFoundError:
-        print("\n⚠️  Dataset not found. Using example data only.")
+        print("\n  Dataset not found. Using example data only.")
     
     print("\n" + "=" * 70)
     print("✨ QUALITY FILTERING COMPLETE")
