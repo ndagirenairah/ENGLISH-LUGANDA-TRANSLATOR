@@ -94,28 +94,25 @@ print(f"  - Translation errors: {len(results_df) - len(valid_results)}")
 # ============================================================================
 # PART 4: CALCULATE BLEU SCORES (Individual)
 # ============================================================================
-print("\\n" + "=" * 70)
-print("ðŸ“Š CALCULATING INDIVIDUAL BLEU SCORES")
+print("\n" + "=" * 70)
+print("📊 CALCULATING INDIVIDUAL BLEU SCORES")
 print("=" * 70)
 
-print("\\nCalculating BLEU score for each translation...\\n")
+print(f"âœ… BLEU scores calculated for {len(bleu_scores)} sentences")
 
 bleu_scores = []
 
 for idx, row in valid_results.iterrows():
-    prediction = row['predicted_clean'].split()
-    reference = row['reference_clean'].split()
-    
     try:
-        # Calculate BLEU for this sentence
-        score = sentence_bleu(reference, prediction)
+        score = sentence_bleu(row['predicted_clean'], [row['reference_clean']])
         bleu_scores.append(score.score)
-    except:
+    except Exception as e:
+        print(f"BLEU error on row {idx}: {e}")
         bleu_scores.append(0.0)
 
 valid_results['bleu_score'] = bleu_scores
 
-print(f"âœ… BLEU scores calculated for {len(bleu_scores)} sentences")
+print(f"✅ BLEU scores calculated for {len(bleu_scores)} sentences")
 
 # ============================================================================
 # PART 5: DISPLAY TOP AND BOTTOM TRANSLATIONS
@@ -152,8 +149,8 @@ print("ðŸ“ˆ CORPUS-LEVEL BLEU SCORE")
 print("=" * 70)
 
 # Prepare data for corpus BLEU
-references = [[ref.split()] for ref in valid_results['reference_clean']]
-predictions = [pred.split() for pred in valid_results['predicted_clean']]
+predictions = valid_results['predicted_clean'].tolist()
+references = [valid_results['reference_clean'].tolist()]
 
 try:
     corpus_score = corpus_bleu(predictions, references)
