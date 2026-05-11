@@ -50,8 +50,6 @@ def clean_text(text):
     if not isinstance(text, str):
         return ""
     
-    # Convert to lowercase
-    text = text.lower()
     
     # Remove URLs
     text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
@@ -70,7 +68,7 @@ def clean_text(text):
 print("\nApplying text cleaning...")
 
 # Clean both languages
-df['luganda_clean'] = df['luganda'].apply(clean_text)
+df['luganda_clean'] = df['luganda'].apply(lambda x: clean_text(x) if isinstance(x, str) else "")
 df['english_clean'] = df['english'].apply(clean_text)
 
 # Remove empty rows
@@ -153,13 +151,10 @@ def create_translation_dataset(df_split):
         'translation': []
     }
     
-    for _, row in df_split.iterrows():
-        dataset_dict['translation'].append({
-            'lug': row['luganda_clean'],
-            'eng': row['english_clean']
-        })
-    
-    return Dataset.from_dict(dataset_dict)
+    translations = df_split.apply(
+    lambda row: {'lug': row['luganda_clean'], 'eng': row['english_clean']}, axis=1
+     ).tolist()
+    return Dataset.from_dict({'translation': translations})
 
 train_dataset = create_translation_dataset(train)
 val_dataset = create_translation_dataset(val)
