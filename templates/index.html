@@ -226,6 +226,176 @@
             font-weight: 600;
         }
 
+        /* Tabs Styling */
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid transparent;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #1DB954;
+            border-color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Voice Buttons */
+        .voice-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-voice {
+            background: #0066ff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-voice:hover {
+            background: #0052cc;
+            transform: translateY(-2px);
+        }
+
+        .btn-voice:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Phrasebook Styles */
+        .phrasebook-category {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border-left: 5px solid #1DB954;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .phrasebook-category h3 {
+            color: #1DB954;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .phrase-item {
+            background: #f9f9f9;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 3px solid #1ed760;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .phrase-item:hover {
+            background: #f0fff4;
+            transform: translateX(5px);
+        }
+
+        .phrase-english {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .phrase-luganda {
+            color: #1DB954;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+        }
+
+        .phrase-context {
+            font-size: 0.85em;
+            color: #888;
+            font-style: italic;
+        }
+
+        /* History Styles */
+        .history-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #1DB954;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .history-timestamp {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .history-text {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .history-translation {
+            color: #1DB954;
+            margin-bottom: 5px;
+        }
+
+        /* Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #1DB954;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #1DB954;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.95em;
+            margin-top: 5px;
+        }
+
         .button-group {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
@@ -456,72 +626,105 @@
             <div class="status-badge ready" id="statusBadge">
                 Ready to Translate
             </div>
+            
+            <!-- Tabs Navigation -->
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button class="tab-btn active" onclick="switchTab('translator')">🌐 Translator</button>
+                <button class="tab-btn" onclick="switchTab('phrasebook')">📚 Phrasebook</button>
+                <button class="tab-btn" onclick="switchTab('history')">📊 History</button>
+            </div>
         </header>
 
         <div class="content">
             <div id="errorMessage" class="error-message"></div>
             <div id="successMessage" class="success-message"></div>
             
-            <div class="info-box">
-                <strong>How It Works:</strong><br/>
-                • <strong>Dictionary:</strong> 128+ verified cultural phrases<br/>
-                • <strong>AI Model:</strong> For new sentences<br/>
-                • <strong>Clans:</strong> All 22 Baganda clans recognized
-            </div>
-
-            <!-- Language Selection Bar -->
-            <div class="language-bar">
-                <div class="lang-selector">
-                    <select id="sourceLanguage">
-                        <option value="english">English</option>
-                        <option value="luganda">Luganda</option>
-                    </select>
+            <!-- TRANSLATOR TAB -->
+            <div id="translator" class="tab-content active">
+                <div class="info-box">
+                    <strong>How It Works:</strong><br/>
+                    • <strong>Dictionary:</strong> 128+ verified cultural phrases<br/>
+                    • <strong>AI Model:</strong> For new sentences<br/>
+                    • <strong>Clans:</strong> All 22 Baganda clans recognized
                 </div>
 
-                <div class="swap-container">
-                    <button id="swapBtn" title="Swap languages">⇄</button>
-                </div>
+                <!-- Language Selection Bar -->
+                <div class="language-bar">
+                    <div class="lang-selector">
+                        <select id="sourceLanguage">
+                            <option value="english">English</option>
+                            <option value="luganda">Luganda</option>
+                        </select>
+                    </div>
 
-                <div class="lang-selector">
-                    <select id="targetLanguage">
-                        <option value="luganda">Luganda</option>
-                        <option value="english">English</option>
-                    </select>
-                </div>
-            </div>
+                    <div class="swap-container">
+                        <button id="swapBtn" title="Swap languages">⇄</button>
+                    </div>
 
-            <!-- Translation Boxes -->
-            <div class="translator-section">
-                <div class="input-group">
-                    <label id="sourceLabel">English Text</label>
-                    <textarea id="sourceText" placeholder="Type your English text here..." maxlength="1000"></textarea>
-                    <div class="char-count">
-                        <span id="sourceCount">0</span>/1000 characters
+                    <div class="lang-selector">
+                        <select id="targetLanguage">
+                            <option value="luganda">Luganda</option>
+                            <option value="english">English</option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label id="targetLabel">Luganda Translation</label>
-                    <textarea id="targetText" placeholder="Translation will appear here..." readonly></textarea>
+                <!-- Translation Boxes -->
+                <div class="translator-section">
+                    <div class="input-group">
+                        <label id="sourceLabel">English Text</label>
+                        <textarea id="sourceText" placeholder="Type your English text here..." maxlength="1000"></textarea>
+                        <div class="char-count">
+                            <span id="sourceCount">0</span>/1000 characters
+                        </div>
+                        <div class="voice-buttons">
+                            <button class="btn-voice" id="micBtn" title="Speak English (voice input)">🎤 Speak English</button>
+                            <button class="btn-voice" id="speakSourceBtn" title="Listen to English">🔊 Listen</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label id="targetLabel">Luganda Translation</label>
+                        <textarea id="targetText" placeholder="Translation will appear here..." readonly></textarea>
+                        <div class="voice-buttons">
+                            <button class="btn-voice" id="speakTargetBtn" title="Listen to Luganda">🔊 Listen</button>
+                            <button class="btn-voice" id="copyTranslateBtn">📋 Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group">
+                    <button class="btn-translate" id="translateBtn">
+                        <div class="translate-button-content">
+                            <span class="loading-spinner" id="spinner"></span>
+                            <span id="btnText">Translate Now</span>
+                        </div>
+                    </button>
+                    <button class="btn-clear" id="clearBtn">Clear</button>
+                    <button class="btn-copy" id="copyBtn">Copy</button>
+                </div>
+
+                <!-- Examples -->
+                <div class="examples-section">
+                    <h3>Popular Examples</h3>
+                    <div class="examples-list" id="examplesList"></div>
                 </div>
             </div>
 
-            <!-- Buttons -->
-            <div class="button-group">
-                <button class="btn-translate" id="translateBtn">
-                    <div class="translate-button-content">
-                        <span class="loading-spinner" id="spinner"></span>
-                        <span id="btnText">Translate Now</span>
-                    </div>
-                </button>
-                <button class="btn-clear" id="clearBtn">Clear</button>
-                <button class="btn-copy" id="copyBtn">Copy</button>
+            <!-- PHRASEBOOK TAB -->
+            <div id="phrasebook" class="tab-content">
+                <h2 style="color: #1DB954; margin-bottom: 20px;">📚 Luganda Learning Mode</h2>
+                <p style="color: #666; margin-bottom: 20px;">Learn common Luganda phrases organized by category. Click any phrase to translate it.</p>
+                <div id="phrasebookContent"></div>
             </div>
 
-            <!-- Examples -->
-            <div class="examples-section">
-                <h3>Popular Examples</h3>
-                <div class="examples-list" id="examplesList"></div>
+            <!-- HISTORY TAB -->
+            <div id="history" class="tab-content">
+                <h2 style="color: #1DB954; margin-bottom: 20px;">📊 Translation History & Analytics</h2>
+                <div class="stats-container" id="statsContainer"></div>
+                <button class="btn-clear" id="clearHistoryBtn" style="margin-bottom: 20px;">Clear History</button>
+                <div class="history-list" id="historyList"></div>
             </div>
         </div>
 
@@ -532,7 +735,38 @@
     </div>
 
     <script>
+        // ============================================================================
+        // TAB MANAGEMENT
+        // ============================================================================
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Mark button as active
+            event.target.classList.add('active');
+            
+            // Load content for specific tabs
+            if (tabName === 'phrasebook') {
+                loadPhrasebook();
+            } else if (tabName === 'history') {
+                loadHistory();
+                loadStats();
+            }
+        }
+
+        // ============================================================================
         // DOM Elements
+        // ============================================================================
         const sourceText = document.getElementById('sourceText');
         const targetText = document.getElementById('targetText');
         const sourceLanguage = document.getElementById('sourceLanguage');
@@ -547,18 +781,26 @@
         const errorMessage = document.getElementById('errorMessage');
         const successMessage = document.getElementById('successMessage');
         const examplesList = document.getElementById('examplesList');
+        const micBtn = document.getElementById('micBtn');
+        const speakSourceBtn = document.getElementById('speakSourceBtn');
+        const speakTargetBtn = document.getElementById('speakTargetBtn');
+        const copyTranslateBtn = document.getElementById('copyTranslateBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
-        // Update character count
+        // ============================================================================
+        // CHARACTER COUNT
+        // ============================================================================
         sourceText.addEventListener('input', () => {
             sourceCount.textContent = sourceText.value.length;
         });
 
-        // Update flags and labels when language changes
+        // ============================================================================
+        // LANGUAGE SELECTION
+        // ============================================================================
         sourceLanguage.addEventListener('change', () => {
             sourceText.placeholder = sourceLanguage.value === 'english' ? 'Type English...' : 'Type Luganda...';
             document.getElementById('sourceLabel').textContent = sourceLanguage.value === 'english' ? 'English Text' : 'Luganda Text';
             
-            // Ensure target is different
             if (targetLanguage.value === sourceLanguage.value) {
                 targetLanguage.value = sourceLanguage.value === 'english' ? 'luganda' : 'english';
                 document.getElementById('targetLabel').textContent = targetLanguage.value === 'english' ? 'English Translation' : 'Luganda Translation';
@@ -568,26 +810,24 @@
         targetLanguage.addEventListener('change', () => {
             document.getElementById('targetLabel').textContent = targetLanguage.value === 'english' ? 'English Translation' : 'Luganda Translation';
             
-            // Ensure target is different from source
             if (targetLanguage.value === sourceLanguage.value) {
                 sourceLanguage.value = targetLanguage.value === 'english' ? 'luganda' : 'english';
                 document.getElementById('sourceLabel').textContent = sourceLanguage.value === 'english' ? 'English Text' : 'Luganda Text';
             }
         });
 
-        // Swap languages and text
+        // ============================================================================
+        // SWAP LANGUAGES
+        // ============================================================================
         swapBtn.addEventListener('click', () => {
-            // Swap dropdown values
             let temp = sourceLanguage.value;
             sourceLanguage.value = targetLanguage.value;
             targetLanguage.value = temp;
 
-            // Swap text
             let tempText = sourceText.value;
             sourceText.value = targetText.value;
             targetText.value = tempText;
 
-            // Update character count
             sourceCount.textContent = sourceText.value.length;
 
             swapBtn.style.transform = 'rotate(180deg)';
@@ -596,7 +836,9 @@
             }, 300);
         });
 
-        // Clear all
+        // ============================================================================
+        // CLEAR & COPY
+        // ============================================================================
         clearBtn.addEventListener('click', () => {
             sourceText.value = '';
             targetText.value = '';
@@ -604,7 +846,6 @@
             hideMessages();
         });
 
-        // Copy translation
         copyBtn.addEventListener('click', () => {
             if (targetText.value) {
                 navigator.clipboard.writeText(targetText.value).then(() => {
@@ -613,7 +854,72 @@
             }
         });
 
-        // Translate function
+        copyTranslateBtn.addEventListener('click', () => {
+            if (targetText.value) {
+                navigator.clipboard.writeText(targetText.value).then(() => {
+                    showSuccess('Copied to clipboard!');
+                });
+            }
+        });
+
+        // ============================================================================
+        // TEXT-TO-SPEECH
+        // ============================================================================
+        speakSourceBtn.addEventListener('click', async () => {
+            if (!sourceText.value) {
+                showError('Please enter text to listen to');
+                return;
+            }
+            
+            try {
+                speakSourceBtn.disabled = true;
+                const lang = sourceLanguage.value === 'english' ? 'en' : 'lg';
+                const response = await fetch('/api/speak', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: sourceText.value, language: lang})
+                });
+                
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const audio = new Audio(url);
+                audio.play();
+            } catch (error) {
+                showError('Text-to-speech error: ' + error.message);
+            } finally {
+                speakSourceBtn.disabled = false;
+            }
+        });
+
+        speakTargetBtn.addEventListener('click', async () => {
+            if (!targetText.value) {
+                showError('Please translate first');
+                return;
+            }
+            
+            try {
+                speakTargetBtn.disabled = true;
+                const lang = targetLanguage.value === 'english' ? 'en' : 'lg';
+                const response = await fetch('/api/speak', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: targetText.value, language: lang})
+                });
+                
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const audio = new Audio(url);
+                audio.play();
+            } catch (error) {
+                showError('Text-to-speech error: ' + error.message);
+            } finally {
+                speakTargetBtn.disabled = false;
+            }
+        });
+
+        // ============================================================================
+        // TRANSLATE FUNCTION
+        // ============================================================================
         async function translate() {
             const text = sourceText.value.trim();
 
@@ -662,17 +968,17 @@
             }
         }
 
-        // Translate button
         translateBtn.addEventListener('click', translate);
 
-        // Enter key
         sourceText.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 translate();
             }
         });
 
-        // Show/hide messages
+        // ============================================================================
+        // MESSAGE DISPLAY
+        // ============================================================================
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
@@ -690,14 +996,15 @@
             successMessage.style.display = 'none';
         }
 
-        // Set example
+        // ============================================================================
+        // EXAMPLES
+        // ============================================================================
         function setExample(text) {
             sourceText.value = text;
             sourceCount.textContent = sourceText.value.length;
             translate();
         }
 
-        // Load examples
         async function loadExamples() {
             try {
                 const response = await fetch('/api/examples');
@@ -716,14 +1023,110 @@
             }
         }
 
-        // Set example
-        function setExample(text) {
-            englishText.value = text;
-            englishCount.textContent = text.length;
+        // ============================================================================
+        // PHRASEBOOK FEATURE
+        // ============================================================================
+        async function loadPhrasebook() {
+            try {
+                const response = await fetch('/api/phrasebook');
+                const data = await response.json();
+                const phrasebook = data.phrasebook || {};
+
+                const content = document.getElementById('phrasebookContent');
+                content.innerHTML = Object.entries(phrasebook).map(([category, phrases]) => `
+                    <div class="phrasebook-category">
+                        <h3>${category}</h3>
+                        ${phrases.map(p => `
+                            <div class="phrase-item" onclick="learnPhrase('${p.english.replace(/'/g, "\\'")}')">
+                                <div class="phrase-english">🇬🇧 ${p.english}</div>
+                                <div class="phrase-luganda">🇺🇬 ${p.luganda}</div>
+                                <div class="phrase-context">📖 ${p.cultural_context}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading phrasebook:', error);
+            }
+        }
+
+        function learnPhrase(englishText) {
+            document.getElementById('translator').classList.add('active');
+            document.getElementById('phrasebook').classList.remove('active');
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+            
+            sourceText.value = englishText;
+            sourceCount.textContent = englishText.length;
             translate();
         }
 
-        // Initialize
+        // ============================================================================
+        // HISTORY & ANALYTICS
+        // ============================================================================
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history?limit=20');
+                const data = await response.json();
+                const history = data.history || [];
+
+                const historyList = document.getElementById('historyList');
+                if (history.length === 0) {
+                    historyList.innerHTML = '<p style="color: #999; padding: 20px; text-align: center;">No translations yet</p>';
+                } else {
+                    historyList.innerHTML = history.map((h, i) => `
+                        <div class="history-item">
+                            <div class="history-timestamp">${new Date(h.timestamp).toLocaleString()}</div>
+                            <div class="history-text">🇬🇧 ${h.source_text}</div>
+                            <div class="history-translation">🇺🇬 ${h.target_text}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/history/stats');
+                const data = await response.json();
+
+                const statsContainer = document.getElementById('statsContainer');
+                statsContainer.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${data.total_translations}</div>
+                        <div class="stat-label">Total Translations</div>
+                    </div>
+                    ${data.most_translated.slice(0, 2).map((item, i) => `
+                        <div class="stat-card">
+                            <div class="stat-number">${item.count}</div>
+                            <div class="stat-label">"${item.phrase.substring(0, 20)}..."</div>
+                        </div>
+                    `).join('')}
+                `;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        clearHistoryBtn.addEventListener('click', async () => {
+            if (confirm('Clear all translation history?')) {
+                try {
+                    const response = await fetch('/api/history/clear', {method: 'POST'});
+                    const data = await response.json();
+                    showSuccess('History cleared!');
+                    loadHistory();
+                    loadStats();
+                } catch (error) {
+                    showError('Error clearing history');
+                }
+            }
+        });
+
+        // ============================================================================
+        // INITIALIZE
+        // ============================================================================
         loadExamples();
     </script>
 </body>

@@ -1,8 +1,14 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 import torch
 from transformers import MarianMTModel, MarianTokenizer
 import logging
 import os
+import sqlite3
+from datetime import datetime
+from gtts import gTTS
+from io import BytesIO
+from langdetect import detect, LangDetectException
+import json
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -15,6 +21,89 @@ logger = logging.getLogger(__name__)
 # Initialize model and tokenizer (loaded on first use)
 model = None
 tokenizer = None
+
+# Database initialization
+DB_PATH = 'translator_history.db'
+
+def init_db():
+    """Initialize SQLite database for translation history"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS translations
+                 (id INTEGER PRIMARY KEY,
+                  timestamp TEXT,
+                  source_text TEXT,
+                  target_text TEXT,
+                  source_language TEXT,
+                  target_language TEXT,
+                  in_dictionary BOOLEAN)''')
+    conn.commit()
+    conn.close()
+
+def save_translation_history(source_text, target_text, source_lang, target_lang, in_dict):
+    """Save translation to database"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        timestamp = datetime.now().isoformat()
+        c.execute('''INSERT INTO translations 
+                     (timestamp, source_text, target_text, source_language, target_language, in_dictionary)
+                     VALUES (?, ?, ?, ?, ?, ?)''',
+                  (timestamp, source_text, target_text, source_lang, target_lang, in_dict))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        logger.error(f"Database error: {str(e)}")
+
+# PHRASEBOOK - CULTURAL & LEARNING CONTENT
+PHRASEBOOK = {
+    "Greetings": [
+        {"english": "Hello, how are you?", "luganda": "Nkulamusizza, oyagala?", "cultural_context": "Common greeting in Ugandan culture"},
+        {"english": "Good morning", "luganda": "Wasuubire nnyo", "cultural_context": "Used early in the day"},
+        {"english": "Good afternoon", "luganda": "Wawummule nnyo", "cultural_context": "Used during midday"},
+        {"english": "Good evening", "luganda": "Waggulo nnyo", "cultural_context": "Used after sunset"},
+        {"english": "Thank you very much", "luganda": "Webale nnyo", "cultural_context": "Shows respect and gratitude"},
+        {"english": "You are welcome", "luganda": "Welcome", "cultural_context": "Hospitality is important in Ugandan culture"},
+    ],
+    "Family & Clans": [
+        {"english": "What clan are you from?", "luganda": "Oli mu kika ki?", "cultural_context": "22 Baganda clans - identity is central"},
+        {"english": "I am from the monkey clan", "luganda": "Ndi mu kika kya Ngo", "cultural_context": "Ngo clan - associated with wisdom"},
+        {"english": "I am from the lion clan", "luganda": "Ndi mu kika kya Mpologoma", "cultural_context": "Mpologoma - symbolizes strength"},
+        {"english": "Mother", "luganda": "Maama", "cultural_context": "Mothers hold high respect in Baganda culture"},
+        {"english": "Father", "luganda": "Taata", "cultural_context": "Fathers are family leaders"},
+        {"english": "Grandmother", "luganda": "Jjaja", "cultural_context": "Grandmothers preserve cultural knowledge"},
+    ],
+    "Daily Life": [
+        {"english": "How are you?", "luganda": "Oyagala?", "cultural_context": "Common casual greeting"},
+        {"english": "I am fine", "luganda": "Ndi bulungi", "cultural_context": "Standard response"},
+        {"english": "Where are you from?", "luganda": "Ova ku?", "cultural_context": "Important for identity"},
+        {"english": "What is your name?", "luganda": "Linnya lyo liwa ki?", "cultural_context": "Names have meaning in Luganda"},
+        {"english": "I love my clan", "luganda": "Nkwagala kika kyange", "cultural_context": "Clan loyalty is sacred"},
+        {"english": "Teach the children about their clan", "luganda": "Funza abaana bo ebya kika kyabwe", "cultural_context": "Preserving cultural knowledge"},
+    ],
+    "Food & Cooking": [
+        {"english": "Food", "luganda": "Kifo", "cultural_context": "Essential daily sustenance"},
+        {"english": "Water", "luganda": "Amazzi", "cultural_context": "Sacred element in African culture"},
+        {"english": "Rice", "luganda": "Mwali", "cultural_context": "Popular staple food"},
+        {"english": "Plantain", "luganda": "Gonja", "cultural_context": "Traditional Ugandan food"},
+        {"english": "I am hungry", "luganda": "Njala", "cultural_context": "Natural human need"},
+        {"english": "Eat", "luganda": "Kula", "cultural_context": "Social and cultural activity"},
+    ]
+}
+
+# CULTURAL CONTEXT DICTIONARY
+CULTURAL_CONTEXT = {
+    "kabaka": "Baganda king - spiritual and political leader",
+    "kika": "Clan - central to Baganda identity",
+    "kwanjula": "Marriage introduction ceremony - important cultural event",
+    "mengo": "Cultural headquarters of Baganda people",
+    "luganda": "Language spoken by Baganda people - UNESCO recognized",
+    "baganda": "People of Buganda kingdom - major ethnic group in Uganda",
+    "ngo": "Monkey clan - associated with wisdom and trickery",
+    "totem": "Sacred symbol of clan identity",
+    "ancestor": "Person from whom one is descended - honored in Baganda culture",
+    "clan elder": "Senior member who guides clan affairs"
+}
 
 # CLAN-FOCUSED GUARANTEED TRANSLATIONS (Luganda)
 GUARANTEED_TRANSLATIONS = {
@@ -366,6 +455,9 @@ def api_translate():
         
         translation, in_dictionary = translate(text, source_language, target_language)
         
+        # Save to history
+        save_translation_history(text, translation, source_language, target_language, in_dictionary)
+        
         return jsonify({
             'text': text,
             'translation': translation,
@@ -403,6 +495,203 @@ def api_examples():
     ]
     return jsonify({'examples': clan_examples})
 
+# ============================================================================
+# NEW FEATURE 1: PHRASEBOOK & LEARNING MODE
+# ============================================================================
+@app.route('/api/phrasebook', methods=['GET'])
+def api_phrasebook():
+    """Get phrasebook categories and phrases for learning"""
+    return jsonify({'phrasebook': PHRASEBOOK})
+
+@app.route('/api/phrasebook/<category>', methods=['GET'])
+def api_phrasebook_category(category):
+    """Get phrases for specific category"""
+    if category in PHRASEBOOK:
+        return jsonify({
+            'category': category,
+            'phrases': PHRASEBOOK[category]
+        })
+    return jsonify({'error': 'Category not found'}), 404
+
+# ============================================================================
+# NEW FEATURE 2: TEXT-TO-SPEECH (Audio Output)
+# ============================================================================
+@app.route('/api/speak', methods=['POST'])
+def api_speak():
+    """Convert text to speech"""
+    try:
+        data = request.json
+        text = data.get('text', '').strip()
+        language = data.get('language', 'en')
+        
+        if not text:
+            return jsonify({'error': 'No text provided'}), 400
+        
+        # Map language codes
+        lang_map = {
+            'english': 'en',
+            'luganda': 'lg',
+            'en': 'en',
+            'lg': 'lg'
+        }
+        
+        lang_code = lang_map.get(language, 'en')
+        
+        # Generate speech
+        tts = gTTS(text=text, lang=lang_code, slow=False)
+        audio_buffer = BytesIO()
+        tts.write_to_fp(audio_buffer)
+        audio_buffer.seek(0)
+        
+        return send_file(
+            audio_buffer,
+            mimetype='audio/mpeg',
+            as_attachment=True,
+            download_name='translation.mp3'
+        )
+    except Exception as e:
+        logger.error(f"TTS error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# ============================================================================
+# NEW FEATURE 3: LANGUAGE DETECTION & BIDIRECTIONAL TRANSLATION
+# ============================================================================
+@app.route('/api/detect-language', methods=['POST'])
+def api_detect_language():
+    """Detect if text is English or Luganda"""
+    try:
+        data = request.json
+        text = data.get('text', '').strip()
+        
+        if not text:
+            return jsonify({'error': 'No text provided'}), 400
+        
+        # Simple heuristic: if has common Luganda words
+        luganda_keywords = ['oli', 'ndye', 'nkwagala', 'kika', 'wasuubire', 'webale', 'oyagala']
+        text_lower = text.lower()
+        
+        luganda_score = sum(1 for word in luganda_keywords if word in text_lower)
+        
+        if luganda_score > 0:
+            detected_language = 'luganda'
+            confidence = min(100, (luganda_score / len(luganda_keywords)) * 100)
+        else:
+            detected_language = 'english'
+            confidence = 95
+        
+        return jsonify({
+            'detected_language': detected_language,
+            'confidence': confidence,
+            'alternatives': ['luganda', 'english']
+        })
+    except Exception as e:
+        logger.error(f"Detection error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# ============================================================================
+# NEW FEATURE 4: CULTURAL CONTEXT & TOOLTIPS
+# ============================================================================
+@app.route('/api/cultural-context/<word>', methods=['GET'])
+def api_cultural_context(word):
+    """Get cultural context for a word"""
+    word_lower = word.lower()
+    
+    if word_lower in CULTURAL_CONTEXT:
+        return jsonify({
+            'word': word,
+            'context': CULTURAL_CONTEXT[word_lower],
+            'cultural_significance': True
+        })
+    
+    # Check if word appears in guaranteed translations
+    matches = [v for k, v in GUARANTEED_TRANSLATIONS.items() if word_lower in k.lower()]
+    
+    if matches:
+        return jsonify({
+            'word': word,
+            'context': f"Part of phrase: {matches[0]}",
+            'cultural_significance': True
+        })
+    
+    return jsonify({
+        'word': word,
+        'context': None,
+        'cultural_significance': False
+    })
+
+# ============================================================================
+# NEW FEATURE 5: TRANSLATION HISTORY
+# ============================================================================
+@app.route('/api/history', methods=['GET'])
+def api_get_history():
+    """Get translation history"""
+    try:
+        limit = request.args.get('limit', 50, type=int)
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''SELECT timestamp, source_text, target_text, source_language, target_language 
+                     FROM translations 
+                     ORDER BY timestamp DESC 
+                     LIMIT ?''', (limit,))
+        
+        history = []
+        for row in c.fetchall():
+            history.append({
+                'timestamp': row[0],
+                'source_text': row[1],
+                'target_text': row[2],
+                'source_language': row[3],
+                'target_language': row[4]
+            })
+        
+        conn.close()
+        return jsonify({'history': history})
+    except Exception as e:
+        logger.error(f"History error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/history/clear', methods=['POST'])
+def api_clear_history():
+    """Clear all translation history"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('DELETE FROM translations')
+        conn.commit()
+        conn.close()
+        return jsonify({'status': 'success', 'message': 'History cleared'})
+    except Exception as e:
+        logger.error(f"Clear history error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/history/stats', methods=['GET'])
+def api_history_stats():
+    """Get translation statistics"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        # Total translations
+        c.execute('SELECT COUNT(*) FROM translations')
+        total = c.fetchone()[0]
+        
+        # Most translated phrases
+        c.execute('''SELECT source_text, COUNT(*) as count 
+                     FROM translations 
+                     GROUP BY source_text 
+                     ORDER BY count DESC 
+                     LIMIT 10''')
+        most_translated = [{'phrase': row[0], 'count': row[1]} for row in c.fetchall()]
+        
+        conn.close()
+        return jsonify({
+            'total_translations': total,
+            'most_translated': most_translated
+        })
+    except Exception as e:
+        logger.error(f"Stats error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'error': 'Not found'}), 404
@@ -412,4 +701,10 @@ def internal_error(error):
     return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
+    # Initialize database on startup
+    init_db()
+    
+    # Load model on startup
+    load_model()
+    
     app.run(debug=True, host='0.0.0.0', port=5000)
