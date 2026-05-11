@@ -385,43 +385,88 @@ def translate_to_luganda(english_text):
     """Translate English text to Luganda using dictionary then ML model"""
     text_lower = english_text.lower().strip()
     
-    # Check guaranteed translations first
+    # Check guaranteed translations first (exact match)
     if text_lower in GUARANTEED_TRANSLATIONS:
         return GUARANTEED_TRANSLATIONS[text_lower]
     
-    # Check partial matches
+    # Check partial matches (phrase contains)
     for key, value in GUARANTEED_TRANSLATIONS.items():
         if key in text_lower or text_lower in key:
             return value
     
     # Fall back to trained ML model
     try:
+        load_model()
         inputs = tokenizer(english_text, return_tensors="pt", padding=True)
-        translated = model.generate(**inputs)
+        translated = model.generate(**inputs, max_length=128, num_beams=4)
         return tokenizer.decode(translated[0], skip_special_tokens=True)
     except Exception as e:
-        return f"Translation error: {str(e)}"
+        logger.error(f"Translation error: {str(e)}")
+        return f"Translation error"
+
 def translate_to_english(luganda_text):
-    """Translate Luganda text to English using dictionary then ML model"""
+    """Translate Luganda text to English using dictionary then ML model with word-level fallback"""
     text_lower = luganda_text.lower().strip()
     
-    # Check dictionary first for guaranteed translations
-    reverse_translations = {v.lower(): k for k, v in GUARANTEED_TRANSLATIONS.items()}
+    # Build reverse dictionary (Luganda -> English)
+    reverse_translations = {}
+    for eng, lug in GUARANTEED_TRANSLATIONS.items():
+        lug_lower = lug.lower()
+        # If multiple English meanings, keep the first one
+        if lug_lower not in reverse_translations:
+            reverse_translations[lug_lower] = eng
+    
+    # Check exact matches first
     if text_lower in reverse_translations:
         return reverse_translations[text_lower]
     
-    # Check partial matches
-    for value, key in reverse_translations.items():
-        if value in text_lower or text_lower in value:
-            return key
+    # Check partial/fuzzy matches
+    for lug_phrase, eng_phrase in reverse_translations.items():
+        if lug_phrase in text_lower:
+            return eng_phrase
+        if text_lower in lug_phrase:
+            return eng_phrase
     
-    # Fall back to trained ML model
+    # Try word-level translation (split into words and translate each)
+    words = text_lower.split()
+    translated_words = []
+    found_translation = False
+    
+    for word in words:
+        word_found = False
+        for lug_phrase, eng_phrase in reverse_translations.items():
+            if word == lug_phrase:
+                translated_words.append(eng_phrase)
+                word_found = True
+                found_translation = True
+                break
+            elif word in lug_phrase:
+                # Partial match
+                translated_words.append(eng_phrase.split()[0])  # Take first word
+                word_found = True
+                found_translation = True
+                break
+        
+        if not word_found:
+            translated_words.append(word)  # Keep original word if not found
+    
+    # If we found any translations via word matching, return that
+    if found_translation and len(translated_words) > 0:
+        return " ".join(translated_words)
+    
+    # Fall back to ML model for full sentence translation
     try:
-        inputs = tokenizer(">>en<< " + luganda_text, return_tensors="pt", padding=True)
-        translated = model.generate(**inputs)
-        return tokenizer.decode(translated[0], skip_special_tokens=True)
+        load_model()
+        # Use the model to translate Luganda to English
+        # Try both with and without language prefix
+        inputs = tokenizer(luganda_text, return_tensors="pt", padding=True)
+        translated = model.generate(**inputs, max_length=128, num_beams=4)
+        result = tokenizer.decode(translated[0], skip_special_tokens=True)
+        return result if result.strip() else luganda_text
     except Exception as e:
-        return f"Translation error: {str(e)}"
+        logger.error(f"ML translation error: {str(e)}")
+        # If ML fails, return the best guess from words
+        return " ".join(translated_words) if translated_words else luganda_text
 
 def translate(text, source_language, target_language):
     """Bidirectional translation function"""
@@ -455,6 +500,11 @@ def api_translate():
         
         translation, in_dictionary = translate(text, source_language, target_language)
         
+        # Calculate confidence score
+        confidence = 95 if in_dictionary else 70
+        if source_language == 'luganda':
+            confidence = 60 if in_dictionary else 40  # Lower confidence for reverse translation
+        
         # Save to history
         save_translation_history(text, translation, source_language, target_language, in_dictionary)
         
@@ -463,7 +513,9 @@ def api_translate():
             'translation': translation,
             'source_language': source_language,
             'target_language': target_language,
-            'in_dictionary': in_dictionary
+            'in_dictionary': in_dictionary,
+            'confidence': confidence,
+            'note': 'Reverse translation (Luganda→English) is less accurate. English→Luganda is recommended.' if source_language == 'luganda' else ''
         })
     except Exception as e:
         logger.error(f"API error: {str(e)}")
