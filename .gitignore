@@ -38,16 +38,22 @@ env/
 .DS_Store
 
 # Data & Models (Large Files)
-
-models/
+models/trained_model/
 checkpoints/
-outputs/
 logs/
 results/
 *.pkl
 *.pickle
 *.pth
 *.bin
+
+# Databases & History
+*.db
+translator_history.db
+
+# Environment files
+.env
+.env.local
 *.safetensors
 
 # Jupyter
