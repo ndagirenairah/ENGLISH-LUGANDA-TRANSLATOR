@@ -673,21 +673,24 @@
                 <div class="translator-section">
                     <div class="input-group">
                         <label id="sourceLabel">English Text</label>
-                        <textarea id="sourceText" placeholder="Type your English text here..." maxlength="1000"></textarea>
+                        <textarea id="sourceText" placeholder="Type English or Luganda here..." maxlength="1000"></textarea>
                         <div class="char-count">
                             <span id="sourceCount">0</span>/1000 characters
                         </div>
                         <div class="voice-buttons">
-                            <button class="btn-voice" id="micBtn" title="Speak English (voice input)">🎤 Speak English</button>
-                            <button class="btn-voice" id="speakSourceBtn" title="Listen to English">🔊 Listen</button>
+                            <button class="btn-voice" id="micBtn" title="Speak (voice input)">🎤 Speak</button>
+                            <button class="btn-voice" id="speakSourceBtn" title="Listen to text">🔊 Listen</button>
                         </div>
                     </div>
 
                     <div class="input-group">
                         <label id="targetLabel">Luganda Translation</label>
-                        <textarea id="targetText" placeholder="Translation will appear here..." readonly></textarea>
+                        <textarea id="targetText" placeholder="Type Luganda or English here..." maxlength="1000"></textarea>
+                        <div class="char-count">
+                            <span id="targetCount">0</span>/1000 characters
+                        </div>
                         <div class="voice-buttons">
-                            <button class="btn-voice" id="speakTargetBtn" title="Listen to Luganda">🔊 Listen</button>
+                            <button class="btn-voice" id="speakTargetBtn" title="Listen to translation">🔊 Listen</button>
                             <button class="btn-voice" id="copyTranslateBtn">📋 Copy</button>
                         </div>
                     </div>
@@ -778,6 +781,7 @@
         const spinner = document.getElementById('spinner');
         const btnText = document.getElementById('btnText');
         const sourceCount = document.getElementById('sourceCount');
+        const targetCount = document.getElementById('targetCount');
         const errorMessage = document.getElementById('errorMessage');
         const successMessage = document.getElementById('successMessage');
         const examplesList = document.getElementById('examplesList');
@@ -788,11 +792,143 @@
         const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
         // ============================================================================
-        // CHARACTER COUNT
+        // CHARACTER COUNT (Both boxes)
         // ============================================================================
         sourceText.addEventListener('input', () => {
             sourceCount.textContent = sourceText.value.length;
+            // Auto-translate when user types in source
+            autoTranslateFromSource();
         });
+
+        targetText.addEventListener('input', () => {
+            targetCount.textContent = targetText.value.length;
+            // Auto-translate when user types in target (reverse direction)
+            autoTranslateFromTarget();
+        });
+
+        // Delay timer to avoid too many requests
+        let autoTranslateTimer;
+
+        function autoTranslateFromSource() {
+            clearTimeout(autoTranslateTimer);
+            if (sourceText.value.trim().length === 0) {
+                targetText.value = '';
+                return;
+            }
+            
+            autoTranslateTimer = setTimeout(() => {
+                translateFromSource();
+            }, 800); // Wait 800ms after user stops typing
+        }
+
+        function autoTranslateFromTarget() {
+            clearTimeout(autoTranslateTimer);
+            if (targetText.value.trim().length === 0) {
+                sourceText.value = '';
+                return;
+            }
+            
+            autoTranslateTimer = setTimeout(() => {
+                translateFromTarget();
+            }, 800);
+        }
+
+        // ============================================================================
+        // BIDIRECTIONAL TRANSLATION
+        // ============================================================================
+
+        async function translateFromSource() {
+            const text = sourceText.value.trim();
+            if (!text) return;
+
+            try {
+                // Detect language of source
+                const response = await fetch('/api/detect-language', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: text})
+                });
+
+                const detection = await response.json();
+                const detectedLang = detection.detected_language || 'english';
+                
+                // Determine target language (opposite of detected)
+                const targetLang = detectedLang === 'english' ? 'luganda' : 'english';
+                
+                // Update language selectors
+                sourceLanguage.value = detectedLang;
+                targetLanguage.value = targetLang;
+                
+                // Translate
+                const translateResponse = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        text: text,
+                        source_language: detectedLang,
+                        target_language: targetLang
+                    })
+                });
+
+                const data = await translateResponse.json();
+                if (translateResponse.ok) {
+                    targetText.value = data.translation;
+                    targetCount.textContent = data.translation.length;
+                    updateLabels();
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+            }
+        }
+
+        async function translateFromTarget() {
+            const text = targetText.value.trim();
+            if (!text) return;
+
+            try {
+                // Detect language of target
+                const response = await fetch('/api/detect-language', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: text})
+                });
+
+                const detection = await response.json();
+                const detectedLang = detection.detected_language || 'luganda';
+                
+                // Determine source language (opposite of detected)
+                const sourceLang = detectedLang === 'english' ? 'luganda' : 'english';
+                
+                // Update language selectors
+                targetLanguage.value = detectedLang;
+                sourceLanguage.value = sourceLang;
+                
+                // Translate
+                const translateResponse = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        text: text,
+                        source_language: detectedLang,
+                        target_language: sourceLang
+                    })
+                });
+
+                const data = await translateResponse.json();
+                if (translateResponse.ok) {
+                    sourceText.value = data.translation;
+                    sourceCount.textContent = data.translation.length;
+                    updateLabels();
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+            }
+        }
+
+        function updateLabels() {
+            document.getElementById('sourceLabel').textContent = sourceLanguage.value === 'english' ? 'English Text' : 'Luganda Text';
+            document.getElementById('targetLabel').textContent = targetLanguage.value === 'english' ? 'English Text' : 'Luganda Text';
+        }
 
         // ============================================================================
         // LANGUAGE SELECTION
@@ -829,6 +965,8 @@
             targetText.value = tempText;
 
             sourceCount.textContent = sourceText.value.length;
+            targetCount.textContent = targetText.value.length;
+            updateLabels();
 
             swapBtn.style.transform = 'rotate(180deg)';
             setTimeout(() => {
@@ -843,20 +981,28 @@
             sourceText.value = '';
             targetText.value = '';
             sourceCount.textContent = '0';
+            targetCount.textContent = '0';
             hideMessages();
         });
 
         copyBtn.addEventListener('click', () => {
-            if (targetText.value) {
-                navigator.clipboard.writeText(targetText.value).then(() => {
+            // Copy whichever box has more text or last was edited
+            const text = targetText.value || sourceText.value;
+            if (text) {
+                navigator.clipboard.writeText(text).then(() => {
                     showSuccess('Copied to clipboard!');
                 });
             }
         });
 
         copyTranslateBtn.addEventListener('click', () => {
+            // Copy from target box
             if (targetText.value) {
                 navigator.clipboard.writeText(targetText.value).then(() => {
+                    showSuccess('Copied to clipboard!');
+                });
+            } else if (sourceText.value) {
+                navigator.clipboard.writeText(sourceText.value).then(() => {
                     showSuccess('Copied to clipboard!');
                 });
             }
@@ -918,7 +1064,7 @@
         });
 
         // ============================================================================
-        // TRANSLATE FUNCTION
+        // TRANSLATE FUNCTION (Manual button)
         // ============================================================================
         async function translate() {
             const text = sourceText.value.trim();
@@ -953,6 +1099,7 @@
 
                 if (response.ok) {
                     targetText.value = data.translation;
+                    targetCount.textContent = data.translation.length;
                     const source = data.in_dictionary ? 'Dictionary' : 'AI Model';
                     const confidence = data.in_dictionary ? 'Verified' : 'Experimental';
                     showSuccess(`${source} | ${confidence}`);
@@ -968,9 +1115,17 @@
             }
         }
 
+        // Manual translate button click
         translateBtn.addEventListener('click', translate);
 
+        // Also allow Ctrl+Enter in either box to manually translate
         sourceText.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                translate();
+            }
+        });
+
+        targetText.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 translate();
             }
@@ -1002,7 +1157,7 @@
         function setExample(text) {
             sourceText.value = text;
             sourceCount.textContent = sourceText.value.length;
-            translate();
+            autoTranslateFromSource();
         }
 
         async function loadExamples() {
@@ -1058,7 +1213,7 @@
             
             sourceText.value = englishText;
             sourceCount.textContent = englishText.length;
-            translate();
+            autoTranslateFromSource();
         }
 
         // ============================================================================
