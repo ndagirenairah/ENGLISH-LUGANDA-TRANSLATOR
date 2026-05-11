@@ -1,6 +1,6 @@
-idx,luganda,reference,predicted,correct,bleu_score,word_overlap%,exact_match
-0,nnyabo,ma'am,madam,False,0.0,0.0,False
-1,abakakasa bajja ku lukewu lwa katonda,believers come to god's judgment,Abakakasa Bajja Ku Lukewu Lwa Katonda,False,0.0,0.0,False
-2,okukubaganya okukuwa omusolo,parting gives us sorrow,Okukubaganya Okukuwa Omusolo,False,0.0,0.0,False
-3,kyokka lukeka lwonna luno lukyali lungi,but all this speech was good,Kyokka Lukeka Lwonna Luno Lukyali Lungi,False,0.0,0.0,False
-4,abantu bagenda ku nnimiro,people go to the farm,Abantu Bagenda Ku Nnimiro,False,0.0,0.0,False
+english,luganda_reference,luganda_predicted,bleu_score,confidence_score
+ma'am,nnyabo,,0.0,99.08787935972214
+believers come to god's judgment,abakakasa bajja ku lukewu lwa katonda,,0.0,83.39319229125977
+parting gives us sorrow,okukubaganya okukuwa omusolo,,0.0,86.67920589447021
+but all this speech was good,kyokka lukeka lwonna luno lukyali lungi,,0.0,86.6632091999054
+people go to the farm,abantu bagenda ku nnimiro,,0.0,91.59661769866943
