@@ -39,8 +39,20 @@ env/
 
 # Data & Models (Large Files)
 models/trained_model*/
-checkpoints/
+models/**/checkpoint-*/
 *.pt
+optimizer.pt
+scheduler.pt
+trainer_state.json
+logs/
+results/
+*.pkl
+*.pickle
+*.pth
+
+# Model weights (keep .bin and .safetensors for final model - adjust per needs)
+# *.bin
+# *.safetensors
 logs/
 results/
 *.pkl
