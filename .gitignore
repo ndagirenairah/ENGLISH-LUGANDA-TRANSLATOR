@@ -40,19 +40,12 @@ env/
 # Data & Models (Large Files)
 models/trained_model*/
 models/**/checkpoint-*/
+models/**/optimizer.pt
+models/**/scheduler.pt
 *.pt
 optimizer.pt
 scheduler.pt
 trainer_state.json
-logs/
-results/
-*.pkl
-*.pickle
-*.pth
-
-# Model weights (keep .bin and .safetensors for final model - adjust per needs)
-# *.bin
-# *.safetensors
 logs/
 results/
 *.pkl
@@ -67,7 +60,7 @@ translator_history.db
 # Environment files
 .env
 .env.local
-*.safetensors
+# *.safetensors  # uncomment if you don't want model weights in repo
 
 # Jupyter
 .ipynb_checkpoints/
