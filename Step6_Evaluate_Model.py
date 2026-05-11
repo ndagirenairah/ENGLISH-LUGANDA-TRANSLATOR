@@ -5,9 +5,22 @@
 # and other translation quality metrics
 # ============================================================================
 
-print("=" * 70)
-print("ðŸš€ STEP 7: EVALUATION WITH BLEU SCORE")
-print("=" * 70)
+print("=" * 80)
+print(" ML WORKFLOW: MODEL EVALUATION & VALIDATION")
+print("=" * 80)
+print("""
+ML Workflow Progress:
+  ✓ 1. Define the problem
+  ✓ 2. Collect data
+  ✓ 3. Exploratory Data Analysis
+  ✓ 4. Data cleaning & preprocessing
+  ✓ 5. Feature engineering
+  ✓ 6. Model training & evaluation (fine-tuning)
+  ► 7. Model evaluation           (This step - BLEU + manual testing)
+  8. Deployment & monitoring
+""")
+
+print("\nSTEP 6: EVALUATE MODEL")
 
 import pandas as pd
 import numpy as np

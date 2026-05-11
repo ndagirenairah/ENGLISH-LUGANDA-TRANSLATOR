@@ -1,12 +1,24 @@
 # ============================================================================
-# STEP 1: ENVIRONMENT SETUP FOR LUGANDA-ENGLISH TRANSLATOR
+# STEP 1: ENVIRONMENT SETUP
 # ============================================================================
-# This script sets up Google Colab and installs all required libraries
+# ML WORKFLOW STAGES:
+# ► Define the problem (setup infrastructure)
+# This script sets up environment and installs all required libraries
 # ============================================================================
 
-print("=" * 70)
-print("STEP 1: SETTING UP ENVIRONMENT")
-print("=" * 70)
+print("=" * 80)
+print(" ML WORKFLOW: ENVIRONMENT SETUP")
+print("=" * 80)
+print("""
+ML Workflow Progress:
+  ► 1. Define the problem      (Setup infrastructure)
+  2. Collect data
+  3. Exploratory Data Analysis
+  4. Data cleaning & preprocessing
+  5. Feature engineering
+  6. Model training & evaluation
+  7. Deployment & monitoring
+""")
 
 # ============================================================================
 # PART 1: INSTALL REQUIRED LIBRARIES

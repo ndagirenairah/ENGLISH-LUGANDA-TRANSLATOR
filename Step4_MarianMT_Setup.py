@@ -5,9 +5,22 @@
 # Luganda-English translation fine-tuning
 ================================================================================
 
-print("=" * 70)
-print("STEP 4: MODEL SELECTION & MARIANMT SETUP")
-print("=" * 70)
+print("=" * 80)
+print(" ML WORKFLOW: MODEL SELECTION & SETUP")
+print("=" * 80)
+print("""
+ML Workflow Progress:
+  ✓ 1. Define the problem
+  ✓ 2. Collect data
+  ✓ 3. Exploratory Data Analysis
+  ✓ 4. Data cleaning & preprocessing
+  ✓ 5. Feature engineering
+  ► 6. Model selection & download (This step - MarianMT transformer)
+  7. Model training & evaluation
+  8. Deployment & monitoring
+""")
+
+print("\nSTEP 4: SETUP MARIANMT MODEL")
 
 import pickle
 import torch

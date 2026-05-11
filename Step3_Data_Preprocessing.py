@@ -4,9 +4,21 @@
 # This script cleans, tokenizes, and prepares data for Seq2Seq model training
 # ============================================================================
 
-print("=" * 70)
-print(" STEP 3: DATA PREPROCESSING")
-print("=" * 70)
+print("=" * 80)
+print(" ML WORKFLOW: DATA CLEANING + FEATURE ENGINEERING")
+print("=" * 80)
+print("""
+ML Workflow Progress:
+  ✓ 1. Define the problem
+  ✓ 2. Collect data
+  ✓ 3. Exploratory Data Analysis
+  ► 4. Data cleaning & preprocessing (This step)
+  ► 5. Feature engineering           (This step - tokenization)
+  6. Model training & evaluation
+  7. Deployment & monitoring
+""")
+
+print("\nSTEP 3: DATA PREPROCESSING")
 
 import pandas as pd
 import numpy as np

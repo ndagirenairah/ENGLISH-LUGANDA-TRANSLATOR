@@ -1,4 +1,4 @@
-"""
+﻿"""
 STEP 5: Train Neural Machine Translation Model
 Integration of Lecture 3 concepts: Regularization, CV, Learning Rate Scheduling
 """
@@ -14,8 +14,21 @@ from transformers import (
 import evaluate
 
 print("=" * 80)
-print("STEP 5: TRAINING WITH LECTURE 3 DEEP CONCEPTS")
+print(" ML WORKFLOW: MODEL TRAINING & EVALUATION (PART 1)")
 print("=" * 80)
+print("""
+ML Workflow Progress:
+  ✓ 1. Define the problem
+  ✓ 2. Collect data
+  ✓ 3. Exploratory Data Analysis
+  ✓ 4. Data cleaning & preprocessing
+  ✓ 5. Feature engineering
+  ✓ 6. Model selection
+  ► 7. Model training           (This step - fine-tuning with Lecture 3)
+  8. Model evaluation
+  9. Deployment & monitoring
+""")
+print("\nSTEP 5: TRAINING WITH LECTURE 3 DEEP CONCEPTS")
 
 # ============================================================================
 # LECTURE 3 CONCEPTS: BIAS-VARIANCE TRADEOFF & REGULARIZATION
