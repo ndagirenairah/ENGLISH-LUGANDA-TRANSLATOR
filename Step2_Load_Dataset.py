@@ -1,15 +1,31 @@
 # ============================================================================
-# STEP 2: LOAD AND COMBINE MULTIPLE LUGANDA DATASETS
+# STEP 2: COLLECT DATA + EXPLORATORY DATA ANALYSIS (EDA)
 # ============================================================================
-# This script loads THREE high-quality Luganda-English datasets:
+# ML WORKFLOW STAGES:
+# ✓ Define the problem        (low-resource Luganda translation)
+# ► COLLECT DATA              (this step - load 4 datasets)
+# ► Exploratory Data Analysis (this step - analyze distribution)
+# ============================================================================
+# This script loads FOUR high-quality Luganda-English datasets:
 # 1. Sunbird AI Luganda Corpus (HuggingFace)
 # 2. Makerere NLP Luganda Dataset (air.ug)
 # 3. JW300 Parallel Corpus (opus.nlp.eu)
+# 4. Cultural Training Data (local)
 # ============================================================================
 
-print("=" * 70)
-print(" STEP 2: LOADING MULTIPLE LUGANDA DATASETS")
-print("=" * 70)
+print("=" * 80)
+print(" ML WORKFLOW: COLLECT DATA + EXPLORATORY DATA ANALYSIS (EDA)")
+print("=" * 80)
+print("""
+ML Workflow Progress:
+  ✓ 1. Define the problem       (English ↔ Luganda translation)
+  ► 2. Collect data            (Loading 4 parallel corpora)
+  ► 3. Exploratory Data Analysis (Analyzing data distribution & quality)
+  4. Data cleaning & preprocessing
+  5. Feature engineering
+  6. Model training & evaluation
+  7. Deployment & monitoring
+""")
 
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from datasets import load_dataset
