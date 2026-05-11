@@ -808,11 +808,18 @@
 
         // Delay timer to avoid too many requests
         let autoTranslateTimer;
+        let isUpdatingTarget = false; // Prevent cascading translation
+        let isUpdatingSource = false; // Prevent cascading translation
 
         function autoTranslateFromSource() {
+            if (isUpdatingSource) return; // Skip if we're programmatically updating this box
+            
             clearTimeout(autoTranslateTimer);
             if (sourceText.value.trim().length === 0) {
+                isUpdatingTarget = true;
                 targetText.value = '';
+                targetCount.textContent = 0;
+                isUpdatingTarget = false;
                 return;
             }
             
@@ -822,9 +829,14 @@
         }
 
         function autoTranslateFromTarget() {
+            if (isUpdatingTarget) return; // Skip if we're programmatically updating this box
+            
             clearTimeout(autoTranslateTimer);
             if (targetText.value.trim().length === 0) {
+                isUpdatingSource = true;
                 sourceText.value = '';
+                sourceCount.textContent = 0;
+                isUpdatingSource = false;
                 return;
             }
             
@@ -872,8 +884,10 @@
 
                 const data = await translateResponse.json();
                 if (translateResponse.ok) {
+                    isUpdatingTarget = true;
                     targetText.value = data.translation;
                     targetCount.textContent = data.translation.length;
+                    isUpdatingTarget = false;
                     updateLabels();
                 }
             } catch (error) {
@@ -916,8 +930,10 @@
 
                 const data = await translateResponse.json();
                 if (translateResponse.ok) {
+                    isUpdatingSource = true;
                     sourceText.value = data.translation;
                     sourceCount.textContent = data.translation.length;
+                    isUpdatingSource = false;
                     updateLabels();
                 }
             } catch (error) {
