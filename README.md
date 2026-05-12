@@ -4,7 +4,39 @@ A research-grade machine translation system for low-resource Luganda combining *
 
 ---
 
-## 🏗️ Standard ML Pipeline
+## � QUICK START (Updated - May 2026)
+
+### Fast Track with Kabale Dataset (Recommended)
+
+```bash
+# 1. Request Kabale dataset access:
+#    https://huggingface.co/datasets/kambale/luganda-english-parallel-corpus
+
+# 2. Authenticate locally
+huggingface-cli login
+
+# 3. Validate setup
+python validate_setup.py
+
+# 4. Train the model
+python train_with_kabale_dataset.py
+
+# 5. Deploy the app
+streamlit run app_streamlit.py
+```
+
+**Training Time**: 4-8 hours (CPU) | 30-60 min (GPU)  
+**Result**: Production-ready translator with 100k+ training pairs
+
+### Documentation
+- **Complete Guide**: See [QUICKSTART.md](QUICKSTART.md)
+- **Dataset Help**: `python DATASET_ACCESS_GUIDE.py`
+- **Dataset Reference**: `python AVAILABLE_DATASETS.py`
+- **Setup Status**: See [SETUP_COMPLETE.txt](SETUP_COMPLETE.txt)
+
+---
+
+## �🏗️ Standard ML Pipeline
 
 | Stage | Component | File | Input | Output |
 |-------|-----------|------|-------|--------|

@@ -12,7 +12,7 @@ import numpy as np
 from pathlib import Path
 import json
 from datetime import datetime
-from transformers import AutoTokenizer, MarianMTModel
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 import sqlite3
 from gtts import gTTS
@@ -45,11 +45,43 @@ def load_model():
     """Load translation model (cached for performance)."""
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
+    # Try different model paths
+    model_paths = [
+        'models/trained_model_cpu',
+        'models/trained_model',
+        './models/trained_model_cpu',
+        './models/trained_model'
+    ]
+    
+    model = None
+    tokenizer = None
+    
     with st.spinner("Loading translation model..."):
-        tokenizer = AutoTokenizer.from_pretrained('models/trained_model_cpu')
-        model = MarianMTModel.from_pretrained('models/trained_model_cpu')
-        model.to(device)
-        model.eval()
+        for model_path in model_paths:
+            try:
+                model_path_obj = Path(model_path)
+                if model_path_obj.exists():
+                    st.info(f"✅ Found model at: {model_path}")
+                    tokenizer = AutoTokenizer.from_pretrained(model_path)
+                    model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
+                    model.to(device)
+                    model.eval()
+                    break
+            except Exception as e:
+                continue
+        
+        # If local model not found, try loading from HuggingFace
+        if model is None:
+            st.warning("⚠️ Local model not found. Loading base model from HuggingFace...")
+            try:
+                tokenizer = AutoTokenizer.from_pretrained('Helsinki-NLP/opus-mt-en-mul')
+                model = AutoModelForSeq2SeqLM.from_pretrained('Helsinki-NLP/opus-mt-en-mul')
+                model.to(device)
+                model.eval()
+                st.success("✅ Base model loaded from HuggingFace")
+            except Exception as e:
+                st.error(f"❌ Failed to load model: {e}")
+                raise
     
     return tokenizer, model, device
 
