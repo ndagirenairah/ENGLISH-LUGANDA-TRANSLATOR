@@ -1,0 +1,144 @@
+UI QUICK REFERENCE
+==================
+
+TWO PROFESSIONAL INTERFACES - PICK ONE
+
+
+STREAMLIT (Web App for Everyone)
+═════════════════════════════════
+
+Command:        streamlit run app_streamlit_ui.py
+Opens at:       http://localhost:8501 (auto)
+Best for:       Users who want easy interface
+File:           app_streamlit_ui.py
+
+Features:
+    - Beautiful web interface
+    - Type text → Click Translate
+    - See history of translations
+    - Learn common phrases
+    - Mobile friendly
+    - Desktop friendly
+
+
+FLASK (API for Developers)
+═══════════════════════════
+
+Command:        python app_flask_api.py
+Access at:      http://localhost:5000
+Best for:       Integration and automation
+File:           app_flask_api.py
+
+Features:
+    - REST API endpoints
+    - JSON responses
+    - Batch processing
+    - Programmatic access
+    - Web interface included
+
+
+QUICK TEST EXAMPLES
+═══════════════════
+
+Test Streamlit:
+    1. streamlit run app_streamlit_ui.py
+    2. Type "Hello" in input box
+    3. Click "Translate"
+    4. See Luganda translation!
+
+Test Flask:
+    # In new terminal:
+    curl -X POST http://localhost:5000/api/translate \
+         -H "Content-Type: application/json" \
+         -d '{"text": "Hello"}'
+    
+    Expected:
+    {"source_text": "Hello", "target_text": "Habari", ...}
+
+
+COMPARISON
+══════════
+
+                    STREAMLIT           FLASK
+    Interface       Web GUI             REST API
+    Best For        Users               Developers
+    Learning Curve  Very Easy           Moderate
+    Mobile Support  Yes                 Yes
+    Batch Process   No                  Yes
+    History         Yes (UI)            Yes (API)
+    Phrasebook      Yes                 Yes (JSON)
+    Integration     Hard                Easy
+
+
+MOST COMMON TASKS
+═════════════════
+
+Want to translate text quickly?
+    → Use Streamlit
+
+Want to integrate into app?
+    → Use Flask
+
+Want to see translation history?
+    → Both support it
+
+Want to batch translate?
+    → Use Flask API
+
+Want to learn Luganda?
+    → Use Streamlit (phrasebook)
+
+Want to build service?
+    → Use Flask API
+
+Want simple, no-code solution?
+    → Use Streamlit
+
+
+INSTALLATION
+═════════════
+
+If you get import errors:
+    pip install streamlit flask torch transformers
+
+That's it! Run your interface.
+
+
+PERFORMANCE
+═══════════
+
+First Translation:    30-60 seconds (model loads)
+Next Translations:    1-3 seconds (model cached)
+With GPU:             ~1 second
+Without GPU:          ~3-5 seconds
+
+Faster next time! Model loads once and stays in memory.
+
+
+TROUBLESHOOTING
+═════════════════
+
+Can't run streamlit?
+    → pip install streamlit
+
+Can't run flask?
+    → pip install flask
+
+Port in use (8501 or 5000)?
+    → streamlit run app_streamlit_ui.py --server.port 8502
+
+Model download hangs?
+    → Wait 5-10 minutes, check internet
+    → First run only!
+
+
+CHOOSE NOW
+══════════
+
+For simplicity:
+    streamlit run app_streamlit_ui.py
+
+For power users:
+    python app_flask_api.py
+
+Both are ready to go!
