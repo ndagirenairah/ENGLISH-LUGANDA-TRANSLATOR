@@ -1,0 +1,71 @@
+english,luganda,source,category,quality_score
+"Good morning, how did you sleep?",Wasuuze otya? Walala bulungi?,cultural_authentic,greetings,0.95
+Good afternoon,Gaffe,cultural_authentic,greetings,0.95
+Good evening,Muqezi,cultural_authentic,greetings,0.95
+"Greetings, father",Kubale taata,cultural_authentic,greetings,0.95
+"Greetings, mother",Kubale nnyina,cultural_authentic,greetings,0.95
+"Greetings, elder",Kubale muzukulu,cultural_authentic,greetings,0.95
+How are you?,Oli otya?,cultural_authentic,expressions,0.95
+"I am fine, thank you","Ndi bulungi, webale",cultural_authentic,expressions,0.95
+And you?,Wammwe?,cultural_authentic,expressions,0.95
+Goodbye,Bye bye,cultural_authentic,greetings,0.95
+Welcome to our home,Kaakasa mu nnyumba yaffe,cultural_authentic,greetings,0.95
+"Sit down, please","Tuuka, kusaba",cultural_authentic,expressions,0.95
+Have you eaten?,Wakyewalamu?,cultural_authentic,expressions,0.95
+Let us eat together,Tutudde awamu,cultural_authentic,expressions,0.95
+This food is delicious,Kyaddiyisa nnyo,cultural_authentic,expressions,0.95
+May I have water?,Nsobole okwata amazzi?,cultural_authentic,proverbs,0.95
+Thank you very much,Webale nnyo,cultural_authentic,expressions,0.95
+Excuse me,Nsaba kigendereza,cultural_authentic,expressions,0.95
+I am sorry,Nsaba mugweka,cultural_authentic,expressions,0.95
+No problem,Tewali kintu,cultural_authentic,expressions,0.95
+My father is a farmer,Taata wange afuna,cultural_authentic,family,0.95
+My mother is at home,Nnyina wange ali mu nnyumba,cultural_authentic,family,0.95
+My sister is in school,Mwannyina wange ali mu sukulu,cultural_authentic,family,0.95
+Do you have children?,Olina abaana?,cultural_authentic,family,0.95
+We have three children,Tulina abaana asatu,cultural_authentic,family,0.95
+My son is very smart,Mwana wange kabuzi nnyo,cultural_authentic,expressions,0.95
+My daughter loves to read,Kaakaa wange asimiddwa okukuba,cultural_authentic,expressions,0.95
+The family gathers in the evening,Eka likuuma mu makya,cultural_authentic,family,0.95
+We share meals together,Tutudde awamu,cultural_authentic,expressions,0.95
+Family is very important,Eka nkulu nnyo,cultural_authentic,family,0.95
+Respect your elders,Kuuma abantu abanene,cultural_authentic,respect,0.95
+The chief has spoken,Kabaka akubiddwa,cultural_authentic,respect,0.95
+Listen to the wisdom,Wulira amagezi,cultural_authentic,expressions,0.95
+Our ancestors guide us,Bapappi baffe tutegeeza,cultural_authentic,expressions,0.95
+This is our tradition,Ky'okusobola kwaffe,cultural_authentic,expressions,0.95
+The council has decided,Lukiiko lwa kiwandiiko,cultural_authentic,expressions,0.95
+Show respect to teachers,Fukatiganyamu basuubiriti,cultural_authentic,respect,0.95
+Obey your parents,Kumaliza bapappi,cultural_authentic,respect,0.95
+This is the way of our people,Kyokunno kwa bantu baffe,cultural_authentic,expressions,0.95
+Honor brings blessings,Okukuuma okuwa mutima,cultural_authentic,religious,0.95
+A single hand cannot tie a bundle,Omukono gumu takyeyamba,cultural_authentic,proverbs,0.95
+Patience is a virtue,Okukakasa kifo,cultural_authentic,expressions,0.95
+Unity is strength,Okukukaanya nkalufu,cultural_authentic,expressions,0.95
+The bird flies with two wings,Enjuni iza okufeeza amabili,cultural_authentic,proverbs,0.95
+Water does not resist,Amazzi tagezona,cultural_authentic,proverbs,0.95
+A child is a child of the village,Omwana ari gwa eka,cultural_authentic,family,0.95
+The seed contains the tree,Ekinene kigala mu luto,cultural_authentic,proverbs,0.95
+Tomorrow comes to those who wait,Eddo livaamu ab'okunoba,cultural_authentic,expressions,0.95
+An empty hand catches nothing,Omukono gugufu tetugaba kintu,cultural_authentic,proverbs,0.95
+The truth will set you free,Amazima gakulabirira,cultural_authentic,expressions,0.95
+May God bless you,Katonda akusigire,cultural_authentic,religious,0.95
+Peace be upon you,Amani galinze,cultural_authentic,expressions,0.95
+"Amen, let it be so","Amina, kale kyavale",cultural_authentic,expressions,0.95
+We gather for this celebration,Tulokoledde okukubaganya,cultural_authentic,expressions,0.95
+This is a sacred day,Eno ye ddiini ey'okukubaganya,cultural_authentic,religious,0.95
+We honor our ancestors,Tukuuma bapappi baffe,cultural_authentic,expressions,0.95
+The blessing of the elders,Okukuusa kwa bantu abanene,cultural_authentic,respect,0.95
+May your journey be safe,Okweyamba kwaako kulunge,cultural_authentic,expressions,0.95
+God is watching over us,Katonda akitutegeeza,cultural_authentic,religious,0.95
+May peace reign in our homes,Amani galinze mu nnyumba zaffe,cultural_authentic,expressions,0.95
+We work together for the village,Tulaboamu kusale eka,cultural_authentic,work,0.95
+Farming is our main work,Okufuna ye nkola ennyamuyanja,cultural_authentic,work,0.95
+The harvest is coming soon,Okukonda kulambire,cultural_authentic,work,0.95
+We gather wood for the fire,Tutukula kigavu,cultural_authentic,expressions,0.95
+The market is very busy,Kakyera kigulu nnyo,cultural_authentic,work,0.95
+The price is too high,Omuwendo gubila nnyo,cultural_authentic,expressions,0.95
+I need to trade my goods,Nnyina okukyawa eky'okubeezya,cultural_authentic,greetings,0.95
+The blacksmith makes good tools,Akakola akakola ebikira nnyo,cultural_authentic,greetings,0.95
+The women gather water,Abakazi batukula amazzi,cultural_authentic,proverbs,0.95
+The children help in the fields,Abaana batuwa mu nkula,cultural_authentic,family,0.95
