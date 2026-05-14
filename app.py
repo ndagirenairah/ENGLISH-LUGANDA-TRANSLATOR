@@ -444,76 +444,10 @@ def translate_to_luganda(english_text):
     return f"[Translation not available for: {english_text}]", False, "Not Found"
 
 
-def translate_to_english(luganda_text):
-    """Translate Luganda text to English using dictionary first"""
-    text_lower = luganda_text.lower().strip()
-    
-    # Build reverse dictionary (Luganda -> English) - cached for performance
-    reverse_translations = {}
-    for eng, lug in GUARANTEED_TRANSLATIONS.items():
-        lug_lower = lug.lower()
-        if lug_lower not in reverse_translations:
-            reverse_translations[lug_lower] = eng
-    
-    # ✅ STEP 1: Check exact matches (MOST RELIABLE)
-    if text_lower in reverse_translations:
-        logger.info(f"Reverse dict exact match: {text_lower}")
-        return reverse_translations[text_lower], True, "Dictionary (Verified)"
-    
-    # ✅ STEP 2: Check partial/fuzzy matches
-    for lug_phrase, eng_phrase in reverse_translations.items():
-        if len(lug_phrase) > 3:  # Avoid single-word false matches
-            if lug_phrase in text_lower:
-                logger.info(f"Reverse dict partial match: {lug_phrase} → {eng_phrase}")
-                return eng_phrase, True, "Dictionary (Partial Match)"
-            if text_lower in lug_phrase:
-                logger.info(f"Reverse dict fuzzy match: {text_lower} in {lug_phrase}")
-                return eng_phrase, True, "Dictionary (Fuzzy Match)"
-    
-    # ✅ STEP 3: Word-level translation
-    words = text_lower.split()
-    translated_words = []
-    found_any_word = False
-    
-    for word in words:
-        word_clean = word.strip('.,!?;:').lower()
-        if word_clean in reverse_translations:
-            translated_words.append(reverse_translations[word_clean])
-            found_any_word = True
-        else:
-            # Try to find partial matches
-            for lug_phrase, eng_phrase in reverse_translations.items():
-                if word_clean == lug_phrase:
-                    translated_words.append(eng_phrase)
-                    found_any_word = True
-                    break
-                elif word_clean in lug_phrase:
-                    translated_words.append(eng_phrase.split()[0])
-                    found_any_word = True
-                    break
-            
-            if not found_any_word or len(translated_words) < len(words):
-                translated_words.append(word)  # Keep original
-    
-    result = " ".join(translated_words)
-    if found_any_word and result != text_lower:
-        logger.info(f"Word-level translation: {result}")
-        return result, True, "Dictionary (Word-Level)"
-    
-    # ❌ NO FALLBACK: Dictionary-only for reverse translation
-    logger.warning(f"No reverse translation found for: {luganda_text}")
-    return f"[Translation not available for: {luganda_text}]", False, "Not Found"
-
-def translate(text, source_language, target_language):
-    """Bidirectional translation function with improved error checking"""
-    if source_language == 'english' and target_language == 'luganda':
-        translation, in_dict, source = translate_to_luganda(text)
-        return translation, in_dict, source
-    elif source_language == 'luganda' and target_language == 'english':
-        translation, in_dict, source = translate_to_english(text)
-        return translation, in_dict, source
-    else:
-        raise ValueError(f"Unsupported language pair: {source_language} -> {target_language}")
+def translate(text):
+    """Translate English text to Luganda only"""
+    translation, in_dict, source = translate_to_luganda(text)
+    return translation, in_dict, source
 
 @app.route('/')
 def index():
@@ -522,21 +456,16 @@ def index():
 
 @app.route('/api/translate', methods=['POST'])
 def api_translate():
-    """API endpoint for bidirectional translations with improved validation"""
+    """API endpoint for English to Luganda translation only"""
     try:
         data = request.json
         text = data.get('text', '').strip()
-        source_language = data.get('source_language', 'english').lower()
-        target_language = data.get('target_language', 'luganda').lower()
         
         if not text:
             return jsonify({'error': 'No text provided'}), 400
         
-        if source_language == target_language:
-            return jsonify({'error': 'Source and target languages must be different'}), 400
-        
         # Get translation with metadata
-        translation, in_dictionary, source_info = translate(text, source_language, target_language)
+        translation, in_dictionary, source_info = translate(text)
         
         # Validate that translation is actually different from input (not just echoed)
         if translation.lower() == text.lower():
@@ -545,20 +474,17 @@ def api_translate():
             in_dictionary = False
             source_info = "Failed"
         
-        # Calculate confidence score based on source
-        if in_dictionary:
-            confidence = 95 if source_language == 'english' else 60
-        else:
-            confidence = 0  # Not found in dictionary
+        # Calculate confidence score
+        confidence = 95 if in_dictionary else 0
         
         # Save to history
-        save_translation_history(text, translation, source_language, target_language, in_dictionary)
+        save_translation_history(text, translation, 'english', 'luganda', in_dictionary)
         
         return jsonify({
             'text': text,
             'translation': translation,
-            'source_language': source_language,
-            'target_language': target_language,
+            'source_language': 'english',
+            'target_language': 'luganda',
             'in_dictionary': in_dictionary,
             'confidence': confidence,
             'source': source_info,
@@ -653,39 +579,8 @@ def api_speak():
         return jsonify({'error': str(e)}), 500
 
 # ============================================================================
-# NEW FEATURE 3: LANGUAGE DETECTION & BIDIRECTIONAL TRANSLATION
+# LANGUAGE DETECTION REMOVED - English to Luganda only
 # ============================================================================
-@app.route('/api/detect-language', methods=['POST'])
-def api_detect_language():
-    """Detect if text is English or Luganda"""
-    try:
-        data = request.json
-        text = data.get('text', '').strip()
-        
-        if not text:
-            return jsonify({'error': 'No text provided'}), 400
-        
-        # Simple heuristic: if has common Luganda words
-        luganda_keywords = ['oli', 'ndye', 'nkwagala', 'kika', 'wasuubire', 'webale', 'oyagala']
-        text_lower = text.lower()
-        
-        luganda_score = sum(1 for word in luganda_keywords if word in text_lower)
-        
-        if luganda_score > 0:
-            detected_language = 'luganda'
-            confidence = min(100, (luganda_score / len(luganda_keywords)) * 100)
-        else:
-            detected_language = 'english'
-            confidence = 95
-        
-        return jsonify({
-            'detected_language': detected_language,
-            'confidence': confidence,
-            'alternatives': ['luganda', 'english']
-        })
-    except Exception as e:
-        logger.error(f"Detection error: {str(e)}")
-        return jsonify({'error': str(e)}), 500
 
 # ============================================================================
 # NEW FEATURE 4: CULTURAL CONTEXT & TOOLTIPS
@@ -803,7 +698,7 @@ if __name__ == '__main__':
     # Initialize database on startup
     init_db()
     
-    # Load model on startup
-    load_model()
+    # Load model on first request (deferred from startup)
     
     app.run(debug=True, host='0.0.0.0', port=5000)
+
