@@ -423,19 +423,32 @@ with tab3:
             st.metric("Total Translations", len(history_df))
         
         with col2:
-            avg_confidence = history_df['confidence'].mean()
-            st.metric("Average Confidence", f"{avg_confidence:.1f}%")
+            if 'confidence' in history_df.columns:
+                avg_confidence = history_df['confidence'].mean()
+                st.metric("Average Confidence", f"{avg_confidence:.1f}%")
+            else:
+                st.metric("Average Confidence", "N/A")
         
         with col3:
-            en_count = (history_df['source_lang'] == 'english').sum()
+            if 'source_lang' in history_df.columns:
+                en_count = (history_df['source_lang'] == 'english').sum()
+            else:
+                en_count = len(history_df)
             st.metric("English to Luganda", en_count)
         
         st.divider()
         
-        # Display table
+        # Display table with available columns
+        display_cols = ['timestamp', 'source_text', 'target_text']
+        if 'source_lang' in history_df.columns:
+            display_cols.insert(2, 'source_lang')
+        if 'confidence' in history_df.columns:
+            display_cols.append('confidence')
+        
+        available_cols = [col for col in display_cols if col in history_df.columns]
         st.dataframe(
-            history_df[['timestamp', 'source_lang', 'source_text', 'target_text', 'confidence']],
-            use_container_width=True,
+            history_df[available_cols],
+            width='stretch',
             hide_index=True
         )
     else:
