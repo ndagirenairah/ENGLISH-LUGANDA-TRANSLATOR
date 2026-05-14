@@ -411,7 +411,6 @@
                         </div>
                         <div class="voice-buttons">
                             <button class="btn-voice" id="micBtn">🎤 Speak</button>
-                            <button class="btn-voice" id="speakSourceBtn">🔊 Listen</button>
                         </div>
                     </div>
 
@@ -422,8 +421,7 @@
                             <span id="targetCount">0</span>/1000 characters
                         </div>
                         <div class="voice-buttons">
-                            <button class="btn-voice" id="speakTargetBtn">🔊 Listen</button>
-                            <button class="btn-voice" id="copyTranslateBtn">📋 Copy</button>
+                            <button class="btn-voice" id="speakTargetBtn">🔊 Replay</button>
                         </div>
                     </div>
                 </div>
@@ -437,7 +435,7 @@
                         </div>
                     </button>
                     <button class="btn-clear" id="clearBtn">Clear</button>
-                    <button class="btn-copy" id="copyBtn">Copy</button>
+                    <button class="btn-copy" id="copyBtn">📋 Copy</button>
                 </div>
 
                 <!-- Examples -->
@@ -506,9 +504,7 @@
         const successMessage = document.getElementById('successMessage');
         const examplesList = document.getElementById('examplesList');
         const micBtn = document.getElementById('micBtn');
-        const speakSourceBtn = document.getElementById('speakSourceBtn');
         const speakTargetBtn = document.getElementById('speakTargetBtn');
-        const copyTranslateBtn = document.getElementById('copyTranslateBtn');
         const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
         // ============================================================================
@@ -521,7 +517,7 @@
         // ============================================================================
         // TRANSLATE (English to Luganda only)
         // ============================================================================
-        async function translate() {
+        async function translate(autoSpeak = false) {
             const text = sourceText.value.trim();
 
             if (!text) {
@@ -551,6 +547,12 @@
                     targetText.value = data.translation;
                     targetCount.textContent = data.translation.length;
                     showSuccess(`✓ Translated from ${data.source}`);
+                    
+                    // Auto-speak Luganda translation if requested (from speech input)
+                    if (autoSpeak) {
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        await speakLuganda(data.translation);
+                    }
                 } else {
                     showError('Translation failed: ' + data.error);
                 }
@@ -560,6 +562,33 @@
                 translateBtn.disabled = false;
                 spinner.style.display = 'none';
                 btnText.textContent = 'Translate Now';
+            }
+        }
+
+        // Helper function to speak Luganda translation
+        async function speakLuganda(text) {
+            try {
+                console.log('Speaking Luganda:', text);
+                const response = await fetch('/api/speak', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: text, language: 'lg'})
+                });
+                
+                if (!response.ok) {
+                    console.error('Speak API error:', response.status, response.statusText);
+                    return;
+                }
+                
+                const blob = await response.blob();
+                console.log('Audio blob received:', blob.size, 'bytes');
+                const url = URL.createObjectURL(blob);
+                const audio = new Audio(url);
+                audio.onplay = () => console.log('Audio playing');
+                audio.onerror = (e) => console.error('Audio error:', e);
+                audio.play();
+            } catch (error) {
+                console.error('Text-to-speech error:', error);
             }
         }
 
@@ -585,45 +614,74 @@
             }
         });
 
-        copyTranslateBtn.addEventListener('click', () => {
-            if (targetText.value) {
-                navigator.clipboard.writeText(targetText.value).then(() => {
-                    showSuccess('✓ Copied to clipboard!');
-                });
-            }
-        });
+        // ============================================================================
+        // SPEECH RECOGNITION (Microphone Input)
+        // ============================================================================
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognitionActive = false;
 
-        // ============================================================================
-        // TEXT-TO-SPEECH
-        // ============================================================================
-        speakSourceBtn.addEventListener('click', async () => {
-            if (!sourceText.value) {
-                showError('Please enter text to listen to');
+        micBtn.addEventListener('click', async () => {
+            if (!SpeechRecognition) {
+                showError('Speech recognition not supported in your browser');
                 return;
             }
-            
+
+            if (recognitionActive) {
+                showError('Speech recognition already in progress');
+                return;
+            }
+
             try {
-                speakSourceBtn.disabled = true;
-                const response = await fetch('/api/speak', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({text: sourceText.value, language: 'en'})
-                });
-                
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                const audio = new Audio(url);
-                audio.play();
+                recognitionActive = true;
+                micBtn.disabled = true;
+                micBtn.textContent = '🎤 Listening...';
+                hideMessages();
+
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onstart = () => {
+                    showSuccess('🎤 Listening... speak now!');
+                };
+
+                recognition.onresult = async (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    sourceText.value = transcript;
+                    sourceCount.textContent = transcript.length;
+                    showSuccess(`✓ Heard: "${transcript}"`);
+                    
+                    // Auto-translate and speak Luganda output
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    translate(true);  // true = auto-speak Luganda translation
+                };
+
+                recognition.onerror = (event) => {
+                    showError(`Speech error: ${event.error}`);
+                };
+
+                recognition.onend = () => {
+                    recognitionActive = false;
+                    micBtn.disabled = false;
+                    micBtn.textContent = '🎤 Speak';
+                };
+
+                recognition.start();
             } catch (error) {
-                showError('Text-to-speech error: ' + error.message);
-            } finally {
-                speakSourceBtn.disabled = false;
+                showError('Speech recognition error: ' + error.message);
+                recognitionActive = false;
+                micBtn.disabled = false;
+                micBtn.textContent = '🎤 Speak';
             }
         });
 
+        // ============================================================================
+        // TEXT-TO-SPEECH (Replay Luganda translation)
+        // ============================================================================
         speakTargetBtn.addEventListener('click', async () => {
             if (!targetText.value) {
-                showError('Please translate text first');
+                showError('Please translate text first to replay');
                 return;
             }
             

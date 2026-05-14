@@ -543,7 +543,7 @@ def api_phrasebook_category(category):
 # ============================================================================
 @app.route('/api/speak', methods=['POST'])
 def api_speak():
-    """Convert text to speech"""
+    """Convert text to speech using gTTS"""
     try:
         data = request.json
         text = data.get('text', '').strip()
@@ -552,18 +552,17 @@ def api_speak():
         if not text:
             return jsonify({'error': 'No text provided'}), 400
         
-        # Map language codes
-        lang_map = {
-            'english': 'en',
-            'luganda': 'lg',
-            'en': 'en',
-            'lg': 'lg'
-        }
+        # gTTS language mapping
+        # Note: gTTS doesn't support Luganda (lg), so we use English with slower speed
+        if language in ['luganda', 'lg']:
+            lang_code = 'en'
+            slow = True  # Slow down for Luganda clarity
+        else:
+            lang_code = 'en'
+            slow = False  # Normal speed for English
         
-        lang_code = lang_map.get(language, 'en')
-        
-        # Generate speech
-        tts = gTTS(text=text, lang=lang_code, slow=False)
+        # Generate speech using gTTS
+        tts = gTTS(text=text, lang=lang_code, slow=slow)
         audio_buffer = BytesIO()
         tts.write_to_fp(audio_buffer)
         audio_buffer.seek(0)
