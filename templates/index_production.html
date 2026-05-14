@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English-Luganda Translator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        textarea, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .language-select {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .lang-radio {
+            flex: 1;
+        }
+        
+        .lang-radio input[type="radio"] {
+            display: none;
+        }
+        
+        .lang-radio label {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0;
+        }
+        
+        .lang-radio input[type="radio"]:checked + label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .output-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            min-height: 150px;
+        }
+        
+        .confidence-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #f5c6cb;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #c3e6cb;
+        }
+        
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .tab-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .tab-content h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .phrase-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            align-items: center;
+        }
+        
+        .phrase-item:last-child {
+            border-bottom: none;
+        }
+        
+        .phrase-english {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .phrase-luganda {
+            color: #667eea;
+            font-style: italic;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .history-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .history-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .history-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .phrase-item {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>English - Luganda Translator</h1>
+            <p class="subtitle">Powered by NLLB-200 | Authentic Cultural Translation</p>
+        </header>
+        
+        <div class="main-grid">
+            <!-- Input Section -->
+            <div class="card">
+                <h2>Input</h2>
+                
+                <div class="form-group">
+                    <label>Source Language</label>
+                    <div class="language-select">
+                        <div class="lang-radio">
+                            <input type="radio" id="lang-auto" name="source-lang" value="auto" checked>
+                            <label for="lang-auto">Auto-Detect</label>
+                        </div>
+                        <div class="lang-radio">
+                            <input type="radio" id="lang-en" name="source-lang" value="english">
+                            <label for="lang-en">English</label>
+                        </div>
+                        <div class="lang-radio">
+                            <input type="radio" id="lang-lg" name="source-lang" value="luganda">
+                            <label for="lang-lg">Luganda</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="source-text">Text to Translate</label>
+                    <textarea id="source-text" placeholder="Enter English or Luganda text here..."></textarea>
+                </div>
+                
+                <button onclick="translate()">Translate</button>
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            
+            <!-- Output Section -->
+            <div class="card">
+                <h2>Output</h2>
+                
+                <div class="form-group">
+                    <label for="target-text">Translation</label>
+                    <div class="output-box">
+                        <textarea id="target-text" readonly disabled style="background: white; resize: none;"></textarea>
+                        <div id="confidence" class="confidence-badge" style="display: none;"></div>
+                    </div>
+                </div>
+                
+                <button onclick="copyTranslation()" style="background: #28a745;">Copy Translation</button>
+                <div id="message"></div>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <!-- Phrasebook Tab -->
+            <div class="tab-content">
+                <h3>Common Phrases</h3>
+                <div id="phrasebook-content"></div>
+            </div>
+            
+            <!-- Statistics Tab -->
+            <div class="tab-content">
+                <h3>Statistics</h3>
+                <div class="stats-grid" id="stats-grid"></div>
+            </div>
+            
+            <!-- About Tab -->
+            <div class="tab-content">
+                <h3>About</h3>
+                <p>This translator uses the NLLB-200 model, trained on 200+ languages including Luganda, with enhanced training for cultural authenticity.</p>
+                <p style="margin-top: 15px;"><strong>Features:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Bidirectional translation (English ↔ Luganda)</li>
+                    <li>Auto-language detection</li>
+                    <li>Confidence scoring</li>
+                    <li>Translation history</li>
+                    <li>Cultural context awareness</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Load phrasebook on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPhrasebook();
+            updateStats();
+        });
+        
+        async function translate() {
+            const sourceText = document.getElementById('source-text').value.trim();
+            const sourceLang = document.querySelector('input[name="source-lang"]:checked').value;
+            
+            if (!sourceText) {
+                showMessage('Please enter text to translate', 'error');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('target-text').value = '';
+            document.getElementById('confidence').style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: sourceText,
+                        source_lang: sourceLang === 'auto' ? undefined : sourceLang
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('target-text').value = data.target_text;
+                    
+                    // Show confidence
+                    const confidencePercent = (data.confidence * 100).toFixed(1);
+                    document.getElementById('confidence').textContent = `Confidence: ${confidencePercent}%`;
+                    document.getElementById('confidence').style.display = 'inline-block';
+                    
+                    showMessage(`Translated to ${data.target_lang}`, 'success');
+                    updateStats();
+                } else {
+                    showMessage(data.error || 'Translation failed', 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        function copyTranslation() {
+            const text = document.getElementById('target-text').value;
+            if (!text) {
+                showMessage('Nothing to copy', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showMessage('Copied to clipboard!', 'success');
+            }).catch(() => {
+                showMessage('Failed to copy', 'error');
+            });
+        }
+        
+        function showMessage(msg, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = msg;
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+            
+            setTimeout(() => {
+                messageDiv.textContent = '';
+                messageDiv.className = '';
+            }, 3000);
+        }
+        
+        async function loadPhrasebook() {
+            try {
+                const response = await fetch('/api/phrasebook');
+                const phrases = await response.json();
+                
+                const container = document.getElementById('phrasebook-content');
+                
+                for (const [category, items] of Object.entries(phrases)) {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.innerHTML = `<h4 style="color: #667eea; margin: 15px 0 10px 0;">${category.toUpperCase()}</h4>`;
+                    
+                    for (const item of items) {
+                        const phraseDiv = document.createElement('div');
+                        phraseDiv.className = 'phrase-item';
+                        phraseDiv.innerHTML = `
+                            <div class="phrase-english">${item.english}</div>
+                            <div class="phrase-luganda">${item.luganda}</div>
+                        `;
+                        categoryDiv.appendChild(phraseDiv);
+                    }
+                    
+                    container.appendChild(categoryDiv);
+                }
+            } catch (error) {
+                console.error('Error loading phrasebook:', error);
+            }
+        }
+        
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/history?limit=100');
+                const data = await response.json();
+                
+                const statsGrid = document.getElementById('stats-grid');
+                
+                const totalTranslations = data.count || 0;
+                let englishCount = 0;
+                let lugandaCount = 0;
+                let avgConfidence = 0.85;
+                
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(r => {
+                        if (r.source_lang === 'english') englishCount++;
+                        if (r.source_lang === 'luganda') lugandaCount++;
+                    });
+                    
+                    const confidences = data.results.map(r => r.confidence).filter(c => c);
+                    if (confidences.length > 0) {
+                        avgConfidence = confidences.reduce((a, b) => a + b) / confidences.length;
+                    }
+                }
+                
+                statsGrid.innerHTML = `
+                    <div class="stat-box">
+                        <div class="stat-number">${totalTranslations}</div>
+                        <div class="stat-label">Total Translations</div>
+                    </div>
+                    <div class="stat-box" style="border-top: 3px solid #FFD700;">
+                        <div class="stat-number">${englishCount}</div>
+                        <div class="stat-label">English Translations</div>
+                    </div>
+                    <div class="stat-box" style="border-top: 3px solid #FF6347;">
+                        <div class="stat-number">${lugandaCount}</div>
+                        <div class="stat-label">Luganda Translations</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">${(avgConfidence * 100).toFixed(0)}%</div>
+                        <div class="stat-label">Avg Confidence</div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+        
+        // Allow Enter key to translate
+        document.getElementById('source-text').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                translate();
+            }
+        });
+    </script>
+</body>
+</html>
