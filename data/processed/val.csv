@@ -1,0 +1,16 @@
+english,luganda,source
+Going back and entering the car,Okukyamu n'okuyingira mu mmotoka,data\raw\jw300_parallel.csv
+I respect my clan traditions,Nsiga enkola z'ekika kyange,data\cultural\cultural_training_data.csv
+The village welcomed the new clan head.,Ekyalo kyayaniriza omukulu omuggya ow'ekika.,cultural_dataset.csv
+Learning Luganda helps in work,Okusoma Oluganda kule okukola emirimu,data\raw\makerere_nlp.csv
+Ma'am,Nnyabo,data\raw\makerere_nlp.csv
+Clan gatherings strengthen bonds,Enkubukana z'ekika kituunika obwekika,data\cultural\cultural_training_data.csv
+The elders hold wisdom,Abakulu balina muwendo gwa nkola,data\cultural\cultural_training_data.csv
+The council discussed how to support youth in the kingdom.,Lukiiko lwakubaganya ebirowoozo ku ngeri y'okuyamba abavubuka mu bwakabaka.,cultural_dataset.csv
+But all this speech was good,Kyokka lukeka lwonna luno lukyali lungi,data\raw\sunbird_salt.csv
+Parting gives us sorrow,Okukubaganya okukuwa omusolo,data\raw\makerere_nlp.csv
+A woman has the ways of her hands,Omukazi alina enzira z'emikono gye,data\raw\makerere_nlp.csv
+A person holds in the madness of endless work,Omuntu akwata mu kiwanyi ky'okukola ok'emala,data\raw\makerere_nlp.csv
+Families attended the cultural celebration.,Amaka gaabeerawo ku mukolo gw'obuwangwa.,cultural_dataset.csv
+Believers come to God's judgment,Abakakasa bajja ku lukewu lwa Katonda,data\raw\makerere_nlp.csv
+The Kabaka leads with wisdom,Kabaka ye yagendereza mu muwendo gwa nkola,data\cultural\cultural_training_data.csv

@@ -1,0 +1,118 @@
+english,luganda,source
+The kingdom values wisdom from elders.,Obwakabaka butwala amagezi g'abakadde ng'ekikulu.,cultural_dataset.csv
+They die in the death of Jesus,Bafa mu kufa kwa Yesu,data\raw\jw300_parallel.csv
+"In Buganda culture, respect for elders is very important.",Mu buwangwa bwa Buganda okuwa abakadde ekitiibwa kikulu nnyo.,cultural_dataset.csv
+God's blessings give life,Entonda za Katonda bazaalira,data\raw\makerere_nlp.csv
+This nation where we are,Eggwanga ere gye werebwamu,data\raw\sunbird_salt.csv
+The Kabaka encouraged unity among all clans.,Kabaka yakubiriza obumu mu bika byonna.,cultural_dataset.csv
+The community worked together to clean the well.,Abantu b'ekitundu baakolera wamu okuyonja oluzzi.,cultural_dataset.csv
+The royal drums announced the start of the gathering.,Engoma za Kabaka zaalanga okutandika kw'enkuŋŋaana.,cultural_dataset.csv
+Speaking Luganda is explaining the house of tradition,Okutegeeza Oluganda kwe kutegeeza ensimu y'obwesige,data\raw\jw300_parallel.csv
+Wild animals are not the way,Ensolo essanvu sa nzira,data\raw\sunbird_salt.csv
+Meeting and parting are their causes,Okwekumanya n'okwekubaganya bili bibikira,data\raw\sunbird_salt.csv
+The Buganda kingdom is ancient and wise,Obwakabaka bwa Buganda kikira mu miwaliro,data\cultural\cultural_training_data.csv
+Clan history is rich and deep,Emiwendo gy'ekika kyaffe gikira mu miwaliro,data\cultural\cultural_training_data.csv
+People met at the palace for community dialogue.,Abantu baakuŋŋaanira ku lubiri okukubaganya ebirowoozo ku by'ekitundu.,cultural_dataset.csv
+The king is the ruler of Buganda,Kabaka ye mukulu wa Buganda,data\cultural\cultural_training_data.csv
+Clan names carry ancestral meaning,Erinnya ly'ekika lirya lya mwanzo,data\cultural\cultural_training_data.csv
+The king reminded everyone to preserve culture.,Kabaka yajjukiza bonna okukuuma obuwangwa.,cultural_dataset.csv
+Traditional wisdom is invaluable,Nkola ey'infenenefu eya mwanzo ewanvu,data\cultural\cultural_training_data.csv
+How are you,Oli otya,data\raw\sunbird_salt.csv
+Ritual is part of our culture,Ekigazi kye gaffle nk'ekika kyenna,data\cultural\cultural_training_data.csv
+My mother's clan is important,Ekika kya maama yange kiri mwaanyi,data\cultural\cultural_training_data.csv
+Children learned in school,Abaana bashimidde mu ssomero,data\raw\makerere_nlp.csv
+The pieces of cloth fell on the king,Ennyo z'obwavu zaagwa ku kabaka,data\raw\jw300_parallel.csv
+I am proud to be Baganda,Nkwesigamizza okuba Muganda,data\cultural\cultural_training_data.csv
+My brothers I have good things,Banange nalina ebigova ebirungi,data\raw\makerere_nlp.csv
+Beautiful Luganda works,Emirimu egyogyiri eya Luganda,data\raw\makerere_nlp.csv
+People go to the farm,Abantu bagenda ku nnimiro,data\raw\makerere_nlp.csv
+The clan leaders met to discuss the development of their community.,Abakulembeze b'ebika baakuŋŋaana okukubaganya ebirowoozo ku nkulakulana y'ekitundu kyabwe.,cultural_dataset.csv
+The royal drums announce festivals,Engalabi z'obwakabaka zigulidde enkubanga,data\cultural\cultural_training_data.csv
+The elders resolved the dispute with fairness.,Abakadde baagonjoola empaka mu bwenkanya.,cultural_dataset.csv
+I was loving my heritage,Nali njagala emikolo gyennyini,data\raw\jw300_parallel.csv
+Luganda was a very beautiful language,Luganda lukyali lulimi lurungi nnyo,data\raw\sunbird_salt.csv
+The Nnabagereka holds great power,Nnabagereka alina maanyi mangi,data\cultural\cultural_training_data.csv
+The chief started playing the drum,Mwami atandika okukuba engoma,data\raw\jw300_parallel.csv
+We honor our totems,Tutegeeza muzizo gaffe,data\cultural\cultural_training_data.csv
+Respect your elders always,Ssegeza abakulu baagante,data\cultural\cultural_training_data.csv
+But we held a goat's horn,Kyokka tukakwata kabali k'emboozi,data\raw\jw300_parallel.csv
+I speak the language of my people,Njogezi olulimi lw'abantu bange,data\cultural\cultural_training_data.csv
+We gather to celebrate the Kabaka,Tutuuka okukubaganya Kabaka,data\cultural\cultural_training_data.csv
+I speak,Nkekkaanya,data\raw\jw300_parallel.csv
+I inherit customs from my ancestors,Nsiiga enkola z'emwanzo gwange,data\cultural\cultural_training_data.csv
+The king's word is law,Ekigendereze kya Kabaka kye mateeka,data\cultural\cultural_training_data.csv
+We gather for clan meetings,Tutuukira okukubaganya mu kunnyonnyola ekika,data\cultural\cultural_training_data.csv
+The clan gathered to welcome visitors.,Ekika kyakuŋŋaana okwaniriza abagenyi.,cultural_dataset.csv
+I carry my clan's name with honor,Njira kika kyange namu ekitiibwa,data\cultural\cultural_training_data.csv
+The Kabaka is respected,Kabaka assibwamu ekitiibwa,data\cultural\cultural_training_data.csv
+Speaking Luganda well is important,Okutegeeza Oluganda kwa obulungi kye kuziiyiza,data\raw\sunbird_salt.csv
+The royal palace is a symbol of unity in Buganda.,Olubiri lwa Kabaka kabonero ka bumu mu Buganda.,cultural_dataset.csv
+Cultural identity strengthens community,Okukumanyisa okulabika makwano,data\cultural\cultural_training_data.csv
+I am from the Ngabi clan,Ndi wa kika kya Ngabi,data\cultural\cultural_training_data.csv
+The chicken gets corn in the compound,Enkoko efuna amakuba mu zzira,data\raw\jw300_parallel.csv
+The totem protects the clan,Muzizo gugwa kika mu mimutu,data\cultural\cultural_training_data.csv
+Buganda is a kingdom with pride,Buganda ye kingdom ng'efuna ekitiibwa kya kabaka,data\cultural\cultural_training_data.csv
+But in Africa,Kyokka mu Afrika,data\raw\jw300_parallel.csv
+Clan duties bind us together,Emirimu gy'ekika egi tuliga pako,data\cultural\cultural_training_data.csv
+God gives joy,Katonda akuwa essanyu,data\raw\sunbird_salt.csv
+My portion was of God,Ewange lyeeyali lya Katonda,data\raw\jw300_parallel.csv
+Clan unity is strength,Obwekika bwa kika kye maanyi,data\cultural\cultural_training_data.csv
+The Kabaka protects Buganda's people,Kabaka alinda abantu b'Buganda,data\cultural\cultural_training_data.csv
+We are children of Buganda,Ndi abaana ba Buganda,data\cultural\cultural_training_data.csv
+The ceremony began with traditional songs.,Omukolo gwatandika n'ennyimba z'obuwangwa.,cultural_dataset.csv
+The leaders called for peace in the community.,Abakulembeze baayita ku mirembe mu kitundu.,cultural_dataset.csv
+The Mmamba clan symbol is strength,Ekika kya Mmamba kya maanyi ku kifo,data\cultural\cultural_training_data.csv
+They brought many car tires,Baali baleete ennyo z'emiyigo,data\raw\sunbird_salt.csv
+Luganda is the language of our ancestors,Oluganda lwe lulimi lya bazadde baffe,data\raw\sunbird_salt.csv
+Traditional values guide our daily lives.,Empisa z'obuwangwa zitulagiriza mu bulamu bwa buli lunaku.,cultural_dataset.csv
+Traditional ceremonies preserve Buganda history and identity.,Emikolo gy'obuwangwa gikuuma ebyafaayo n'endagamuntu ya Buganda.,cultural_dataset.csv
+We love our country,Agalimi gaffe tumukulira,data\raw\sunbird_salt.csv
+Continuing to do the same thing,Okugala okukola okwo okwo,data\raw\sunbird_salt.csv
+A dead man can father children,Omusaj omufu ayinza okuzaalira,data\raw\jw300_parallel.csv
+The Ngabi clan is warrior,Ekika kya Ngabi kye likitala,data\cultural\cultural_training_data.csv
+Respectful greetings are part of Buganda identity.,Okulamusa n'ekitiibwa kitundu ku ndagamuntu ya Buganda.,cultural_dataset.csv
+For this reason we have many tasks,Olwokubiri twe tulina emirimu mingi,data\raw\sunbird_salt.csv
+The totem is sacred to the clan,Muzizo gwe kifo kya kabika kyaffe,data\cultural\cultural_training_data.csv
+Traditional dances tell our stories,Enkuluze z'entera zigamba emiwendo gyaffe,data\cultural\cultural_training_data.csv
+Thank you very much,Webale nnyo,data\raw\sunbird_salt.csv
+Matoke is our traditional food,Matoke gwe yambirira eyo eya Buganda,data\cultural\cultural_training_data.csv
+Do not eat your totem,Tolyanga muzizo gwo,data\cultural\cultural_training_data.csv
+People respect the Kabaka as the leader of Buganda.,Abantu bassa ekitiibwa mu Kabaka ng'omukulembeze wa Buganda.,cultural_dataset.csv
+The Mamba is my totem,Muzizo gwange gwe Mmamba,data\cultural\cultural_training_data.csv
+The king walks with great authority,Kabaka yenda mu bulamu obw'amaanyi,data\cultural\cultural_training_data.csv
+Fathers are taken by God,Amagye gatwalibwa Katonda,data\raw\jw300_parallel.csv
+My cultural heritage defines me,Enkola z'emwanzo gwange zimpimpi,data\cultural\cultural_training_data.csv
+The clan head made a decision,Omukulu w'ekika akola gavumenti,data\cultural\cultural_training_data.csv
+Buganda traditions encourage responsibility and respect.,Ennono za Buganda zikubiriza obuvunaanyizibwa n'ekitiibwa.,cultural_dataset.csv
+Traditional ceremonies bond families,Ekigazi kya nkola kituunika olubwamu,data\cultural\cultural_training_data.csv
+Our ancestors guide us,Mwanzo gaffe bagendereza,data\cultural\cultural_training_data.csv
+Tradition guides our daily lives,Enkola ewedde nka yo yonna enya yeffe,data\cultural\cultural_training_data.csv
+They found everything that was in the stomach,Baafuna ffenna eyali mu nnooyi,data\raw\jw300_parallel.csv
+Buganda has a proud history,Buganda erina emiwendo nyo gy'okukola entalo,data\cultural\cultural_training_data.csv
+We celebrate under the Kabaka's rule,Tukulala mu nnafuu ya Kabaka,data\cultural\cultural_training_data.csv
+I belong to the Mmamba clan,Ndi wa kika kya Mmamba,data\cultural\cultural_training_data.csv
+My family lineage is traced through clan,Omwanzo gwange gukooweze mu kika kyaffe,data\cultural\cultural_training_data.csv
+I honor the way of my fathers,Ntegeeza njira z'abadada bange,data\cultural\cultural_training_data.csv
+She was a widow and he was a man,Eyali nzakazi yeeyali ngwanyi,data\raw\makerere_nlp.csv
+The Nnabagereka is the queen,Nnabagereka ye nnakaffe,data\cultural\cultural_training_data.csv
+Our lineage connects us,Kika kyaffe kituunika nne,data\cultural\cultural_training_data.csv
+The keepers protect going after animals,Abikira bakikasa okujaga ensolo,data\raw\makerere_nlp.csv
+Women's groups supported families during the ceremony.,Ebibiina by'abakyala byayambako amaka mu kiseera ky'omukolo.,cultural_dataset.csv
+The rich man becomes confused,Omugagga aba mukyanyankanya,data\raw\jw300_parallel.csv
+The youth learned proverbs from their grandparents.,Abavubuka baayiga enfumo okuva eri bajjajjaabwe.,cultural_dataset.csv
+I am Lugandan,Ndi Muganda,data\raw\sunbird_salt.csv
+The Kabaka visited the people,Kabaka yalambula abantu,data\cultural\cultural_training_data.csv
+Children were taught the history of Buganda.,Abaana baayigirizibwa ebyafaayo bya Buganda.,cultural_dataset.csv
+Respect brings honor to your name,Okussegeza kunabira ekitiibwa mu linnya lyo,data\cultural\cultural_training_data.csv
+I am bound to my clan always,Njisibwa ekika kyange mu kiseera kyonna,data\cultural\cultural_training_data.csv
+Clan pride runs through my blood,Kitiibwa kya kika kyange kikira mu misima gwange,data\cultural\cultural_training_data.csv
+The Kabaka's council decides laws,Entengezi y'obwakabaka ekyusa amateeka,data\cultural\cultural_training_data.csv
+The blessing of the elders is sought,Abantu basigala bakubanga ekifo ky'abakulu,data\cultural\cultural_training_data.csv
+Clan meetings help solve community problems peacefully.,Enkuŋŋaana z'ebika ziyamba okugonjoola ebizibu by'ekitundu mu mirembe.,cultural_dataset.csv
+Community leaders planned development projects together.,Abakulembeze b'ekitundu baateekateeka pulojekiti z'enkulakulana wamu.,cultural_dataset.csv
+A person can do many things,Omuntu ayinza okukola emirimu mingi,data\raw\makerere_nlp.csv
+I will teach my children our traditions,Nzija okuwoza abaana bange enkola yeffe,data\cultural\cultural_training_data.csv
+The Kabaka's blessing brings fortune,Ekifo kya Kabaka kikisa omwaka oguwanvu,data\cultural\cultural_training_data.csv
+The sick child dies on the journey,Omwana omusita afa mu luuyi,data\raw\sunbird_salt.csv
+The elders bless new endeavors,Abakulu batugeeza entegeka empya,data\cultural\cultural_training_data.csv
+My ancestors watch over my path,Emwanzo gyange ginenya ku njira yange,data\cultural\cultural_training_data.csv

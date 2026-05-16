@@ -1,265 +1,196 @@
-# 🌐 English-Luganda Neural Machine Translator
+# English <-> Luganda Transformer NMT System
 
-A research-grade machine translation system for low-resource Luganda combining **transformer neural networks** with **cultural intelligence** for accurate English ↔ Luganda translation.
+This project implements a full Neural Machine Translation workflow using Transformer models and Hugging Face.
 
----
+It supports:
+- English -> Luganda translation
+- Luganda -> English translation
+- Data collection and preprocessing
+- Tokenization and train/val/test splitting
+- Fine-tuning with checkpoints
+- BLEU-based evaluation
+- Inference API
+- Voice input (speech-to-text) and text-to-speech
+- Optional attention visualization
 
-## 🏗️ Standard ML Pipeline
+## 1) Transformer Architecture
 
-| Stage | Component | File | Input | Output |
-|-------|-----------|------|-------|--------|
-| **Problem** | Low-res Luganda NMT | - | Domain knowledge | Task definition |
-| **Dataset** | 4 parallel corpora | `Step2_Load_Dataset.py` | CSV files | 100k+ pairs |
-| **Preprocessing** | Clean + Tokenize | `Step3_Data_Preprocessing.py` | Raw text | Train/val/test splits |
-| **Model** | MarianMT Transformer | `Step4_MarianMT_Setup.py` | Pre-trained weights | 200M parameters |
-| **Training** | Fine-tuning | `Step5_Train_Model.py` | Tokenized data | Fine-tuned model |
-| **Evaluation** | BLEU + Manual | `Step6_Evaluate_Model.py` | Test set | Metrics report |
-| **Deployment** | Flask API | `app.py` | Model weights | Live web service |
-| **Extension** | Voice I/O | gTTS integration | Text | Audio output |
+The system uses pretrained sequence-to-sequence Transformer models from Hugging Face and fine-tunes them on Luganda-English parallel data.
 
----
+Default model choices:
+- `Helsinki-NLP/opus-mt-en-lg` for English -> Luganda
+- `Helsinki-NLP/opus-mt-lg-en` for Luganda -> English
 
-## 🚀 Quick Start (Complete Pipeline)
+Fallback models (if needed):
+- `Helsinki-NLP/opus-mt-en-mul`
+- `Helsinki-NLP/opus-mt-mul-en`
 
-```bash
-# 1. Setup environment
-python Step1_Environment_Setup.py
+Why Transformers:
+- Encoder-decoder attention for long-range dependencies
+- Strong transfer learning from pretrained multilingual corpora
+- Better quality than traditional phrase-based systems in low-resource setups
 
-# 2. Load and explore data
-python Step2_Load_Dataset.py
+## 2) Project Structure
 
-# 3. Preprocess data
-python Step3_Data_Preprocessing.py
+- `preprocess.py`: data collection, cleaning, deduplication, train/val/test split
+- `train.py`: tokenization, fine-tuning, BLEU evaluation, checkpointing, model saving
+- `inference.py`: bidirectional inference, language detection, hallucination reduction, attention plotting
+- `app.py`: production Flask API with translation + STT + TTS + attention endpoint
+- `requirements.txt`: dependencies for training and deployment
 
-# 4. Download MarianMT model
-python Step4_MarianMT_Setup.py
+Important folders:
+- `data/raw/`: raw parallel datasets
+- `data/processed/`: split datasets (`train.csv`, `val.csv`, `test.csv`)
+- `models/en-lg/` and `models/lg-en/`: checkpoints and final trained models
+- `outputs/`: summaries, generated files (attention plot, TTS audio)
+- `tests/`: validation scripts for post-training quality checks
+- `docs/`: documentation (`ML_PIPELINE_GUIDE.md`) and archived legacy notes
+- `scripts/legacy/`: archived older step-by-step training scripts
 
-# 5. Fine-tune on Luganda data
-python Step5_Train_Model.py
+## 3) Dataset Pipeline
 
-# 6. Evaluate on test set
-python Step6_Evaluate_Model.py
+The preprocessing script merges parallel corpora from local CSV files and can optionally augment with online Hugging Face datasets.
 
-# 7. Launch web app
-python app.py
-# Visit: http://localhost:5000
-```
+Expected normalized columns:
+- `english`
+- `luganda`
 
----
+Pipeline steps in `preprocess.py`:
+1. Load local sources
+2. Optionally load Hugging Face sources
+3. Normalize columns
+4. Clean text (whitespace, URL removal)
+5. Filter noisy/empty pairs by length
+6. Deduplicate parallel pairs
+7. Split into train/val/test (80/10/10)
+8. Save statistics JSON
 
-## 📊 Project Architecture
+## 4) Training Workflow (PyTorch + Hugging Face)
 
-```
-ENGLISH-LUGANDA-TRANSLATOR/
-│
-├── data/                          # ML Data Pipeline
-│   ├── raw/                       # Original datasets (4 sources)
-│   │   ├── sunbird_salt.csv
-│   │   ├── makerere_nlp.csv
-│   │   ├── jw300_parallel.csv
-│   │   └── cultural_training.csv
-│   ├── processed/                 # Cleaned & tokenized (train/val/test)
-│   │   ├── train_dataset.pkl
-│   │   ├── val_dataset.pkl
-│   │   └── test_dataset.pkl
-│   └── cultural/                  # Cultural context (22 clans, sacred terms)
-│       ├── cultural_dictionary.json
-│       └── cultural_test_set.csv
-│
-├── models/                        # ML Model Storage
-│   ├── tokenizer/                 # SentencePiece tokenizers
-│   │   ├── tokenizer_config.json
-│   │   └── tokenizer.json
-│   └── trained_model/             # Fine-tuned MarianMT weights
-│       ├── config.json
-│       ├── model.safetensors
-│       ├── source.spm
-│       └── target.spm
-│
-├── outputs/                       # Training & Evaluation Results
-│   ├── training_summary.json      # Training metrics
-│   ├── evaluation_results.csv     # Test set results
-│   └── translation_results.csv    # Demo translations
-│
-├── templates/
-│   └── index.html                 # React-style Flask UI
-│
-├── utils/                         # Reusable Components
-│   ├── __init__.py
-│   ├── cultural_postprocessor.py
-│   └── data_quality_checker.py
-│
-├── Step1_Environment_Setup.py     # 1. Initialize environment
-├── Step2_Load_Dataset.py          # 2. Load parallel corpora
-├── Step3_Data_Preprocessing.py    # 3. Clean & tokenize
-├── Step4_MarianMT_Setup.py        # 4. Download model
-├── Step5_Train_Model.py           # 5. Fine-tune (Lecture 3 concepts)
-├── Step6_Evaluate_Model.py        # 6. Evaluate & benchmark
-│
-├── app.py                         # 7. Deploy Flask web service
-├── requirements.txt               # Python dependencies
-├── ML_PIPELINE_GUIDE.md          # Detailed pipeline documentation
-├── README.md                      # This file
-└── .gitignore                     # Git configuration
-```
+`train.py` performs true Transformer fine-tuning using `Seq2SeqTrainer` and `AutoModelForSeq2SeqLM`.
 
----
+Includes:
+- tokenization using model tokenizer
+- epoch-based validation
+- checkpoint saving each epoch
+- BLEU scoring (`sacrebleu` via `evaluate`)
+- best-checkpoint selection
+- final model export
 
-## 📈 Model Performance
+Google Colab GPU optimizations included:
+- `fp16` auto-enabled when CUDA is available
+- gradient checkpointing
+- gradient accumulation
+- beam search generation during evaluation
 
-| Direction | BLEU Score | Dictionary | Model Only | Demo Status |
-|-----------|-----------|-----------|-----------|------------|
-| EN→LG | 0.34 | 95%+ | 70% | ✅ 8/8 pass |
-| LG→EN | 0.28 | 85%+ | 60% | ✅ 8/8 pass |
+## 5) Inference and Hallucination Reduction
 
-**Translation Strategy**:
-1. Dictionary lookup (verified phrase pairs)
-2. Fuzzy matching (similar phrases)
-3. Neural model fallback (for novel input)
-4. Confidence scoring (built-in uncertainty)
+`inference.py` provides:
+- automatic language direction selection
+- beam search decoding
+- `no_repeat_ngram_size` and repetition penalty
+- simple post-generation repetition cleanup
 
----
+This helps reduce repetitive and hallucinatory outputs in low-resource conditions.
 
-## 🎯 Key Features
+## 6) Voice Features
 
-✅ **Bidirectional Translation** - Type in English or Luganda, auto-detects  
-✅ **Cultural Awareness** - 22 Baganda clans + sacred terminology  
-✅ **Voice I/O** - Text-to-speech via gTTS  
-✅ **Phrasebook** - 60+ cultural phrases with context  
-✅ **Translation History** - SQLite persistence  
-✅ **Confidence Indicators** - Shows translation certainty  
-✅ **Production-Ready Structure** - Clean ML pipeline  
+`app.py` includes:
+- `POST /api/stt`: speech-to-text (audio upload)
+- `POST /api/tts`: text-to-speech (returns MP3)
 
----
+Note: gTTS has limited direct support for Luganda, so `lang` is configurable and falls back to English when unsupported.
 
-## 🔧 Technical Details
+## 7) Attention Visualization
 
-### Model Architecture
-- **Type**: Transformer Seq2Seq (6 encoder + 6 decoder layers)
-- **Pre-trained on**: OPUS corpus (200M+ parallel sentences)
-- **Parameters**: ~200M
-- **Tokenizer**: SentencePiece (50k vocabulary)
+If supported by the loaded model, `inference.py` can export encoder attention heatmaps:
+- `POST /api/attention`
+- saves an image to `outputs/attention.png`
 
-### Training Configuration (Lecture 3 Concepts)
-```python
-# Bias-Variance Control
-eval_strategy="epoch"
-load_best_model_at_end=True
-metric_for_best_model="eval_loss"
-
-# Regularization (L2 Weight Decay)
-weight_decay=0.01
-
-# Learning Rate Scheduling
-warmup_steps=500
-lr_scheduler_type="cosine"
-
-# Gradient Clipping
-max_grad_norm=1.0
-```
-
-### Data Pipeline
-```
-Raw Data → Lowercase → Clean → Tokenize → Batch → Train/Val/Test (80/10/10)
-```
-
----
-
-## 📚 Datasets
-
-- **Sunbird SALT**: Multilingual parallel corpus from African languages
-- **Makerere NLP**: Low-resource African language dataset
-- **JW300**: Jehovah's Witnesses parallel texts
-- **Cultural Data**: Baganda-specific terminology and clans
-
-**Total**: 100k+ parallel English-Luganda sentence pairs
-
----
-
-## 🔬 Research Insights
-
-### Low-Resource NLP Challenges
-1. **Vocabulary Sparsity**: Limited unique word forms
-2. **Source Copying**: Model tendency to repeat input
-3. **Semantic Drift**: Loss of meaning in translation
-4. **Domain Gaps**: Different text types behave differently
-
-### Solutions Implemented
-- ✅ Domain-specific dictionary (cultural terms)
-- ✅ Hybrid strategy (dictionary + neural)
-- ✅ Confidence-based filtering
-- ✅ Manual validation
-
----
-
-## 📖 Documentation
-
-- **Full ML Pipeline**: See [ML_PIPELINE_GUIDE.md](ML_PIPELINE_GUIDE.md)
-- **Step-by-step Execution**: See pipeline table above
-- **API Documentation**: Built into Flask app
-
----
-
-## 🎓 For Academic Evaluation
-
-**What This Project Demonstrates**:
-- ✅ Complete ML pipeline (data → model → evaluation → deployment)
-- ✅ Transformer architecture implementation
-- ✅ Fine-tuning strategy for low-resource languages
-- ✅ Bias-variance tradeoff management
-- ✅ Cultural sensitivity in NLP
-- ✅ Professional code organization
-
-**Status**: 🔬 **Research-Grade** (not overstated)
-
----
-
-## 🚀 How to Demo
+## 8) Installation
 
 ```bash
-# Terminal 1: Start web app
-python app.py
-
-# Terminal 2: Run evaluation
-python Step6_Evaluate_Model.py
-
-# Browser: http://localhost:5000
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-**Talking Points**:
-1. "Steps 1-6 form a complete ML pipeline"
-2. "Data folder shows raw → processed → cultural organization"
-3. "Fine-tuning implements Lecture 3 concepts: regularization, LR scheduling"
-4. "Honest evaluation with BLEU scores and confidence indicators"
-5. "Bidirectional translation demonstrates model flexibility"
+## 9) Usage
 
----
+### Step A: Preprocess data
+```bash
+python preprocess.py --output-dir data/processed
+```
 
-## 🔗 Dependencies
+Optional with online dataset augmentation:
+```bash
+python preprocess.py --use-hf --output-dir data/processed
+```
 
-- **transformers** (4.35.2) - HuggingFace models
-- **torch** (2.0+) - Deep learning
-- **flask** (2.3.3) - Web deployment
-- **gTTS** (2.3.2) - Speech synthesis
-- **langdetect** (1.0.9) - Language detection
-- **pandas** (2.1.3) - Data processing
-- **scikit-learn** (1.3.2) - ML utilities
+### Step B: Train both directions
+```bash
+python train.py --direction both --data-dir data/processed --output-dir models --epochs 3
+```
 
-See `requirements.txt` for complete list.
+Train one direction only:
+```bash
+python train.py --direction en-lg --data-dir data/processed --output-dir models
+python train.py --direction lg-en --data-dir data/processed --output-dir models
+```
 
----
+### Step C: Run API
+```bash
+python app.py
+```
 
-## 📝 License
+API base URL:
+- `http://localhost:5000`
 
-Educational machine translation research project.
+Frontend page:
+- `http://localhost:5000/`
 
----
+API info endpoint:
+- `http://localhost:5000/api`
 
-## 🎯 Next Steps
+### Step D: Run automatic post-training quality test
+```bash
+python tests/test_after_training.py --test-csv data/processed/test.csv --max-samples 200
+```
 
-- [ ] Experiment with Sunbird AI endpoint for better Luganda support
-- [ ] Collect more parallel corpus from community
-- [ ] Fine-tune on specific domains (healthcare, education)
-- [ ] Deploy to production with Docker
-- [ ] Add multilingual support (Swahili, Twi, etc.)
+This runs:
+- corpus BLEU for EN -> LG
+- corpus BLEU for LG -> EN
+- sample translation checks
+- JSON report output at `outputs/post_training_test_report.json`
 
+### Example translation request
+```bash
+curl -X POST http://localhost:5000/api/translate \
+  -H "Content-Type: application/json" \
+  -d '{"text": "How are you?", "source_lang": "english", "target_lang": "luganda"}'
+```
+
+## 10) Evaluation Metrics
+
+Primary metric:
+- BLEU score on held-out test split
+
+Training artifacts:
+- `models/<direction>/checkpoints/`
+- `models/<direction>/final/`
+- `models/<direction>/metrics.json`
+- `outputs/training_summary_transformer.json`
+
+## 11) Production Notes
+
+- Keep preprocessing and training deterministic using fixed seeds.
+- Store checkpoints regularly and archive best model versions.
+- Validate BLEU and run human evaluation on culturally sensitive terms.
+- For stronger STT quality, you can replace SpeechRecognition backend with a Whisper model.
+
+## 12) Beginner-Friendly Tips
+
+- Start with local CSV preprocessing first.
+- Train only one direction (`en-lg`) before training both.
+- Keep epochs low initially (1-2) to verify pipeline end-to-end.
+- Use attention plots to inspect whether the model is focusing on relevant tokens.

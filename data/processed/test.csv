@@ -1,0 +1,16 @@
+english,luganda,source
+The Kabaka's message emphasized discipline and service.,Obubaka bwa Kabaka bwanyweza empisa n'okuweereza.,cultural_dataset.csv
+Respect the traditions of Buganda,Ossegeze enkola z'Buganda,data\cultural\cultural_training_data.csv
+How is the Kabaka of Buganda doing today?,Kabaka w'e Buganda alina atya leero?,cultural_dataset.csv
+The kingdom prospers under the Kabaka,Obwakabaka bujja mu kabaka waffe,data\cultural\cultural_training_data.csv
+Respecting elders shows good manners,Okussegeza abakulu kye nkola emajasi,data\cultural\cultural_training_data.csv
+Truth is what can come from God,Okutuufu ne kyo kye kiyinza kuva eri Katonda,data\raw\sunbird_salt.csv
+The king is crowned with ceremony,Kabaka awetibwa mu ekigazi kya kulunnyanya,data\cultural\cultural_training_data.csv
+Respect your clan elders,Ossegeze abakulu b'ekika ky'o,data\cultural\cultural_training_data.csv
+The clan protected sacred sites in the community.,Ekika kyakuuma ebifo ebitukuvu mu kitundu.,cultural_dataset.csv
+Our elders teach us to speak with respect.,Abakadde baffe batuyigiriza okwogera n'ekitiibwa.,cultural_dataset.csv
+The kingdom values loyalty,Obwakabaka bwa Buganda busigala mu kiseera,data\cultural\cultural_training_data.csv
+Sir,Ssebo,data\raw\makerere_nlp.csv
+One man fathers,Omusajja omu azaalira,data\raw\sunbird_salt.csv
+The Kabaka's palace is grand,Obwakabaka bwa Kabaka burangira nyo,data\cultural\cultural_training_data.csv
+Our music reflects clan pride,Omuyimbe gwaffe gutegeeza kika kyaffe,data\cultural\cultural_training_data.csv
