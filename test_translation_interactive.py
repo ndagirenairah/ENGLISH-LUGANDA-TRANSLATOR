@@ -1,144 +1,197 @@
 #!/usr/bin/env python3
-"""
-Interactive Translation Tester
-Test English to Luganda translations in real-time
-"""
+# ============================================================================
+# INTERACTIVE ENGLISH-LUGANDA TRANSLATOR
+# ============================================================================
+# Run this script to test translations interactively
+# python test_translation_interactive.py
+# ============================================================================
 
-import requests
+import torch
+import os
 import sys
+import time
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-API_URL = "http://127.0.0.1:5000/translate"
-
-def test_translation(english_text):
-    """Test a single translation"""
-    try:
-        response = requests.post(API_URL, json={"text": english_text})
-        if response.status_code == 200:
-            result = response.json()
-            translation = result.get('translation', 'ERROR')
-            confidence = result.get('confidence', 'N/A')
-            return translation, confidence, None
-        else:
-            return None, None, f"Error {response.status_code}: {response.text}"
-    except requests.exceptions.ConnectionError:
-        return None, None, "❌ Cannot connect to Flask server. Is it running on port 5000?"
-    except Exception as e:
-        return None, None, f"Error: {str(e)}"
+# Setup paths
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, PROJECT_ROOT)
 
 def main():
-    """Main interactive loop"""
-    print("\n" + "="*70)
-    print("🌍 ENGLISH-LUGANDA TRANSLATOR - INTERACTIVE TEST")
-    print("="*70)
-    print("\nType English sentences to translate to Luganda")
-    print("Type 'quit' or 'exit' to stop")
-    print("Type 'help' for options")
-    print("="*70 + "\n")
+    print("\n" + "=" * 80)
+    print("  🌍 ENGLISH-LUGANDA TRANSLATOR - INTERACTIVE TEST")
+    print("=" * 80)
     
-    test_count = 0
+    # Check GPU
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"\n✓ Device: {device}")
+    if device.type == "cuda":
+        print(f"✓ GPU: {torch.cuda.get_device_name(0)}")
+    
+    # Load model
+    print("\n[Loading Model...]")
+    print("This may take 1-2 minutes on first run...")
+    
+    try:
+        model_name = "Helsinki-NLP/opus-mt-en-mul"
+        print(f"Loading: {model_name}")
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+        model = model.to(device)
+        print(f"✓ Model loaded successfully!")
+    except Exception as e:
+        print(f"❌ Error loading model: {e}")
+        print("Make sure you have transformers installed: pip install transformers torch")
+        return
+    
+    # Translation function
+    def translate(text):
+        """Translate English to Luganda"""
+        try:
+            # Tokenize
+            inputs = tokenizer(
+                text,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                max_length=512
+            )
+            inputs = {k: v.to(device) for k, v in inputs.items()}
+            
+            # Generate
+            start_time = time.time()
+            with torch.no_grad():
+                generated = model.generate(
+                    **inputs,
+                    max_length=120,
+                    num_beams=5,
+                    no_repeat_ngram_size=3
+                )
+            elapsed = time.time() - start_time
+            
+            # Decode
+            translation = tokenizer.decode(generated[0], skip_special_tokens=True)
+            return translation, elapsed
+        except Exception as e:
+            return f"Error: {e}", 0
+    
+    # Interactive loop
+    print("\n" + "=" * 80)
+    print("  INTERACTIVE MODE - Type English text to translate to Luganda")
+    print("=" * 80)
+    print("\nExamples you can try:")
+    print("  • Hello, how are you?")
+    print("  • What is your name?")
+    print("  • Good morning!")
+    print("  • Thank you very much")
+    print("  • Where is the bathroom?")
+    print("  • I love learning languages")
+    print("  • The weather is beautiful today")
+    print("\nCommands:")
+    print("  • Type English to translate")
+    print("  • Type 'help' for options")
+    print("  • Type 'quit' to exit\n")
+    
+    history = []
     
     while True:
         try:
-            english_input = input("EN> ").strip()
+            # Get user input
+            english = input("📝 English: ").strip()
             
-            if not english_input:
-                continue
-                
-            if english_input.lower() in ['quit', 'exit', 'q']:
-                print(f"\n✓ Tested {test_count} translations. Goodbye! 👋")
+            # Handle commands
+            if english.lower() in ['quit', 'exit', 'q']:
+                print("\n👋 Thank you for testing! Goodbye!")
                 break
-                
-            if english_input.lower() == 'help':
+            
+            if english.lower() == 'help':
                 print("""
-╔════════════════════════════════════════╗
-║          TRANSLATION TESTER HELP        ║
-╚════════════════════════════════════════╝
+╔══════════════════════════════════════════╗
+║       TRANSLATION TESTER COMMANDS        ║
+╚══════════════════════════════════════════╝
 
-Commands:
-  quit/exit/q     - Exit the program
-  help            - Show this help message
-  test SAMPLES    - Run 5 test samples
-  
-Examples to try:
-  - "Hello, how are you?"
-  - "What is your name?"
-  - "Good morning"
-  - "Thank you very much"
-  - "Where is the bathroom?"
-  - "I love learning languages"
-  - "The weather is nice today"
-  - "Can you help me?"
-  
+quit/exit/q     - Exit the program
+help            - Show this help
+history         - Show all translations
+clear           - Clear history
+stats           - Show model info
+
 Tips:
-  - Shorter sentences = faster & usually better
-  - Simple grammar often works better
-  - Wait a moment for GPU to respond
-  
-""")
-                continue
-                
-            if english_input.lower() == 'test samples':
-                test_samples = [
-                    "Hello, how are you?",
-                    "What is your name?",
-                    "Good morning",
-                    "Thank you very much",
-                    "Where is the bathroom?"
-                ]
-                print("\n" + "="*70)
-                print("Running 5 test samples...")
-                print("="*70 + "\n")
-                
-                for sample in test_samples:
-                    translation, confidence, error = test_translation(sample)
-                    test_count += 1
-                    
-                    if error:
-                        print(f"❌ {error}")
-                    else:
-                        print(f"EN: {sample}")
-                        print(f"LG: {translation}")
-                        if confidence != 'N/A':
-                            print(f"⭐ {confidence}")
-                        print()
+  ✓ Shorter sentences work better
+  ✓ Simple grammar is easier to translate
+  ✓ First translation is slower (model loading)
+  ✓ Subsequent translations are much faster
+
+                """)
                 continue
             
-            # Regular translation
-            print("\n⏳ Translating...", end='', flush=True)
-            translation, confidence, error = test_translation(english_input)
-            test_count += 1
+            if english.lower() == 'history':
+                if not history:
+                    print("❌ No translations yet\n")
+                else:
+                    print("\n" + "=" * 80)
+                    print("  📚 TRANSLATION HISTORY")
+                    print("=" * 80)
+                    for i, (en, lg, elapsed) in enumerate(history, 1):
+                        print(f"\n{i}. EN: {en}")
+                        print(f"   LG: {lg}")
+                        print(f"   ⏱️  {elapsed:.2f}s")
+                    print("\n" + "=" * 80 + "\n")
+                continue
             
-            print("\r" + " "*50 + "\r", end='')  # Clear loading message
+            if english.lower() == 'clear':
+                history.clear()
+                print("✓ History cleared\n")
+                continue
             
-            if error:
-                print(f"❌ {error}\n")
-            else:
-                print(f"\nEN: {english_input}")
-                print(f"LG: {translation}")
-                if confidence and confidence != 'N/A':
-                    print(f"⭐ Confidence: {confidence}")
+            if english.lower() == 'stats':
+                total_params = sum(p.numel() for p in model.parameters())
+                print(f"\n📊 Model Statistics:")
+                print(f"   Model: {model_name}")
+                print(f"   Parameters: {total_params:,}")
+                print(f"   Device: {device}")
+                print(f"   Total translations: {len(history)}")
+                if history:
+                    avg_time = sum(t[2] for t in history) / len(history)
+                    total_time = sum(t[2] for t in history)
+                    print(f"   Average time/translation: {avg_time:.2f}s")
+                    print(f"   Total time: {total_time:.2f}s")
                 print()
-                
+                continue
+            
+            if not english:
+                continue
+            
+            # Translate
+            print("🔄 Translating...", end=" ", flush=True)
+            luganda, elapsed = translate(english)
+            print("\r" + " " * 30 + "\r", end="")  # Clear the "Translating..." message
+            
+            # Display result
+            print(f"🇺🇬 Luganda:  {luganda}")
+            print(f"⏱️  Time:      {elapsed:.2f}s")
+            
+            # Add to history
+            history.append((english, luganda, elapsed))
+            
+            # Show translation number
+            print(f"   (Translation #{len(history)})\n")
+        
         except KeyboardInterrupt:
-            print(f"\n\n✓ Tested {test_count} translations. Goodbye! 👋")
+            print("\n\n👋 Interrupted. Goodbye!")
             break
         except Exception as e:
-            print(f"❌ Error: {str(e)}")
-            print()
+            print(f"❌ Error: {e}\n")
+    
+    # Final summary
+    if history:
+        print("\n" + "=" * 80)
+        print(f"  SUMMARY: {len(history)} translations completed")
+        print("=" * 80)
+        print("\nYour Translations:")
+        for en, lg, elapsed in history:
+            print(f"\n  EN: {en}")
+            print(f"  LG: {lg} ({elapsed:.2f}s)")
+        print("\n" + "=" * 80)
 
 if __name__ == "__main__":
-    # Check if Flask server is running
-    try:
-        response = requests.get("http://127.0.0.1:5000/")
-        if response.status_code == 200:
-            main()
-        else:
-            print("❌ Flask server not responding properly")
-            print("Make sure the Flask app is running: python app.py")
-    except requests.exceptions.ConnectionError:
-        print("❌ Cannot connect to Flask server on http://127.0.0.1:5000/")
-        print("\nTo start the server, run in a terminal:")
-        print("  cd d:\\ENGLISH-LUGANDA\\ TRANSLATOR")
-        print("  python app.py")
-    except KeyboardInterrupt:
-        print("\nGoodbye! 👋")
+    main()
