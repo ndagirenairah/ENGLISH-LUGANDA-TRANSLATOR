@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
-# ============================================================================
-# COLAB TRAINING - KAMBALE + LOCAL DATASETS COMBINED
-# ============================================================================
-# Train on the combined, cleaned, deduplicated Kambale + local dataset
-# ============================================================================
 
 print("\n" + "="*70)
-print("  🚀 COLAB TRAINING - COMBINED KAMBALE + LOCAL DATASET")
+print("COLAB TRAINING - COMBINED KAMBALE + LOCAL DATASET")
 print("="*70)
 
 # Setup
@@ -17,16 +12,11 @@ print("="*70)
 import os
 os.chdir('/content/translator')
 
-# ============================================================================
-# STEP 1: COMBINE DATASETS
-# ============================================================================
 print("\n[STEP 1: COMBINING DATASETS WITH KAMBALE]")
 print("="*70)
 
 # Set HF token (use your token from https://huggingface.co/settings/tokens)
-import os
-# Replace with your actual HF token
-hf_token = input("🔑 Enter your HuggingFace token: ") if 'HF_TOKEN' not in os.environ else os.environ['HF_TOKEN']
+hf_token = input("Enter your HuggingFace token: ") if 'HF_TOKEN' not in os.environ else os.environ['HF_TOKEN']
 os.environ['HF_TOKEN'] = hf_token
 
 # Run the combination script
@@ -36,11 +26,8 @@ except Exception as e:
     print(f"Note: {e}")
     print("Proceeding with whatever datasets are available...")
 
-# ============================================================================
-# STEP 2: TRAINING
-# ============================================================================
 print("\n" + "="*70)
-print("  🚀 STARTING TRAINING")
+print("STARTING TRAINING")
 print("="*70)
 
 import torch
@@ -52,9 +39,9 @@ from datasets import Dataset
 
 # Device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"\n✓ Device: {device}")
+print(f"\nDevice: {device}")
 if device.type == "cuda":
-    print(f"✓ GPU: {torch.cuda.get_device_name(0)}")
+    print(f"GPU: {torch.cuda.get_device_name(0)}")
 
 # Load data
 print("\n[LOADING COMBINED DATA]")
@@ -63,9 +50,9 @@ try:
     val_df = pd.read_csv('data/combined_kambale/val.csv')
     test_df = pd.read_csv('data/combined_kambale/test.csv')
     
-    print(f"✓ Train: {len(train_df)}")
-    print(f"✓ Val: {len(val_df)}")
-    print(f"✓ Test: {len(test_df)}")
+    print(f"Train: {len(train_df)}")
+    print(f"Val: {len(val_df)}")
+    print(f"Test: {len(test_df)}")
     
     # Show source breakdown
     if 'source' in train_df.columns:
@@ -86,7 +73,7 @@ print(f"Model: {MODEL}")
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModelForSeq2SeqLM.from_pretrained(MODEL)
 model = model.to(device)
-print(f"✓ Model loaded")
+print("Model loaded")
 
 # Prepare data
 print("\n[PREPARING DATASETS]")
@@ -105,7 +92,7 @@ train_dataset = create_dataset(train_df).map(preprocess, batched=True, batch_siz
 val_dataset = create_dataset(val_df).map(preprocess, batched=True, batch_size=100)
 test_dataset = create_dataset(test_df).map(preprocess, batched=True, batch_size=100)
 
-print(f"✓ Data prepared")
+print("Data prepared")
 
 # Training args
 print("\n[SETUP TRAINING]")
@@ -124,7 +111,7 @@ training_args = Seq2SeqTrainingArguments(
     report_to="none",
 )
 
-print(f"✓ Training configured")
+print("Training configured")
 print(f"  Epochs: 3")
 print(f"  Batch size: 8")
 print(f"  Training samples: {len(train_df)}")
@@ -142,13 +129,13 @@ trainer = Seq2SeqTrainer(
 
 # Train
 print("\n" + "="*70)
-print(f"  🚀 TRAINING ON {len(train_df)} SAMPLES")
+print(f"TRAINING ON {len(train_df)} SAMPLES")
 print("="*70)
 print(f"Start: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 
 result = trainer.train()
 
-print(f"\n✓ Training complete!")
+print(f"\nTraining complete!")
 print(f"  Loss: {result.training_loss:.4f}")
 
 # Evaluate
@@ -162,7 +149,7 @@ decoded_labels = tokenizer.batch_decode(predictions.label_ids, skip_special_toke
 
 bleu = corpus_bleu(decoded_preds, [decoded_labels])
 
-print(f"\n🎯 TEST SET BLEU SCORE: {bleu.score:.2f}")
+print(f"\nTEST SET BLEU SCORE: {bleu.score:.2f}")
 
 # Show samples
 print("\n[SAMPLE PREDICTIONS]")
@@ -196,29 +183,29 @@ with open(metrics_file, 'w') as f:
 from google.colab import files
 files.download(metrics_file)
 
-print(f"✓ Model saved and metrics downloaded!")
+print("Model saved and metrics downloaded!")
 
 # Summary
 print("\n" + "="*70)
-print("  ✅ TRAINING COMPLETE!")
+print("TRAINING COMPLETE!")
 print("="*70)
 
 print(f"""
-🎯 FINAL RESULTS:
+FINAL RESULTS:
    BLEU Score: {bleu.score:.2f}
    Training Loss: {result.training_loss:.4f}
    Samples: {len(train_df)}
 
-📊 Datasets used:
-   ✓ Kambale Luganda-English Parallel Corpus
-   ✓ Cultural dictionary
-   ✓ JW300 parallel corpus
-   ✓ Makerere NLP
-   ✓ Sunbird Salt
+Datasets used:
+   Kambale Luganda-English Parallel Corpus
+   Cultural dictionary
+   JW300 parallel corpus
+   Makerere NLP
+   Sunbird Salt
 
-📁 Model saved to: {model_path}
+Model saved to: {model_path}
 
-🌍 Ready for production!
+Ready for production!
 """)
 
 print("="*70)
