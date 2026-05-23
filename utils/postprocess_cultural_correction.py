@@ -153,7 +153,7 @@ class CulturalPostProcessor:
 
 if __name__ == "__main__":
     print("=" * 70)
-    print("🎭 CULTURAL POST-PROCESSOR TEST")
+    print(" CULTURAL POST-PROCESSOR TEST")
     print("=" * 70 + "\n")
     
     processor = CulturalPostProcessor()

@@ -3,7 +3,7 @@
 # INTERACTIVE ENGLISH-LUGANDA TRANSLATOR
 # ============================================================================
 # Run this script to test translations interactively
-# python test_translation_interactive.py
+# python test_translator_interactive.py
 # ============================================================================
 
 import torch
@@ -18,14 +18,14 @@ sys.path.insert(0, PROJECT_ROOT)
 
 def main():
     print("\n" + "=" * 80)
-    print("  🌍 ENGLISH-LUGANDA TRANSLATOR - INTERACTIVE TEST")
+    print("   ENGLISH-LUGANDA TRANSLATOR - INTERACTIVE TEST")
     print("=" * 80)
     
     # Check GPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"\n✓ Device: {device}")
+    print(f"\n Device: {device}")
     if device.type == "cuda":
-        print(f"✓ GPU: {torch.cuda.get_device_name(0)}")
+        print(f" GPU: {torch.cuda.get_device_name(0)}")
     
     # Load model
     print("\n[Loading Model...]")
@@ -37,9 +37,9 @@ def main():
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
         model = model.to(device)
-        print(f"✓ Model loaded successfully!")
+        print(f" Model loaded successfully!")
     except Exception as e:
-        print(f"❌ Error loading model: {e}")
+        print(f" Error loading model: {e}")
         print("Make sure you have transformers installed: pip install transformers torch")
         return
     
@@ -79,35 +79,35 @@ def main():
     print("  INTERACTIVE MODE - Type English text to translate to Luganda")
     print("=" * 80)
     print("\nExamples you can try:")
-    print("  • Hello, how are you?")
-    print("  • What is your name?")
-    print("  • Good morning!")
-    print("  • Thank you very much")
-    print("  • Where is the bathroom?")
-    print("  • I love learning languages")
-    print("  • The weather is beautiful today")
+    print("   Hello, how are you?")
+    print("   What is your name?")
+    print("   Good morning!")
+    print("   Thank you very much")
+    print("   Where is the bathroom?")
+    print("   I love learning languages")
+    print("   The weather is beautiful today")
     print("\nCommands:")
-    print("  • Type English to translate")
-    print("  • Type 'help' for options")
-    print("  • Type 'quit' to exit\n")
+    print("   Type English to translate")
+    print("   Type 'help' for options")
+    print("   Type 'quit' to exit\n")
     
     history = []
     
     while True:
         try:
             # Get user input
-            english = input("📝 English: ").strip()
+            english = input(" English: ").strip()
             
             # Handle commands
             if english.lower() in ['quit', 'exit', 'q']:
-                print("\n👋 Thank you for testing! Goodbye!")
+                print("\n Thank you for testing! Goodbye!")
                 break
             
             if english.lower() == 'help':
                 print("""
-╔══════════════════════════════════════════╗
-║       TRANSLATION TESTER COMMANDS        ║
-╚══════════════════════════════════════════╝
+
+       TRANSLATION TESTER COMMANDS        
+
 
 quit/exit/q     - Exit the program
 help            - Show this help
@@ -116,36 +116,36 @@ clear           - Clear history
 stats           - Show model info
 
 Tips:
-  ✓ Shorter sentences work better
-  ✓ Simple grammar is easier to translate
-  ✓ First translation is slower (model loading)
-  ✓ Subsequent translations are much faster
+   Shorter sentences work better
+   Simple grammar is easier to translate
+   First translation is slower (model loading)
+   Subsequent translations are much faster
 
                 """)
                 continue
             
             if english.lower() == 'history':
                 if not history:
-                    print("❌ No translations yet\n")
+                    print(" No translations yet\n")
                 else:
                     print("\n" + "=" * 80)
-                    print("  📚 TRANSLATION HISTORY")
+                    print("   TRANSLATION HISTORY")
                     print("=" * 80)
                     for i, (en, lg, elapsed) in enumerate(history, 1):
                         print(f"\n{i}. EN: {en}")
                         print(f"   LG: {lg}")
-                        print(f"   ⏱️  {elapsed:.2f}s")
+                        print(f"     {elapsed:.2f}s")
                     print("\n" + "=" * 80 + "\n")
                 continue
             
             if english.lower() == 'clear':
                 history.clear()
-                print("✓ History cleared\n")
+                print(" History cleared\n")
                 continue
             
             if english.lower() == 'stats':
                 total_params = sum(p.numel() for p in model.parameters())
-                print(f"\n📊 Model Statistics:")
+                print(f"\n Model Statistics:")
                 print(f"   Model: {model_name}")
                 print(f"   Parameters: {total_params:,}")
                 print(f"   Device: {device}")
@@ -162,13 +162,13 @@ Tips:
                 continue
             
             # Translate
-            print("🔄 Translating...", end=" ", flush=True)
+            print(" Translating...", end=" ", flush=True)
             luganda, elapsed = translate(english)
             print("\r" + " " * 30 + "\r", end="")  # Clear the "Translating..." message
             
             # Display result
-            print(f"🇺🇬 Luganda:  {luganda}")
-            print(f"⏱️  Time:      {elapsed:.2f}s")
+            print(f" Luganda:  {luganda}")
+            print(f"  Time:      {elapsed:.2f}s")
             
             # Add to history
             history.append((english, luganda, elapsed))
@@ -177,10 +177,10 @@ Tips:
             print(f"   (Translation #{len(history)})\n")
         
         except KeyboardInterrupt:
-            print("\n\n👋 Interrupted. Goodbye!")
+            print("\n\n Interrupted. Goodbye!")
             break
         except Exception as e:
-            print(f"❌ Error: {e}\n")
+            print(f" Error: {e}\n")
     
     # Final summary
     if history:

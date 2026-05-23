@@ -9,11 +9,11 @@ print(" ML WORKFLOW: DATA CLEANING + FEATURE ENGINEERING")
 print("=" * 80)
 print("""
 ML Workflow Progress:
-  ✓ 1. Define the problem
-  ✓ 2. Collect data
-  ✓ 3. Exploratory Data Analysis
-  ► 4. Data cleaning & preprocessing (This step)
-  ► 5. Feature engineering           (This step - tokenization)
+   1. Define the problem
+   2. Collect data
+   3. Exploratory Data Analysis
+   4. Data cleaning & preprocessing (This step)
+   5. Feature engineering           (This step - tokenization)
   6. Model training & evaluation
   7. Deployment & monitoring
 """)
@@ -37,7 +37,7 @@ print(f" Combined dataset loaded: {len(df)} samples")
 print(f"\nDataset sources breakdown:")
 if 'source' in df.columns:
     for source, count in df['source'].value_counts().items():
-        print(f"  • {source}: {count:,}")
+        print(f"   {source}: {count:,}")
 
 print(f"\nFirst 3 samples:")
 print(df.head(3))
@@ -214,8 +214,8 @@ print("\nRandom samples from training data:\n")
 for i in range(3):
     sample = train_dataset[i]
     print(f"{i+1}. Translation:")
-    print(f"   🇺🇬 Luganda: {sample['translation']['lug']}")
-    print(f"   🇬🇧 English: {sample['translation']['eng']}")
+    print(f"    Luganda: {sample['translation']['lug']}")
+    print(f"    English: {sample['translation']['eng']}")
     print()
 
 # ============================================================================

@@ -188,7 +188,7 @@ class LugandaDataCleaner:
         print(f"\n Results:")
         print(f"   - Kept: {kept_count} sentences ({kept_count/original_count*100:.1f}%)")
         print(f"   - Removed: {removed_count} sentences ({removed_count/original_count*100:.1f}%)")
-        print(f"   - Quality: {kept_count/original_count*100:.1f}% → 100%")
+        print(f"   - Quality: {kept_count/original_count*100:.1f}% -> 100%")
         
         return df_clean
     
@@ -210,7 +210,7 @@ class LugandaDataCleaner:
         
         # Duplicate check
         duplicates = df[luganda_column].duplicated().sum()
-        print(f"\n🔄 Duplicates:")
+        print(f"\nDuplicates:")
         print(f"   - Found: {duplicates} duplicates")
         
         if duplicates > 0:
@@ -287,7 +287,7 @@ if __name__ == "__main__":
         cleaner.get_statistics(df_clean, luganda_column="luganda")
         
         # Remove duplicates
-        print(f"\n🔄 Removing duplicates...")
+        print(f"\nRemoving duplicates...")
         df_clean = df_clean.drop_duplicates(subset=["luganda"])
         print(f"    Final count: {len(df_clean)} unique sentences")
         
@@ -308,5 +308,5 @@ if __name__ == "__main__":
         print("\n  Dataset not found. Using example data only.")
     
     print("\n" + "=" * 70)
-    print("✨ QUALITY FILTERING COMPLETE")
+    print(" QUALITY FILTERING COMPLETE")
     print("=" * 70 + "\n")

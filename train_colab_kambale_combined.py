@@ -21,7 +21,7 @@ os.environ['HF_TOKEN'] = hf_token
 
 # Run the combination script
 try:
-    exec(open('combine_datasets_with_token.py').read())
+    exec(open('preprocess_combine_datasets.py').read())
 except Exception as e:
     print(f"Note: {e}")
     print("Proceeding with whatever datasets are available...")

@@ -2,9 +2,9 @@
 # STEP 2: COLLECT DATA + EXPLORATORY DATA ANALYSIS (EDA)
 # ============================================================================
 # ML WORKFLOW STAGES:
-# ✓ Define the problem        (low-resource Luganda translation)
-# ► COLLECT DATA              (this step - load 4 datasets)
-# ► Exploratory Data Analysis (this step - analyze distribution)
+#  Define the problem        (low-resource Luganda translation)
+#  COLLECT DATA              (this step - load 4 datasets)
+#  Exploratory Data Analysis (this step - analyze distribution)
 # ============================================================================
 # This script loads FOUR high-quality Luganda-English datasets:
 # 1. Sunbird AI Luganda Corpus (HuggingFace)
@@ -18,9 +18,9 @@ print(" ML WORKFLOW: COLLECT DATA + EXPLORATORY DATA ANALYSIS (EDA)")
 print("=" * 80)
 print("""
 ML Workflow Progress:
-  ✓ 1. Define the problem       (English ↔ Luganda translation)
-  ► 2. Collect data            (Loading 4 parallel corpora)
-  ► 3. Exploratory Data Analysis (Analyzing data distribution & quality)
+   1. Define the problem       (English  Luganda translation)
+   2. Collect data            (Loading 4 parallel corpora)
+   3. Exploratory Data Analysis (Analyzing data distribution & quality)
   4. Data cleaning & preprocessing
   5. Feature engineering
   6. Model training & evaluation
@@ -60,7 +60,7 @@ try:
     all_datasets_info.append(f"Sunbird AI SALT: {len(dataset1):,} pairs ")
 except Exception as e:
     print(f" Sunbird SALT: {e}")
-    all_datasets_info.append("Sunbird AI SALT: Failed to load ✗")
+    all_datasets_info.append("Sunbird AI SALT: Failed to load ")
 
 # ============================================================================
 # DATASET 2: Makerere NLP Luganda Dataset
@@ -93,7 +93,7 @@ try:
         
 except Exception as e:
     print(f" Makerere NLP: Skipped (optional dataset)")
-    all_datasets_info.append("Makerere NLP: Skipped (optional) ─")
+    all_datasets_info.append("Makerere NLP: Skipped (optional) ")
 
 # ============================================================================
 # DATASET 3: JW300 Parallel Corpus (Luganda)
@@ -122,13 +122,13 @@ try:
     all_datasets_info.append(f"JW300 Corpus: {len(dataset3):,} pairs ")
 except Exception as e:
     print(f" JW300 Corpus: Skipped (optional dataset)")
-    all_datasets_info.append("JW300 Corpus: Skipped (optional) ─")
+    all_datasets_info.append("JW300 Corpus: Skipped (optional) ")
 
 # ============================================================================
 # COMBINE ALL DATASETS
 # ============================================================================
 print("\n" + "=" * 70)
-print("🔀 COMBINING ALL DATASETS")
+print(" COMBINING ALL DATASETS")
 print("=" * 70)
 
 if len(all_luganda_data) == 0:
@@ -142,7 +142,7 @@ df_combined = pd.DataFrame(all_luganda_data)
 print(f"\n All datasets combined!")
 print(f"\nDataset Sources Used:")
 for info in all_datasets_info:
-    print(f"  • {info}")
+    print(f"   {info}")
 
 print(f"\n TOTAL COMBINED: {len(df_combined):,} sentence pairs")
 
@@ -179,10 +179,10 @@ print("=" * 70)
 sources = df_combined['source'].unique()
 for source in sources:
     source_data = df_combined[df_combined['source'] == source].head(2)
-    print(f"\n🏷️  {source}:")
+    print(f"\n  {source}:")
     for i, (idx, row) in enumerate(source_data.iterrows(), 1):
-        print(f"  {i}. 🇺🇬 Luganda: {row['luganda'][:60]}...")
-        print(f"     🇬🇧 English: {row['english'][:60]}...")
+        print(f"  {i}.  Luganda: {row['luganda'][:60]}...")
+        print(f"      English: {row['english'][:60]}...")
 
 # ============================================================================
 # PART 4: DATASET STATISTICS BY SOURCE
@@ -197,7 +197,7 @@ print(f"\nBreakdown by source:")
 for source in sorted(sources):
     count = len(df_combined[df_combined['source'] == source])
     percentage = (count / len(df_combined)) * 100
-    print(f"  • {source}: {count:,} pairs ({percentage:.1f}%)")
+    print(f"   {source}: {count:,} pairs ({percentage:.1f}%)")
 
 # ============================================================================
 # PART 5: COMBINED DATASET STATISTICS
@@ -239,7 +239,7 @@ with open(stats_path, 'w', encoding='utf-8') as f:
     f.write(f"Total Combined Samples: {len(df_combined):,}\n\n")
     f.write("Breakdown by Source:\n")
     for source, count in source_stats.items():
-        f.write(f"  • {source}: {count:,} ({count/len(df_combined)*100:.1f}%)\n")
+        f.write(f"   {source}: {count:,} ({count/len(df_combined)*100:.1f}%)\n")
 
 print(f" Source statistics saved to: {stats_path}")
 
@@ -258,12 +258,12 @@ print(" STEP 2 COMPLETE!")
 print("=" * 70)
 print(f"\n Summary - MULTI-SOURCE DATASET:")
 print(f"    Total combined samples: {len(df_combined):,} pairs")
-print(f"    Languages: Luganda ↔ English")
+print(f"    Languages: Luganda  English")
 print(f"    Sources: {len(sources)} datasets merged")
 print(f"\n Files created:")
-print(f"     • data/luganda_english_dataset_combined.csv")
-print(f"     • data/luganda_english_dataset_combined.pkl")
-print(f"     • data/dataset_source_breakdown.txt")
+print(f"      data/luganda_english_dataset_combined.csv")
+print(f"      data/luganda_english_dataset_combined.pkl")
+print(f"      data/dataset_source_breakdown.txt")
 print(f"\n NOTE: This combined dataset includes:")
 print(f"      Sunbird AI SALT corpus (professional NLP dataset)")
 print(f"      Makerere NLP dataset (local university research)")
