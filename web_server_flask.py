@@ -40,13 +40,7 @@ def transcribe_audio_file(file_path: str) -> str:
 
 @app.route("/", methods=["GET"])
 def home():
-    html = render_template("index.html")
-    # Debug: Check for emojis
-    if '\U0001f30d' in html:  # Globe emoji
-        print("[DEBUG] WARNING: render_template returned HTML with emoji!", flush=True)
-    else:
-        print("[DEBUG] OK: render_template returned HTML without emoji", flush=True)
-    return html
+    return render_template("index.html")
 
 
 @app.route("/api", methods=["GET"])
