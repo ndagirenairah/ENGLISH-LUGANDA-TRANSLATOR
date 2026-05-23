@@ -8,21 +8,61 @@ from datetime import datetime
 from collections import Counter
 
 print("\n" + "="*80)
-print("COMBINING KAMBALE + LOCAL DATASETS")
+print("COMBINING KAMBALE + LOCAL DATASETS WITH CULTURAL BALANCING")
 print("="*80)
+
+print("\n[STEP 0: CULTURAL BALANCING CONFIGURATION]")
+print("="*80)
+
+DATASET_WEIGHTS = {
+    "cultural_training": 3.0,
+    "makerere_nlp": 1.5,
+    "jw300_parallel": 1.0,
+    "sunbird_salt": 1.0,
+    "kambale": 2.0
+}
+
+print("Dataset weighting for cultural emphasis:")
+for source, weight in DATASET_WEIGHTS.items():
+    print(f"  {source}: {weight}x")
+
+CULTURAL_PHRASES = {
+    "how are you": "oli otya",
+    "i am fine": "ndi bulungi",
+    "thank you": "webale nnyo",
+    "welcome": "tukusanyuse",
+    "sit down": "tuula wansi",
+    "come here": "jangu wano",
+    "good morning": "ku makya",
+    "good evening": "ku wakati",
+    "my name is": "erinnya lyange",
+    "what is your name": "erinnya lyo ggwe ani",
+    "i love luganda": "njagala nnyo olulimi oluggya",
+    "respect elders": "okwata abalala nti abakulu",
+    "greet with respect": "kwagala n'okuddamu",
+    "our culture": "ensikirize yaffe",
+    "traditional values": "ebigenderezamu by'ennono"
+}
+
+print(f"\nCultural phrases injected: {len(CULTURAL_PHRASES)}")
 
 print("\n[STEP 1: AUTHENTICATING WITH HUGGING FACE]")
 print("="*80)
 
 try:
     from huggingface_hub import login
+    
     hf_token = os.environ.get('HF_TOKEN')
     if not hf_token:
-        print("HF_TOKEN not found in environment variables")
-        print("To authenticate, set HF_TOKEN or use: huggingface-cli login")
-    else:
+        hf_token = input("Enter your HuggingFace token (from https://huggingface.co/settings/tokens): ").strip()
+    
+    if hf_token:
+        os.environ['HF_TOKEN'] = hf_token
         login(token=hf_token)
-        print("Successfully authenticated with Hugging Face")
+        print(f"Successfully authenticated with Hugging Face")
+        print(f"Token starts with: {hf_token[:20]}...")
+    else:
+        print("WARNING: No HF_TOKEN provided. Kambale dataset requires authentication.")
 except Exception as e:
     print(f"Authentication note: {e}")
 
@@ -30,44 +70,73 @@ print("\n[STEP 2: LOADING KAMBALE DATASET]")
 print("="*80)
 
 kambale_data = []
-try:
-    from datasets import load_dataset
-    
-    print("Loading: kambale/luganda-english-parallel-corpus")
-    dataset = load_dataset(
-        "kambale/luganda-english-parallel-corpus",
-        trust_remote_code=True
-    )
-    
-    print(f"Available splits: {list(dataset.keys())}")
-    
-    for split_name in dataset.keys():
-        print(f"\nProcessing split: {split_name} ({len(dataset[split_name])} samples)")
+
+kambale_local_path = "data/raw/kambale_train.csv"
+
+if os.path.exists(kambale_local_path):
+    print(f"\nLoading from local file: {kambale_local_path}")
+    try:
+        kambale_df = pd.read_csv(kambale_local_path)
+        print(f"  Columns: {list(kambale_df.columns)}")
+        print(f"  Rows: {len(kambale_df)}")
         
-        for idx, example in enumerate(dataset[split_name]):
-            try:
-                en_text = str(example.get('english', '')).strip()
-                lg_text = str(example.get('luganda', '')).strip()
-                
-                if en_text and lg_text:
-                    kambale_data.append({
-                        'english': en_text,
-                        'luganda': lg_text,
-                        'source': 'kambale'
-                    })
-            except Exception as e:
-                if idx < 5:
-                    print(f"  Note: Skipped sample {idx}: {e}")
-                continue
+        for _, row in kambale_df.iterrows():
+            en_text = str(row.get('english', '')).strip()
+            lg_text = str(row.get('luganda', '')).strip()
+            
+            if en_text and lg_text and len(en_text) > 3 and len(lg_text) > 3:
+                kambale_data.append({
+                    'english': en_text,
+                    'luganda': lg_text,
+                    'source': 'kambale'
+                })
+        
+        print(f"✓ Loaded {len(kambale_data)} valid samples from Kambale (local)")
     
-    print(f"\nLoaded {len(kambale_data)} samples from Kambale")
+    except Exception as e:
+        print(f"Error loading local Kambale file: {e}")
+        print("Falling back to HuggingFace download...")
+        kambale_data = []
+
+if not kambale_data:
+    print(f"\nKambale local file not found. Trying HuggingFace download...")
+    try:
+        from datasets import load_dataset
+        
+        print("Loading: kambale/luganda-english-parallel-corpus from HuggingFace")
+        dataset = load_dataset(
+            "kambale/luganda-english-parallel-corpus"
+        )
+        
+        print(f"Available splits: {list(dataset.keys())}")
+        
+        for split_name in dataset.keys():
+            print(f"\nProcessing split: {split_name} ({len(dataset[split_name])} samples)")
+            
+            for idx, example in enumerate(dataset[split_name]):
+                try:
+                    en_text = str(example.get('english', '')).strip()
+                    lg_text = str(example.get('luganda', '')).strip()
+                    
+                    if en_text and lg_text:
+                        kambale_data.append({
+                            'english': en_text,
+                            'luganda': lg_text,
+                            'source': 'kambale'
+                        })
+                except Exception as e:
+                    if idx < 5:
+                        print(f"  Note: Skipped sample {idx}: {e}")
+                    continue
+        
+        print(f"\n✓ Loaded {len(kambale_data)} samples from Kambale (HuggingFace)")
     
-except Exception as e:
-    print(f"Error loading Kambale dataset: {e}")
-    print("\nTroubleshooting:")
-    print("1. Ensure you have accepted the dataset terms:")
-    print("   https://huggingface.co/datasets/kambale/luganda-english-parallel-corpus")
-    print("2. Your HF token has been set correctly")
+    except Exception as e:
+        print(f"Error loading Kambale from HuggingFace: {e}")
+        print("\nTroubleshooting:")
+        print("1. To download locally, run: python download_kambale_dataset.py")
+        print("2. Or accept dataset terms at:")
+        print("   https://huggingface.co/datasets/kambale/luganda-english-parallel-corpus")
     print("3. You have internet connection")
     kambale_data = []
 
@@ -127,11 +196,54 @@ for filename, source_name in datasets_to_load.items():
 
 print(f"\nTotal local samples: {len(local_data)}")
 
-print("\n[STEP 4: COMBINING & CLEANING DATA]")
+print("\n[STEP 4: COMBINING & CLEANING DATA WITH CULTURAL BALANCING]")
 print("="*80)
 
 all_data = kambale_data + local_data
-print(f"Total before cleaning: {len(all_data)}")
+
+print(f"\nBefore balancing:")
+print(f"  Kambale: {len(kambale_data)}")
+print(f"  Local: {len(local_data)}")
+print(f"  Total: {len(all_data)}")
+
+print(f"\nApplying dataset weighting for cultural emphasis...")
+balanced_data = []
+
+for source, items in [
+    ("kambale", kambale_data),
+    ("cultural_training", [x for x in local_data if x['source'] == 'cultural']),
+    ("jw300_parallel", [x for x in local_data if x['source'] == 'jw300']),
+    ("makerere_nlp", [x for x in local_data if x['source'] == 'makerere']),
+    ("sunbird_salt", [x for x in local_data if x['source'] == 'sunbird']),
+]:
+    if not items:
+        continue
+    
+    weight = DATASET_WEIGHTS.get(source, 1.0)
+    repeat_count = int(weight)
+    
+    print(f"  {source}: {len(items)} samples × {weight}x = {len(items) * repeat_count} weighted samples")
+    
+    for _ in range(repeat_count):
+        balanced_data.extend(items)
+
+print(f"\nAfter balancing: {len(balanced_data)} total samples")
+
+print(f"\nInjecting cultural phrases for semantic grounding...")
+cultural_pairs = []
+for en_phrase, lg_phrase in CULTURAL_PHRASES.items():
+    cultural_pairs.append({
+        'english': en_phrase,
+        'luganda': lg_phrase,
+        'source': 'cultural_injection'
+    })
+
+balanced_data.extend(cultural_pairs)
+print(f"  Added {len(cultural_pairs)} cultural phrases")
+print(f"  Total after injection: {len(balanced_data)}")
+
+all_data = balanced_data
+print(f"\nTotal before deduplication: {len(all_data)}")
 
 unique_pairs = {}
 duplicates_removed = 0

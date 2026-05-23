@@ -116,6 +116,9 @@ training_args = Seq2SeqTrainingArguments(
     label_smoothing_factor=0.1,
     load_best_model_at_end=True,
     metric_for_best_model="eval_loss",
+    dropout=0.1,
+    attention_dropout=0.1,
+    activation_dropout=0.1,
 )
 
 print("Training configured")
