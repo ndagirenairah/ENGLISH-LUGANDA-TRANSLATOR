@@ -11,7 +11,7 @@ from typing import Dict, List
 import pandas as pd
 from sacrebleu import corpus_bleu
 
-from inference import TransformerTranslator
+from translate_english_luganda import TransformerTranslator
 
 
 def evaluate_direction(

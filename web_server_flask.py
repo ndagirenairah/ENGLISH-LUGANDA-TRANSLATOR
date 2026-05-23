@@ -12,7 +12,7 @@ import speech_recognition as sr
 from flask import Flask, jsonify, render_template, request, send_file
 from gtts import gTTS
 
-from inference import TransformerTranslator
+from translate_english_luganda import TransformerTranslator
 
 
 app = Flask(__name__)
@@ -40,7 +40,13 @@ def transcribe_audio_file(file_path: str) -> str:
 
 @app.route("/", methods=["GET"])
 def home():
-    return render_template("index.html")
+    html = render_template("index.html")
+    # Debug: Check for emojis
+    if '\U0001f30d' in html:  # Globe emoji
+        print("[DEBUG] WARNING: render_template returned HTML with emoji!", flush=True)
+    else:
+        print("[DEBUG] OK: render_template returned HTML without emoji", flush=True)
+    return html
 
 
 @app.route("/api", methods=["GET"])

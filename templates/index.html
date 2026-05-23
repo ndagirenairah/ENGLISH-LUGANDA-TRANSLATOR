@@ -384,9 +384,9 @@
 <body>
     <div class="container">
         <header>
-            <h1>🌍 English-Luganda Translator</h1>
+            <h1>English-Luganda Translator</h1>
             <p>Instant translation between English and Luganda</p>
-            <span class="status-badge ready">✓ Ready to Translate</span>
+            <span class="status-badge ready">Ready to Translate</span>
         </header>
 
         <div class="content">
@@ -410,7 +410,7 @@
                             <span id="sourceCount">0</span>/1000 characters
                         </div>
                         <div class="voice-buttons">
-                            <button class="btn-voice" id="micBtn">🎤 Speak</button>
+                            <button class="btn-voice" id="micBtn">Speak</button>
                         </div>
                     </div>
 
@@ -421,7 +421,7 @@
                             <span id="targetCount">0</span>/1000 characters
                         </div>
                         <div class="voice-buttons">
-                            <button class="btn-voice" id="speakTargetBtn">🔊 Replay</button>
+                            <button class="btn-voice" id="speakTargetBtn">Replay</button>
                         </div>
                     </div>
                 </div>
@@ -435,26 +435,26 @@
                         </div>
                     </button>
                     <button class="btn-clear" id="clearBtn">Clear</button>
-                    <button class="btn-copy" id="copyBtn">📋 Copy</button>
+                    <button class="btn-copy" id="copyBtn">Copy</button>
                 </div>
 
                 <!-- Examples -->
                 <div class="examples-section">
-                    <h3>📚 Popular Examples</h3>
+                    <h3>Popular Examples</h3>
                     <div class="examples-list" id="examplesList"></div>
                 </div>
             </div>
 
             <!-- PHRASEBOOK TAB -->
             <div id="phrasebook" class="tab-content">
-                <h2 style="color: #333; margin-bottom: 20px;">📖 Luganda Learning Mode</h2>
+                <h2 style="color: #333; margin-bottom: 20px;">Luganda Learning Mode</h2>
                 <p style="color: #666; margin-bottom: 20px;">Learn common Luganda phrases organized by category.</p>
                 <div id="phrasebookContent"></div>
             </div>
 
             <!-- HISTORY TAB -->
             <div id="history" class="tab-content">
-                <h2 style="color: #333; margin-bottom: 20px;">📊 Translation History</h2>
+                <h2 style="color: #333; margin-bottom: 20px;">Translation History</h2>
                 <button class="btn-clear" id="clearHistoryBtn" style="margin-bottom: 20px;">Clear History</button>
                 <div class="history-list" id="historyList"></div>
             </div>
@@ -468,7 +468,7 @@
         </div>
 
         <footer>
-            <p>🌟 Powered by Helsinki-NLP OPUS-MT | AI Translation Technology</p>
+            <p>Powered by Helsinki-NLP OPUS-MT | AI Translation Technology</p>
             <p>© 2024 English-Luganda Translator | Built for Cultural Exchange</p>
         </footer>
     </div>
@@ -546,7 +546,7 @@
                 if (response.ok) {
                     targetText.value = data.translation;
                     targetCount.textContent = data.translation.length;
-                    showSuccess(`✓ Translated from ${data.source}`);
+                    showSuccess(`Translated from ${data.source}`);
                     
                     // Auto-speak Luganda translation if requested (from speech input)
                     if (autoSpeak) {
@@ -609,7 +609,7 @@
             const text = targetText.value || sourceText.value;
             if (text) {
                 navigator.clipboard.writeText(text).then(() => {
-                    showSuccess('✓ Copied to clipboard!');
+                    showSuccess('Copied to clipboard!');
                 });
             }
         });
@@ -634,7 +634,7 @@
             try {
                 recognitionActive = true;
                 micBtn.disabled = true;
-                micBtn.textContent = '🎤 Listening...';
+                micBtn.textContent = 'Listening...';
                 hideMessages();
 
                 const recognition = new SpeechRecognition();
@@ -643,14 +643,14 @@
                 recognition.interimResults = false;
 
                 recognition.onstart = () => {
-                    showSuccess('🎤 Listening... speak now!');
+                    showSuccess('Listening... speak now!');
                 };
 
                 recognition.onresult = async (event) => {
                     const transcript = event.results[0][0].transcript;
                     sourceText.value = transcript;
                     sourceCount.textContent = transcript.length;
-                    showSuccess(`✓ Heard: "${transcript}"`);
+                    showSuccess(`Heard: "${transcript}"`);
                     
                     // Auto-translate and speak Luganda output
                     await new Promise(resolve => setTimeout(resolve, 500));
@@ -664,7 +664,7 @@
                 recognition.onend = () => {
                     recognitionActive = false;
                     micBtn.disabled = false;
-                    micBtn.textContent = '🎤 Speak';
+                    micBtn.textContent = 'Speak';
                 };
 
                 recognition.start();
@@ -672,7 +672,7 @@
                 showError('Speech recognition error: ' + error.message);
                 recognitionActive = false;
                 micBtn.disabled = false;
-                micBtn.textContent = '🎤 Speak';
+                micBtn.textContent = ' Speak';
             }
         });
 
@@ -810,7 +810,7 @@
                 try {
                     await fetch('/api/history/clear', {method: 'POST'});
                     loadHistory();
-                    showSuccess('✓ History cleared');
+                    showSuccess(' History cleared');
                 } catch (error) {
                     showError('Error clearing history: ' + error.message);
                 }

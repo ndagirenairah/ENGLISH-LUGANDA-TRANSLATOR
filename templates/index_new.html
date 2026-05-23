@@ -295,7 +295,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🇬🇧🇺🇬 English-Luganda Translator</h1>
+            <h1> English-Luganda Translator</h1>
             <p>Preserve your cultural heritage through language</p>
         </div>
 
@@ -322,19 +322,19 @@
                 </div>
                 <div id="outputText" class="output-text">Translation will appear here...</div>
                 <div class="button-group">
-                    <button class="btn-copy" onclick="copyToClipboard()">📋 Copy</button>
+                    <button class="btn-copy" onclick="copyToClipboard()"> Copy</button>
                     <button class="btn-clear" onclick="clearOutput()">Clear</button>
                 </div>
             </div>
         </div>
 
         <div class="examples-section">
-            <h3>📚 Try These Examples</h3>
+            <h3> Try These Examples</h3>
             <div class="examples-grid" id="examplesContainer"></div>
         </div>
 
         <div class="status-bar">
-            System Status: <span class="status-badge">🟢 Online</span>
+            System Status: <span class="status-badge"> Online</span>
             <br><small id="statusInfo"></small>
         </div>
     </div>
@@ -407,7 +407,7 @@
 
                 if (data.status === 'success') {
                     document.getElementById('outputText').textContent = data.translation;
-                    showMessage(`✅ Translated (Source: ${data.source})`, 'success');
+                    showMessage(` Translated (Source: ${data.source})`, 'success');
                 } else {
                     showMessage(`Error: ${data.message}`, 'error');
                 }
@@ -427,7 +427,7 @@
             }
             
             navigator.clipboard.writeText(outputText).then(() => {
-                showMessage('✅ Copied to clipboard!', 'success');
+                showMessage(' Copied to clipboard!', 'success');
             }).catch(err => {
                 showMessage('Failed to copy', 'error');
                 console.error('Error:', err);
