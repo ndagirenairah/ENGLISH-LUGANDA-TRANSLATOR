@@ -109,6 +109,13 @@ training_args = Seq2SeqTrainingArguments(
     logging_steps=50,
     predict_with_generate=True,
     report_to="none",
+    gradient_accumulation_steps=2,
+    fp16=True if device.type == "cuda" else False,
+    lr_scheduler_type="cosine",
+    max_grad_norm=1.0,
+    label_smoothing_factor=0.1,
+    load_best_model_at_end=True,
+    metric_for_best_model="eval_loss",
 )
 
 print("Training configured")

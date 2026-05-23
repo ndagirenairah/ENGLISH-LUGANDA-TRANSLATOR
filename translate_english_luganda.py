@@ -136,6 +136,11 @@ class TransformerTranslator:
                 repetition_penalty=1.2,
                 length_penalty=0.9,
                 early_stopping=True,
+                use_cache=True,
+                num_beam_groups=5 if num_beams > 1 else 1,
+                diversity_penalty=0.5 if num_beams > 1 else 0.0,
+                output_attentions=False,
+                return_dict_in_generate=False,
             )
 
         translation = tokenizer.decode(generated[0], skip_special_tokens=True)
