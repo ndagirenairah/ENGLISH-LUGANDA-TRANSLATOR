@@ -1,0 +1,119 @@
+"""
+STEP 1: Load Data - Week 2 ML Workflow
+=====================================
+Load all 5 English-Luganda datasets from data/raw/ and combine them.
+
+Datasets:
+  1. kambale_train.csv         - High-quality Kambale corpus
+  2. cultural_training.csv     - Buganda cultural terms
+  3. jw300_parallel.csv        - Religious/literary texts
+  4. makerere_nlp.csv          - Academic Luganda
+  5. sunbird_salt.csv          - Low-resource language data
+"""
+
+from pathlib import Path
+from typing import Dict, List
+import pandas as pd
+import sys
+
+try:
+    from config import RAW_DATASETS, TEXT_MIN_LENGTH, TEXT_MAX_LENGTH
+    from utils import load_csv_safe, print_section, validate_pair
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).parent))
+    from config import RAW_DATASETS, TEXT_MIN_LENGTH, TEXT_MAX_LENGTH
+    from utils import load_csv_safe, print_section, validate_pair
+
+
+def load_all_datasets() -> pd.DataFrame:
+    """
+    Load all datasets from data/raw/ and combine them.
+    
+    Returns:
+        pd.DataFrame with columns: ['english', 'luganda', 'source']
+    """
+    print_section("STEP 1: LOADING DATASETS", width=80)
+    
+    frames: List[pd.DataFrame] = []
+    total_loaded = 0
+    
+    for name, path in RAW_DATASETS.items():
+        print(f"\n📂 Loading {name}...")
+        df = load_csv_safe(path)
+        
+        if df.empty:
+            print(f"   ⚠️  Empty or invalid")
+            continue
+        
+        # Validate text pairs
+        valid_mask = df.apply(
+            lambda row: validate_pair(
+                row['english'], 
+                row['luganda'],
+                min_len=TEXT_MIN_LENGTH,
+                max_len=TEXT_MAX_LENGTH
+            ),
+            axis=1
+        )
+        
+        df = df[valid_mask].reset_index(drop=True)
+        
+        if df.empty:
+            print(f"   ⚠️  No valid pairs after filtering")
+            continue
+        
+        frames.append(df)
+        total_loaded += len(df)
+        print(f"   ✅ Loaded {len(df):,} valid pairs | Source: {df['source'].iloc[0]}")
+    
+    if not frames:
+        raise ValueError("❌ No datasets loaded! Check data/raw/ directory.")
+    
+    # Combine all datasets
+    combined = pd.concat(frames, ignore_index=True)
+    
+    print_section("DATASET SUMMARY", width=80)
+    print(f"\n📊 Total samples loaded: {len(combined):,}")
+    print(f"\n📈 Breakdown by source:")
+    for source, count in combined['source'].value_counts().items():
+        pct = (count / len(combined)) * 100
+        print(f"   {source:30} {count:6,} ({pct:5.1f}%)")
+    
+    return combined
+
+
+def get_dataset_statistics(df: pd.DataFrame) -> Dict:
+    """Calculate statistics about the dataset."""
+    stats = {
+        "total_samples": len(df),
+        "avg_english_length": df['english'].str.len().mean(),
+        "avg_luganda_length": df['luganda'].str.len().mean(),
+        "max_english_length": df['english'].str.len().max(),
+        "max_luganda_length": df['luganda'].str.len().max(),
+        "unique_sources": df['source'].nunique(),
+    }
+    return stats
+
+
+def main():
+    """Load and display dataset information."""
+    # Load all datasets
+    combined_df = load_all_datasets()
+    
+    # Get statistics
+    stats = get_dataset_statistics(combined_df)
+    
+    print_section("DATASET STATISTICS", width=80)
+    print(f"\n📏 Text Length Statistics:")
+    print(f"   English - Avg: {stats['avg_english_length']:.1f}, Max: {stats['max_english_length']}")
+    print(f"   Luganda - Avg: {stats['avg_luganda_length']:.1f}, Max: {stats['max_luganda_length']}")
+    
+    print(f"\n✅ Step 1 Complete!")
+    print(f"   Total dataset size: {len(combined_df):,} pairs")
+    print(f"   Ready for preprocessing...")
+    
+    return combined_df
+
+
+if __name__ == "__main__":
+    main()
