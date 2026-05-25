@@ -186,7 +186,6 @@ def main():
         train_dataset=train_tokenized,
         eval_dataset=val_tokenized,
         data_collator=data_collator,
-        tokenizer=tokenizer,
     )
     
     # Train
