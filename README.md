@@ -10,10 +10,11 @@ A machine learning translator for English ↔ Luganda using transformer sequence
 
 This project implements a complete machine learning workflow for English-Luganda translation:
 
-- **Week 2**: ML Workflow (data loading → preprocessing → training → evaluation)
-- **Week 3**: Regularization (dropout, L2 weight decay)
-- **Week 6**: Evaluation Metrics (BLEU score, cross-validation)
-- **Week 9**: Transformers (sequence-to-sequence models with OPUS-MT)
+- **Model**: Helsinki-NLP/OPUS-MT-en-mul (143.1M parameters)
+- **Framework**: PyTorch + HuggingFace Transformers
+- **Training**: Google Colab with Tesla T4 GPU (or CPU fallback)
+- **Performance**: BLEU score 20.69 on 5,008 test samples
+- **Visualizations**: Data distribution, training results, quality metrics dashboard
 
 ---
 
@@ -21,27 +22,32 @@ This project implements a complete machine learning workflow for English-Luganda
 
 The project uses **5 real English-Luganda parallel datasets**:
 
-1. **Kambale Corpus** (~2000 pairs)
+1. **Kambale Corpus** (~50,012 pairs)
    - High-quality parallel translations
    - Domain: Agriculture, society, community
    
-2. **Cultural Dataset** (~100 pairs)
+2. **Cultural Dataset** (~12 pairs)
    - Buganda cultural and heritage terms
    - Domain: Traditions, kingship, culture
    
-3. **JW300** (~500 pairs)
+3. **JW300** (~15 pairs)
    - Religious and literary texts
    - Domain: Spiritual, philosophical
    
-4. **Makerere NLP** (~200 pairs)
+4. **Makerere NLP** (~15 pairs)
    - Academic Luganda
    - Domain: Formal, educational
    
-5. **Sunbird SALT** (~300 pairs)
+5. **Sunbird SALT** (~18 pairs)
    - Low-resource language data
    - Domain: General language patterns
 
-**Total**: 3100+ real translation pairs
+**Total**: 50,072 real translation pairs
+
+**Data Splits**:
+- Training: 40,056 pairs (80%)
+- Validation: 5,008 pairs (10%)
+- Testing: 5,008 pairs (10%)
 
 ---
 
@@ -79,7 +85,9 @@ outputs/
 ├── evaluation_results.json # BLEU score & metrics
 └── predictions.csv        # Sample predictions
 
-COLAB_TRAIN_PIPELINE.py    # Copy to Google Colab for GPU training
+COLAB_TRAINING_ML_PIPELINE.ipynb  # Google Colab GPU training notebook (23 cells)
+web_server_flask.py              # Flask REST API for model inference
+templates/index.html             # Web UI for translations
 ```
 
 ---
@@ -88,26 +96,46 @@ COLAB_TRAIN_PIPELINE.py    # Copy to Google Colab for GPU training
 
 ### Option 1: Google Colab (GPU - RECOMMENDED)
 
-**Fastest way** (5-15 minutes with free GPU):
+**Fastest way** (30-40 minutes with free Tesla T4 GPU):
 
-1. **Upload project to Google Drive**
+1. **Open Colab notebook directly**:
    ```
-   My Drive/English-Luganda-Translator/ENGLISH-LUGANDA-TRANSLATOR/
+   https://colab.research.google.com/github/ndagirenairah/ENGLISH-LUGANDA-TRANSLATOR/blob/master/COLAB_TRAINING_ML_PIPELINE.ipynb
    ```
 
-2. **Open Google Colab** → https://colab.research.google.com/
+2. **Click "Run all"** (or run cells sequentially)
 
-3. **Create new notebook** and paste: `COLAB_TRAIN_PIPELINE.py`
+3. **The notebook will**:
+   - Install PyTorch with CUDA support
+   - Clone your GitHub repo
+   - Load all 50,072 translation pairs
+   - Preprocess and split data (80/10/10)
+   - Train model on Tesla T4 GPU
+   - Show visualization dashboards:
+     - **STEP 4.5**: Data distribution (4 charts)
+     - **STEP 7.5**: Results visualization (4 charts)
+     - **STEP 7.6**: Quality metrics dashboard (7 panels)
+   - Calculate BLEU score
+   - Download `trained_model.zip`
 
-4. **Click "Run all"** and wait 15-20 minutes
+4. **Download the trained model** and extract to `models/trained_model/`
 
-5. **Download**:
-   - `trained_model.zip` (trained model)
-   - `evaluation_outputs.zip` (BLEU scores)
+### Option 2: Local Machine with Trained Model
 
-**See**: `COLAB_QUICK_START.txt` or `COLAB_SETUP_GUIDE.md`
+**Prerequisites**: Download trained model from GitHub releases
 
-### Option 2: Local Machine (CPU - Slower)
+```bash
+# Download pre-trained model
+python DOWNLOAD_TRAINED_MODEL.py
+
+# Start Flask server
+python web_server_flask.py
+
+# Open browser and go to:
+# http://localhost:5000
+```
+
+### Option 3: Local Training (CPU - Slower)
 
 ```bash
 # Run complete pipeline
@@ -136,70 +164,109 @@ MODEL_NAME = "Helsinki-NLP/opus-mt-en-mul"
 BATCH_SIZE = 8
 LEARNING_RATE = 2e-5
 NUM_EPOCHS = 3
+GRADIENT_ACCUMULATION = 2
+WARMUP_STEPS = 500
 
 # Regularization
 DROPOUT = 0.1
 WEIGHT_DECAY = 0.01
+MAX_SEQ_LENGTH = 128
 
 # Data splits
-TRAIN: 80% (2480 samples)
-VAL:   10% (310 samples)
-TEST:  10% (310 samples)
+TRAIN: 80% (40,056 samples)
+VAL:   10% (5,008 samples)
+TEST:  10% (5,008 samples)
+
+# Inference
+NUM_BEAMS = 4
 ```
 
 ---
 
 ## [STATS] Expected Results
 
-After training:
+After training on full dataset:
 
 ```
-BLEU Score:           18-28
-Training Loss:        2.5-3.5
-Test Set Size:        310 samples
-GPU Training Time:    8-12 minutes
-CPU Training Time:    30-60 minutes
+BLEU Score:           ~20.69
+Training Loss:        2.5-3.0
+Test Set Size:        5,008 samples
+GPU Training Time:    30-40 minutes (Tesla T4)
+CPU Training Time:    2-4 hours
+Model Size:           ~430MB
 ```
 
 ---
 
 ## 🔧 How It Works
 
-### Step 1: Load Data
-- Loads all 5 CSV files from `data/raw/`
-- Removes invalid/empty entries
-- Combines into single dataset
-- **Output**: 3100+ valid English-Luganda pairs
+### Step 1: Install Packages
+- Installs PyTorch with CUDA 11.8 support
+- Installs HuggingFace Transformers, datasets, pandas, numpy
+- Verifies GPU/CUDA availability with fallback to CPU
 
-### Step 2: Preprocess
+### Step 2: Clone & Load Data
+- Clones GitHub repo to find datasets
+- Loads all 5 CSV files from `data/raw/`:
+  - Kambale Corpus (50,012 pairs)
+  - Cultural, JW300, Makerere NLP, Sunbird SALT
+- Removes invalid/empty entries
+- **Output**: 50,072 valid English-Luganda pairs
+
+### Step 3: Preprocess & Visualize
 - Cleans text (normalize whitespace, remove URLs)
 - Splits into:
-  - Train: 80% (used for fine-tuning)
-  - Val: 10% (used for validation during training)
-  - Test: 10% (used for final evaluation)
+  - Train: 80% (40,056 samples for fine-tuning)
+  - Val: 10% (5,008 samples for validation)
+  - Test: 10% (5,008 samples for final evaluation)
+- **STEP 4.5**: Displays data distribution visualization (4 plots):
+  - Word length distribution
+  - Dataset split proportions
+  - Correlation analysis
+  - Statistical summary
 - **Output**: `data/processed/train.csv`, `val.csv`, `test.csv`
 
-### Step 3: Train
-- Loads pre-trained OPUS-MT model
-- Fine-tunes on training data
-- Uses regularization (dropout, weight decay)
+### Step 4: Train Model
+- Loads pre-trained OPUS-MT model (143.1M parameters)
+- Fine-tunes on 40,056 training samples
+- Uses regularization:
+  - Dropout: 0.1
+  - Weight decay: 0.01
+  - Warmup steps: 500
+  - Learning rate: 2e-5
+- Training settings:
+  - Batch size: 8 (gradient accumulation: 2)
+  - Epochs: 3
+  - Optimizer: AdamW
 - Saves best model
 - **Output**: `models/trained_model/`
 
-### Step 4: Evaluate
-- Generates predictions on test set
-- Calculates BLEU score
-- Shows sample translations
-- **Output**: `outputs/evaluation_results.json`
+### Step 5: Evaluate & Visualize Results
+- Generates predictions on 5,008 test samples
+- Calculates BLEU score (20.69 achieved)
+- **STEP 7.5**: Displays results visualization (4 plots):
+  - BLEU score bar chart
+  - Sample predictions
+  - Output length distribution
+  - Evaluation summary
+- **STEP 7.6**: Quality metrics dashboard (7 information panels):
+  - Performance gauge
+  - Training status
+  - Grade (A/B/C/D/F)
+  - Model architecture info
+  - Dataset statistics
+  - Key metrics
+  - Next steps
+- **Output**: `outputs/evaluation_results.csv`, `translation_results.csv`
 
 ---
 
 ## 📚 Documentation
 
-- **`README_ML_PIPELINE.md`** - Detailed ML workflow documentation
-- **`COLAB_QUICK_START.txt`** - 3-step Colab quick start
-- **`COLAB_SETUP_GUIDE.md`** - Detailed Colab setup instructions
-- **`READY_FOR_COLAB.md`** - Complete overview
+- **`docs/ML_PIPELINE_GUIDE.md`** - Detailed ML workflow and architecture
+- **`COLAB_TRAINING_ML_PIPELINE.ipynb`** - Complete 23-cell training notebook
+- **`web_server_flask.py`** - REST API for model inference
+- **`templates/index.html`** - Interactive web UI
 
 ---
 
@@ -236,36 +303,70 @@ This project demonstrates ML concepts from your course:
 
 ## [START] Next Steps
 
-1. **Train locally** (or on Colab):
-   ```bash
-   python scripts/run_pipeline.py
-   ```
+### 1️⃣ Train the Model (if you don't have a trained model)
 
-2. **Download trained model** (from Colab if used)
+**Option A: Google Colab** (Recommended)
+```
+https://colab.research.google.com/github/ndagirenairah/ENGLISH-LUGANDA-TRANSLATOR/blob/master/COLAB_TRAINING_ML_PIPELINE.ipynb
+```
+Just click the link and run all 23 cells.
 
-3. **Use for inference**:
-   ```python
-   from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-   
-   model = AutoModelForSeq2SeqLM.from_pretrained("models/trained_model")
-   tokenizer = AutoTokenizer.from_pretrained("models/trained_model")
-   
-   # Translate
-   inputs = tokenizer("Hello, how are you?", return_tensors="pt")
-   outputs = model.generate(inputs['input_ids'])
-   translation = tokenizer.decode(outputs[0], skip_special_tokens=True)
-   ```
+**Option B: Local Machine**
+```bash
+python scripts/run_pipeline.py
+```
 
-4. **Deploy or further fine-tune**
+### 2️⃣ Download and Set Up the Model
+
+```bash
+# Download pre-trained model (from GitHub releases)
+python DOWNLOAD_TRAINED_MODEL.py
+```
+
+### 3️⃣ Use the Web Interface
+
+```bash
+# Start Flask server
+python web_server_flask.py
+
+# Open browser
+http://localhost:5000
+```
+
+### 4️⃣ Use for Programmatic Inference
+
+```python
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+import torch
+
+model = AutoModelForSeq2SeqLM.from_pretrained("models/trained_model")
+tokenizer = AutoTokenizer.from_pretrained("models/trained_model")
+
+# Translate English to Luganda
+text = "Hello, how are you today?"
+inputs = tokenizer(text, return_tensors="pt", max_length=128, truncation=True)
+
+outputs = model.generate(
+    inputs['input_ids'],
+    num_beams=4,
+    max_length=128,
+    early_stopping=True
+)
+
+translation = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(f"English: {text}")
+print(f"Luganda: {translation}")
+```
 
 ---
 
 ## 📞 Help
 
-- **Issues during setup?** → Check `COLAB_SETUP_GUIDE.md`
-- **Want to understand the workflow?** → Read `README_ML_PIPELINE.md`
-- **Questions about ML concepts?** → See docstrings in `src/` files
-- **GPU training tips?** → Check `READY_FOR_COLAB.md`
+- **Issues during Colab training?** → Check the error messages in notebook STEP 1 or STEP 5
+- **Want to understand the ML pipeline?** → Read `docs/ML_PIPELINE_GUIDE.md`
+- **Questions about model architecture?** → See docstrings in `src/` files
+- **Flask server won't start?** → Make sure trained model is in `models/trained_model/`
+- **Model not found error?** → Run `python DOWNLOAD_TRAINED_MODEL.py` first
 
 ---
 
@@ -291,13 +392,16 @@ NUM_EPOCHS = 5
 
 ## ✅ Status
 
-- ✅ Data loading complete (5 datasets)
-- ✅ Preprocessing pipeline ready
-- ✅ Training configured and working
-- ✅ Evaluation metrics implemented
-- ✅ Colab GPU training ready
-- ✅ Local CPU training working
-- ✅ Documentation complete
+- ✅ Data loading complete (5 datasets, 50,072 pairs)
+- ✅ Preprocessing pipeline ready (80/10/10 splits)
+- ✅ Training configured and working on GPU/CPU
+- ✅ Evaluation metrics implemented (BLEU score 20.69)
+- ✅ Colab GPU training notebook (23 cells, fully integrated)
+- ✅ Data visualization (3 visualization blocks with 15 total panels)
+- ✅ Flask REST API server ready
+- ✅ Web UI interface complete (http://localhost:5000)
+- ✅ Documentation updated and accurate
+- ✅ Repository cleaned up (duplicate files removed)
 
 **Ready for training!**
 
