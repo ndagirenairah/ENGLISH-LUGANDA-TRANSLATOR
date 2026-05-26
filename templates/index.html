@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English-Luganda Translator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .translator {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        textarea {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: 'Segoe UI', sans-serif;
+            resize: vertical;
+            min-height: 150px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            font-size: 1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-translate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-translate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-translate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-clear {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-clear:hover {
+            background: #d0d0d0;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .status.loading {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status.success {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .status.error {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #1976d2;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 600px) {
+            .translator {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 English-Luganda Translator</h1>
+            <p>Translate English to Luganda using AI</p>
+        </div>
+        
+        <div id="status" class="status" style="display: none;"></div>
+        
+        <div class="translator">
+            <div class="input-group">
+                <label for="english">English</label>
+                <textarea id="english" placeholder="Enter English text here..." autofocus></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="luganda">Luganda</label>
+                <textarea id="luganda" placeholder="Translation will appear here..." readonly></textarea>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-translate" onclick="translate()">Translate</button>
+            <button class="btn-clear" onclick="clearText()">Clear</button>
+        </div>
+        
+        <div class="footer">
+            <p>🤖 Powered by OPUS-MT Transformer Model</p>
+            <p>BLEU Score: 20.69 | Trained on 50,072+ English-Luganda pairs</p>
+        </div>
+    </div>
+    
+    <script>
+        const englishInput = document.getElementById('english');
+        const lugandaInput = document.getElementById('luganda');
+        const statusDiv = document.getElementById('status');
+        
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+        }
+        
+        function hideStatus() {
+            statusDiv.style.display = 'none';
+        }
+        
+        function clearText() {
+            englishInput.value = '';
+            lugandaInput.value = '';
+            hideStatus();
+            englishInput.focus();
+        }
+        
+        async function translate() {
+            const text = englishInput.value.trim();
+            
+            if (!text) {
+                showStatus('❌ Please enter text to translate', 'error');
+                return;
+            }
+            
+            const translateBtn = event.target;
+            translateBtn.disabled = true;
+            showStatus('🔄 Translating...', 'loading');
+            
+            try {
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    lugandaInput.value = data.luganda;
+                    showStatus('✅ Translation successful!', 'success');
+                } else {
+                    showStatus(`❌ Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                translateBtn.disabled = false;
+            }
+        }
+        
+        // Allow Enter key to translate (Ctrl+Enter)
+        englishInput.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                translate();
+            }
+        });
+        
+        // Check API status on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                if (!data.model_loaded) {
+                    showStatus('⚠️ Model is loading...', 'loading');
+                }
+            } catch (error) {
+                showStatus('⚠️ Could not connect to server', 'error');
+            }
+        });
+    </script>
+</body>
+</html>
