@@ -91,7 +91,7 @@ def evaluate_on_test_set(model, tokenizer, test_df):
     Evaluate model on test set.
     Calculate BLEU score and other metrics.
     """
-    print("\n📊 Evaluating on test set...")
+    print("\n[INFO] Evaluating on test set...")
     
     # Prepare data
     english_texts = test_df['english'].tolist()
@@ -155,7 +155,7 @@ def show_sample_translations(predictions, references, num_samples=5):
 
 def save_results(eval_results):
     """Save evaluation results to JSON."""
-    print("\n💾 Saving results...")
+    print("\n[INFO] Saving results...")
     
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     
@@ -193,7 +193,7 @@ def main():
     print(f"   Test samples: {len(test_df)}")
     
     # Load trained model
-    print("\n🤖 Loading trained model...")
+    print("\n[INFO] Loading trained model...")
     model, tokenizer = load_trained_model()
     
     # Evaluate

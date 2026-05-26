@@ -125,7 +125,7 @@ def main():
     print(f"   Train: {n_train:,} | Val: {n_val:,}")
     
     # Load model and tokenizer
-    print(f"\n🤖 Loading model: {MODEL_NAME}")
+    print(f"\n[INFO] Loading model: {MODEL_NAME}")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
     
@@ -190,7 +190,7 @@ def main():
     
     # Train
     print("\n" + "="*80)
-    print(f"🚀 STARTING TRAINING")
+    print(f"[INFO] STARTING TRAINING")
     print(f"   Dataset: {n_train:,} training samples")
     print(f"   Estimated time: 5-15 minutes on GPU, 30-60 minutes on CPU")
     print("="*80 + "\n")
@@ -207,7 +207,7 @@ def main():
     print(f"   Time elapsed: {training_time:.1f} minutes")
     
     # Save model and tokenizer
-    print("\n💾 Saving model and tokenizer...")
+    print("\n[INFO] Saving model and tokenizer...")
     TRAIN_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     
     model.save_pretrained(TRAIN_OUTPUT_DIR)

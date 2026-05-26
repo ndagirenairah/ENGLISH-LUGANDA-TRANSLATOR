@@ -1,4 +1,4 @@
-# 🚀 ML PIPELINE GUIDE: English-Luganda Neural Machine Translator
+# ML PIPELINE GUIDE: English-Luganda Neural Machine Translator
 
 ## Pipeline Structure
 
@@ -12,7 +12,7 @@ Luganda   Corpus     + Clean      MarianMT    3 epochs   Manual     + Voice
 
 ---
 
-## 📋 EXECUTION SEQUENCE
+## [SUMMARY] EXECUTION SEQUENCE
 
 ### **STEP 1: Environment Setup** 
 **File**: `Step1_Environment_Setup.py`
@@ -215,7 +215,7 @@ POST /api/speak
 
 ---
 
-## 🎯 Key Design Decisions
+## [INFO] Key Design Decisions
 
 ### **Model Choice: MarianMT**
 - Pre-trained on 200M+ parallel sentences
@@ -248,7 +248,7 @@ data/cultural/      → Cultural context
 
 ---
 
-## 📊 Results Summary
+## [STATS] Results Summary
 
 ### **Training Progress**
 | Epoch | Train Loss | Val Loss | BLEU |
@@ -281,7 +281,7 @@ data/cultural/      → Cultural context
 
 ---
 
-## 🎓 Academic Presentation
+## [EDU] Academic Presentation
 
 ### **For Your Lecturer**
 
@@ -338,7 +338,7 @@ ENGLISH-LUGANDA-TRANSLATOR/
 
 ---
 
-## 🚀 How to Demo for Lecturer
+## [START] How to Demo for Lecturer
 
 **Command**:
 ```bash

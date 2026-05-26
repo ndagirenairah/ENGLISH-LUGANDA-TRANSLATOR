@@ -2,7 +2,7 @@
 
 Google Colab provides **free GPU access** and runs this pipeline **5-10x faster** than CPU.
 
-## ⚡ Why Colab?
+## [FAST] Why Colab?
 
 | Aspect | Local CPU | Colab GPU |
 |--------|-----------|-----------|
@@ -11,7 +11,7 @@ Google Colab provides **free GPU access** and runs this pipeline **5-10x faster*
 | **GPU** | None (maybe) | Tesla T4 (free) |
 | **Setup** | Complex | 2 clicks |
 
-## 🚀 Steps to Run on Colab
+## [START] Steps to Run on Colab
 
 ### Step 1: Upload Your Project to Google Drive
 ```
@@ -54,7 +54,7 @@ At the end, download:
 - `trained_model.zip` - Your trained model
 - `evaluation_outputs.zip` - BLEU scores & predictions
 
-## 📝 What Happens in Each Cell
+## [INFO] What Happens in Each Cell
 
 | Cell | What | Time |
 |------|------|------|
@@ -89,14 +89,14 @@ Make sure these 5 files exist:
 ### GPU Memory
 - Colab's free Tesla T4: 15GB VRAM
 - Pipeline uses: ~6-8GB
-- ✅ Plenty of space
+- [YES] Plenty of space
 
 ### Runtime Limits
 - Free Colab: 12 hour session limit
 - This pipeline: ~15-20 minutes
-- ✅ No timeout issues
+- [YES] No timeout issues
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### "Can't find project path"
 **Problem**: Your project isn't at the expected location in Drive
@@ -169,7 +169,7 @@ translation = tokenizer.decode(output[0], skip_special_tokens=True)
 print(translation)  # → Luganda translation
 ```
 
-## 🎯 Expected Results
+## [INFO] Expected Results
 
 After running the pipeline:
 
@@ -182,7 +182,7 @@ GPU Time: 8-12 minutes
 
 This is **REAL training** on your data, not demo data!
 
-## 💡 Pro Tips
+## [TIP] Pro Tips
 
 ### Faster Iteration
 To test just loading & preprocessing (skip long training):
@@ -215,13 +215,13 @@ Run different configurations:
 3. **Check GPU**: Runtime → Change runtime type → Select GPU
 4. **Check datasets**: Verify 5 CSV files exist in `data/raw/`
 
-## 🎉 Next Steps
+## Next Steps
 
-1. ✅ Organize project locally (DONE)
-2. ✅ Create Colab script (DONE)
+1. [DONE] Organize project locally (DONE)
+2. [DONE] Create Colab script (DONE)
 3. → Upload to Google Drive
 4. → Run on Colab with GPU
 5. → Download trained model
 6. → Deploy or further train
 
-Ready? Let's train! 🚀
+Ready? Let's train!

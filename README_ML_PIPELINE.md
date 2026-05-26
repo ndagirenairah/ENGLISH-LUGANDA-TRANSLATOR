@@ -39,7 +39,7 @@ ENGLISH-LUGANDA-TRANSLATOR/
     └── trained_model/            # Fine-tuned model & tokenizer
 ```
 
-## 🎯 ML Workflow (Following Your Course)
+## [INFO] ML Workflow (Following Your Course)
 
 ### Week 2: Machine Learning Workflow
 - **Step 1** (1_load_data.py): Load & combine all 5 datasets from `data/raw/`
@@ -63,7 +63,7 @@ ENGLISH-LUGANDA-TRANSLATOR/
 - Cross-validation on unseen data
 - Show prediction samples
 
-## 🚀 How to Run
+## [START] How to Run
 
 ### Option 1: Complete Pipeline (Recommended)
 ```bash
@@ -96,7 +96,7 @@ python src/3_train.py
 python src/4_evaluate.py
 ```
 
-## 📊 What's Changed
+## [STATS] What's Changed
 
 ### ❌ OLD (Broken)
 - 20+ scattered Python scripts in root
@@ -223,4 +223,4 @@ This pipeline demonstrates your understanding of:
 - Review `config.py` for all available settings
 - Error messages will guide you to the next step
 
-Good luck! 🚀
+Good luck!

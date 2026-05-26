@@ -1,6 +1,6 @@
 # ✅ Your Project is Ready for Colab!
 
-## 📋 Summary of Changes
+## [SUMMARY] Summary of Changes
 
 I've reorganized your entire project into a clean ML workflow that **actually trains on your data** (not demos).
 
@@ -16,7 +16,7 @@ I've reorganized your entire project into a clean ML workflow that **actually tr
 
 ---
 
-## 🚀 Ready to Train on Colab?
+## [START] Ready to Train on Colab?
 
 ### 3 Simple Steps:
 
@@ -61,7 +61,7 @@ COLAB_SETUP_GUIDE.md    ← Detailed Colab instructions
 
 ---
 
-## ⚡ Why Colab is Better
+## [FAST] Why Colab is Better
 
 | Metric | Local CPU | Colab GPU |
 |--------|-----------|-----------|
@@ -73,7 +73,7 @@ COLAB_SETUP_GUIDE.md    ← Detailed Colab instructions
 
 ---
 
-## 🎯 What Each Module Does
+## [INFO] What Each Module Does
 
 ### 1️⃣ Load Data (`1_load_data.py`)
 ```
@@ -134,7 +134,7 @@ Save results
 
 ---
 
-## 📊 Course Alignment
+## [STATS] Course Alignment
 
 Your project demonstrates:
 
@@ -276,7 +276,7 @@ BATCH_SIZE = 4  # Reduce from 8
 
 ---
 
-## 📝 Files Created
+## [INFO] Files Created
 
 | File | Purpose |
 |------|---------|
@@ -305,7 +305,7 @@ BATCH_SIZE = 4  # Reduce from 8
 
 ---
 
-## 💡 Tips for Success
+## [TIP] Tips for Success
 
 ### Before Running on Colab:
 - ✅ Verify all 5 CSV files exist
@@ -324,7 +324,7 @@ BATCH_SIZE = 4  # Reduce from 8
 
 ---
 
-## 🚀 Ready?
+## [START] Ready?
 
 ```bash
 # Upload project to Google Drive

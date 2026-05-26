@@ -34,10 +34,10 @@ packages = [
     "sacrebleu",
 ]
 
-print("\n📦 Installing packages...")
+print("\n[INFO] Installing packages...")
 for package in packages:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "-q", package])
-print("✅ All packages installed")
+print("[SUCCESS] All packages installed")
 
 # ============================================================================
 # CELL 2: Clone or Mount Project
@@ -49,20 +49,20 @@ from google.colab import drive
 import os
 
 # Mount Google Drive
-print("\n📁 Mounting Google Drive...")
+print("\n[INFO] Mounting Google Drive...")
 drive.mount('/content/drive')
-print("✅ Drive mounted")
+print("[SUCCESS] Drive mounted")
 
 # Set working directory (adjust path if needed)
 COLAB_PROJECT_PATH = "/content/drive/My Drive/English-Luganda-Translator/ENGLISH-LUGANDA-TRANSLATOR"
 
 if not os.path.exists(COLAB_PROJECT_PATH):
-    print(f"\n⚠️  Path not found: {COLAB_PROJECT_PATH}")
+    print(f"\n[WARN] Path not found: {COLAB_PROJECT_PATH}")
     print("Try uploading the project folder to your Google Drive first")
     print("Or use: !git clone https://github.com/YOUR_REPO/english-luganda-translator.git")
 else:
     os.chdir(COLAB_PROJECT_PATH)
-    print(f"✅ Working directory: {os.getcwd()}")
+    print(f"[SUCCESS] Working directory: {os.getcwd()}")
 
 # ============================================================================
 # CELL 3: Run Pipeline Step 1 - Load Data
@@ -83,7 +83,7 @@ print("\n" + "="*80)
 combined_df = load_all_datasets()
 stats = get_dataset_statistics(combined_df)
 
-print(f"\n✅ Dataset Statistics:")
+print(f"\n[SUCCESS] Dataset Statistics:")
 print(f"   Total samples: {stats['total_samples']:,}")
 print(f"   English text - Avg length: {stats['avg_english_length']:.1f}")
 print(f"   Luganda text - Avg length: {stats['avg_luganda_length']:.1f}")
@@ -100,7 +100,7 @@ print("\n" + "="*80)
 train_df, val_df, test_df = preprocess_and_split(combined_df)
 save_splits(train_df, val_df, test_df)
 
-print(f"\n✅ Data splits created:")
+print(f"\n[SUCCESS] Data splits created:")
 print(f"   Train: {len(train_df):,}")
 print(f"   Val: {len(val_df):,}")
 print(f"   Test: {len(test_df):,}")
@@ -110,12 +110,12 @@ print(f"   Test: {len(test_df):,}")
 # ============================================================================
 
 print("\n[CELL 5: Step 3 - Train Model]")
-print("\n⚠️  This will take 5-15 minutes on GPU")
+print("\n[WARN] This will take 5-15 minutes on GPU")
 print("   (The GPU makes it ~5-10x faster than CPU)")
 
 import torch
 
-print(f"\n🤖 GPU Status:")
+print(f"\n[INFO] GPU Status:")
 print(f"   Available: {torch.cuda.is_available()}")
 if torch.cuda.is_available():
     print(f"   Device: {torch.cuda.get_device_name(0)}")
@@ -126,9 +126,9 @@ from train import main as train_main
 
 try:
     model, tokenizer = train_main()
-    print(f"\n✅ Training complete!")
+    print(f"\n[SUCCESS] Training complete!")
 except Exception as e:
-    print(f"❌ Training error: {e}")
+    print(f"[ERROR] Training error: {e}")
     import traceback
     traceback.print_exc()
 
@@ -143,9 +143,9 @@ from evaluate import main as eval_main
 
 try:
     eval_main()
-    print(f"\n✅ Evaluation complete!")
+    print(f"\n[SUCCESS] Evaluation complete!")
 except Exception as e:
-    print(f"❌ Evaluation error: {e}")
+    print(f"[ERROR] Evaluation error: {e}")
     import traceback
     traceback.print_exc()
 
@@ -163,9 +163,9 @@ if eval_file.exists():
         results = json.load(f)
     
     print("\n" + "="*80)
-    print("📊 FINAL RESULTS")
+    print("[INFO] FINAL RESULTS")
     print("="*80)
-    print(f"\n✅ BLEU Score: {results['bleu_score']:.2f}")
+    print(f"\n[SUCCESS] BLEU Score: {results['bleu_score']:.2f}")
     print(f"   Test samples: {results['num_test_samples']}")
     print(f"   Avg prediction length: {results['avg_prediction_length']:.1f} tokens")
     print(f"   Avg reference length: {results['avg_reference_length']:.1f} tokens")
@@ -179,7 +179,7 @@ print("\n[CELL 8: Download Files]")
 from google.colab import files
 import shutil
 
-print("\n📥 Preparing files for download...")
+print("\n[INFO] Preparing files for download...")
 
 # Create a zip of the trained model
 print("   Zipping trained model...")
@@ -189,14 +189,14 @@ shutil.make_archive("trained_model", "zip", "models")
 print("   Zipping evaluation results...")
 shutil.make_archive("evaluation_outputs", "zip", "outputs")
 
-print("\n📥 Download files:")
+print("\n[INFO] Download files:")
 print("   1. trained_model.zip - Use for inference")
 print("   2. evaluation_outputs.zip - BLEU scores and predictions")
 
 files.download("trained_model.zip")
 files.download("evaluation_outputs.zip")
 
-print("\n✅ Files downloaded!")
+print("\n[SUCCESS] Files downloaded!")
 
 # ============================================================================
 # CELL 9: (Optional) Test Inference
@@ -206,7 +206,7 @@ print("\n[CELL 9: Test Inference (Optional)]")
 
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-print("\n🧪 Testing model inference...")
+print("\n[INFO] Testing model inference...")
 
 try:
     model_path = "models/trained_model"
@@ -220,7 +220,7 @@ try:
         "What is your name?",
     ]
     
-    print("\n📝 Sample Translations:")
+    print("\n[INFO] Sample Translations:")
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
@@ -240,23 +240,23 @@ try:
         print(f"   Luganda:  {translation}")
         
 except Exception as e:
-    print(f"⚠️  Inference test failed: {e}")
+    print(f"[WARN] Inference test failed: {e}")
 
 # ============================================================================
 # CELL 10: Summary
 # ============================================================================
 
 print("\n" + "="*80)
-print("✅ PIPELINE COMPLETE!")
+print("[SUCCESS] PIPELINE COMPLETE!")
 print("="*80)
 
 print("""
 Summary:
-  ✓ Step 1: Loaded all 5 datasets from your project
-  ✓ Step 2: Created train/val/test splits
-  ✓ Step 3: Trained model on GPU (5-15 minutes)
-  ✓ Step 4: Evaluated on test set (BLEU score)
-  ✓ Step 5: Downloaded trained model & results
+  [DONE] Step 1: Loaded all 5 datasets from your project
+  [DONE] Step 2: Created train/val/test splits
+  [DONE] Step 3: Trained model on GPU (5-15 minutes)
+  [DONE] Step 4: Evaluated on test set (BLEU score)
+  [DONE] Step 5: Downloaded trained model & results
 
 Model Location:
   - Local: models/trained_model/

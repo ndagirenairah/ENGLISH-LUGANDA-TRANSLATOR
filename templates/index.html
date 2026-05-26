@@ -194,7 +194,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🌍 English-Luganda Translator</h1>
+            <h1>English-Luganda Translator</h1>
             <p>Translate English to Luganda using AI</p>
         </div>
         
@@ -218,7 +218,7 @@
         </div>
         
         <div class="footer">
-            <p>🤖 Powered by OPUS-MT Transformer Model</p>
+            <p>Powered by OPUS-MT Transformer Model</p>
             <p>BLEU Score: 20.69 | Trained on 50,072+ English-Luganda pairs</p>
         </div>
     </div>
@@ -255,7 +255,7 @@
             
             const translateBtn = event.target;
             translateBtn.disabled = true;
-            showStatus('🔄 Translating...', 'loading');
+            showStatus('[INFO] Translating...', 'loading');
             
             try {
                 const response = await fetch('/api/translate', {

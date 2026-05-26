@@ -73,7 +73,7 @@ def load_all_datasets() -> pd.DataFrame:
     combined = pd.concat(frames, ignore_index=True)
     
     print_section("DATASET SUMMARY", width=80)
-    print(f"\n📊 Total samples loaded: {len(combined):,}")
+    print(f"\n[INFO] Total samples loaded: {len(combined):,}")
     print(f"\n📈 Breakdown by source:")
     for source, count in combined['source'].value_counts().items():
         pct = (count / len(combined)) * 100

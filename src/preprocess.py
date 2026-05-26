@@ -63,7 +63,7 @@ def preprocess_and_split(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, 
     print(f"   ✅ {len(df):,} valid pairs")
     
     # Split: first separate test set
-    print("\n📊 Creating train/val/test splits...")
+    print("\n[INFO] Creating train/val/test splits...")
     print(f"   Train: 80% | Val: 10% | Test: 10%")
     
     # Test set split (10%)
@@ -93,7 +93,7 @@ def preprocess_and_split(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, 
 
 def save_splits(train_df: pd.DataFrame, val_df: pd.DataFrame, test_df: pd.DataFrame):
     """Save train/val/test splits to CSV files."""
-    print("\n💾 Saving splits...")
+    print("\n[INFO] Saving splits...")
     
     # Create directory if needed
     PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)

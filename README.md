@@ -1,12 +1,12 @@
 # English-Luganda Translator
 
-🌍 A machine learning translator for English ↔ Luganda using transformer sequence-to-sequence models.
+A machine learning translator for English ↔ Luganda using transformer sequence-to-sequence models.
 
-**Status**: ✅ Clean ML pipeline ready for training on Google Colab GPU
+**Status**: [SUCCESS] Clean ML pipeline ready for training on Google Colab GPU
 
 ---
 
-## 📋 Overview
+## [SUMMARY] Overview
 
 This project implements a complete machine learning workflow for English-Luganda translation:
 
@@ -17,7 +17,7 @@ This project implements a complete machine learning workflow for English-Luganda
 
 ---
 
-## 📊 Datasets
+## [STATS] Datasets
 
 The project uses **5 real English-Luganda parallel datasets**:
 
@@ -84,7 +84,7 @@ COLAB_TRAIN_PIPELINE.py    # Copy to Google Colab for GPU training
 
 ---
 
-## 🚀 Quick Start
+## [START] Quick Start
 
 ### Option 1: Google Colab (GPU - RECOMMENDED)
 
@@ -149,7 +149,7 @@ TEST:  10% (310 samples)
 
 ---
 
-## 📊 Expected Results
+## [STATS] Expected Results
 
 After training:
 
@@ -221,7 +221,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🎯 Course Alignment
+## [INFO] Course Alignment
 
 This project demonstrates ML concepts from your course:
 
@@ -234,7 +234,7 @@ This project demonstrates ML concepts from your course:
 
 ---
 
-## 🚀 Next Steps
+## [START] Next Steps
 
 1. **Train locally** (or on Colab):
    ```bash
@@ -299,7 +299,7 @@ NUM_EPOCHS = 5
 - ✅ Local CPU training working
 - ✅ Documentation complete
 
-**Ready for training!** 🚀
+**Ready for training!**
 
 ---
 

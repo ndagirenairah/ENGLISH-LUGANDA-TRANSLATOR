@@ -126,9 +126,9 @@ if __name__ == '__main__':
         print("\n" + "="*80)
         print("English-Luganda Translator - Web Server")
         print("="*80)
-        print(f"\n🌐 Server running at: http://localhost:5000")
-        print(f"🤖 Model device: {device}")
-        print(f"📝 Open your browser and go to http://localhost:5000\n")
+        print(f"\n[INFO] Server running at: http://localhost:5000")
+        print(f"[INFO] Model device: {device}")
+        print(f"[INFO] Open your browser and go to http://localhost:5000\n")
         
         app.run(debug=True, host='0.0.0.0', port=5000)
     

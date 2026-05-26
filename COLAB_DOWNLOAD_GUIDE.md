@@ -17,10 +17,10 @@ from google.colab import files
 model_path = Path("models/trained_model")
 if model_path.exists():
     shutil.make_archive("trained_model", "zip", model_path.parent, model_path.name)
-    print("✅ Downloading trained_model.zip...")
+    print("[SUCCESS] Downloading trained_model.zip...")
     files.download("trained_model.zip")
 else:
-    print("❌ Model not found! Make sure training completed.")
+    print("[ERROR] Model not found! Make sure training completed.")
 ```
 
    - Run the cell
@@ -50,7 +50,7 @@ else:
 
 4. **Open in Browser:**
    - Go to: http://localhost:5000
-   - Translate English to Luganda! 🎉
+   - Translate English to Luganda!
 
 ## Alternative (If ZIP doesn't download):
 
