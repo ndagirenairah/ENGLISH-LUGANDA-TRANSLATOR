@@ -1,30 +1,25 @@
 # Core deep learning and Transformers
-transformers>=4.41.0
-datasets>=2.19.0
-torch>=2.2.0
-accelerate>=0.30.0
-sentencepiece>=0.1.99
+transformers==5.0.0
+torch==2.2.0
+datasets==2.16.0
+sentencepiece==0.1.99
 
 # Evaluation
-sacrebleu>=2.4.0
-evaluate>=0.4.2
+sacrebleu==2.3.1
 
 # Data
-pandas>=2.1.0
-numpy>=1.24.0
-scikit-learn>=1.3.0
+pandas==2.1.3
+numpy>=2.0.0
+scikit-learn==1.3.2
+
+# Visualization
+matplotlib==3.8.2
+seaborn==0.13.0
 
 # API and deployment
 flask>=3.0.0
+flask-cors>=4.0.0
 python-dotenv>=1.0.0
-
-# Voice I/O
-SpeechRecognition>=3.10.0
-gTTS>=2.5.1
-pydub>=0.25.1
-
-# Attention visualization
-matplotlib>=3.8.0
 
 # Utilities
 tqdm>=4.66.0
