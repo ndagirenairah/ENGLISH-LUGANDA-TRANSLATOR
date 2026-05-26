@@ -129,9 +129,17 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
     
-    # Move to device
-    model = model.to(DEVICE)
-    print(f"   Device: {DEVICE}")
+    # Move to device (with fallback to CPU)
+    try:
+        model = model.to(DEVICE)
+        actual_device = DEVICE
+    except (AssertionError, RuntimeError) as e:
+        print(f"   [WARNING] Could not use {DEVICE}: {str(e)[:50]}")
+        print(f"   [INFO] Falling back to CPU")
+        model = model.to("cpu")
+        actual_device = "cpu"
+    
+    print(f"   Device: {actual_device}")
     print(f"   Model size: {sum(p.numel() for p in model.parameters()):,} parameters")
     
     # Tokenize data
