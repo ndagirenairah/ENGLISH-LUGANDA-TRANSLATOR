@@ -159,11 +159,10 @@ def main():
         warmup_steps=WARMUP_STEPS,
         weight_decay=WEIGHT_DECAY,
         
-        # Evaluation and saving
+        # Evaluation and saving - avoid pickle issues
         eval_strategy="epoch",
-        save_strategy="epoch",
-        load_best_model_at_end=True,
-        metric_for_best_model="eval_loss",
+        save_strategy="no",  # Don't save checkpoints (causes pickle error in Colab)
+        load_best_model_at_end=False,
         
         # Regularization (Week 3 concepts)
         gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
