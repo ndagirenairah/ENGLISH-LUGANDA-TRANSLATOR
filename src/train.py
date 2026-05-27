@@ -16,6 +16,7 @@ import sys
 import json
 import pandas as pd
 import torch
+import numpy as np
 from datasets import Dataset
 from transformers import (
     AutoModelForSeq2SeqLM,
@@ -24,6 +25,7 @@ from transformers import (
     Seq2SeqTrainingArguments,
     DataCollatorForSeq2Seq,
 )
+from sacrebleu import corpus_bleu
 
 try:
     from config import (
@@ -31,7 +33,9 @@ try:
         MAX_SOURCE_LENGTH, MAX_TARGET_LENGTH, DROPOUT,
         PROCESSED_DATA_DIR, TRAIN_OUTPUT_DIR, WARMUP_STEPS,
         GRADIENT_ACCUMULATION_STEPS, WEIGHT_DECAY,
-        LABEL_SMOOTHING, LR_SCHEDULER
+        LABEL_SMOOTHING, LR_SCHEDULER,
+        COMPUTE_BLEU_ON_VALIDATION, BLEU_EVAL_SAMPLES,
+        USE_BACK_TRANSLATION, AUGMENTED_DATA_FILE, TRAINING_METRICS_FILE
     )
     from utils import print_section
 except ImportError:
@@ -41,7 +45,9 @@ except ImportError:
         MAX_SOURCE_LENGTH, MAX_TARGET_LENGTH, DROPOUT,
         PROCESSED_DATA_DIR, TRAIN_OUTPUT_DIR, WARMUP_STEPS,
         GRADIENT_ACCUMULATION_STEPS, WEIGHT_DECAY,
-        LABEL_SMOOTHING, LR_SCHEDULER
+        LABEL_SMOOTHING, LR_SCHEDULER,
+        COMPUTE_BLEU_ON_VALIDATION, BLEU_EVAL_SAMPLES,
+        USE_BACK_TRANSLATION, AUGMENTED_DATA_FILE, TRAINING_METRICS_FILE
     )
     from utils import print_section
 
