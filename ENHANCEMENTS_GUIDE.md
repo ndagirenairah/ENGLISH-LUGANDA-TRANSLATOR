@@ -263,9 +263,3 @@ COLAB_TRAINING_ML_PIPELINE.ipynb
   └── STEP 7.5: Visualization dashboard
 ```
 
----
-
-## Configuration Reference
-
-### `src/config.py` - Key Additions
-
