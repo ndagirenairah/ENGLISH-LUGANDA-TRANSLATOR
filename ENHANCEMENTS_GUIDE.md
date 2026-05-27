@@ -125,17 +125,3 @@ Synthetic Pair Created:
   
 Result: Dataset size ~2x, more diverse patterns
 ```
-
-### Implementation
-
-**New File**: `src/augmentation.py`
-- `generate_back_translations()` - Uses LU→EN model
-- `generate_augmented_data()` - Creates synthetic pairs
-- `main()` - Entry point for augmentation
-
-**Notebook Integration**: `COLAB_TRAINING_ML_PIPELINE.ipynb` STEP 4.5
-```python
-from augmentation import generate_augmented_data
-augmented_df = generate_augmented_data(train_df)
-```
-
