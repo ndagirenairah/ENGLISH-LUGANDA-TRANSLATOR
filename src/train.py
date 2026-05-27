@@ -131,6 +131,59 @@ def tokenize_data(train_dataset, val_dataset, tokenizer):
     return train_tokenized, val_tokenized
 
 
+def compute_bleu_metrics(eval_dataset, model, tokenizer, sample_size=BLEU_EVAL_SAMPLES):
+    """
+    Compute BLEU score on validation set during training.
+    
+    Args:
+        eval_dataset: Validation dataset
+        model: Trained/training model
+        tokenizer: Tokenizer
+        sample_size: Number of samples to evaluate (for speed)
+        
+    Returns:
+        Dict with 'bleu' key
+    """
+    if not COMPUTE_BLEU_ON_VALIDATION:
+        return {"bleu": 0.0}
+    
+    # Sample subset for faster BLEU computation
+    eval_df = eval_dataset.to_pandas().head(sample_size)
+    
+    predictions = []
+    references = []
+    
+    model.eval()
+    with torch.no_grad():
+        for _, row in eval_df.iterrows():
+            # Tokenize source
+            inputs = tokenizer(
+                row['source'],
+                max_length=MAX_SOURCE_LENGTH,
+                truncation=True,
+                return_tensors="pt"
+            )
+            inputs = {k: v.to(DEVICE) for k, v in inputs.items()}
+            
+            # Generate prediction
+            output_ids = model.generate(
+                inputs['input_ids'],
+                attention_mask=inputs['attention_mask'],
+                max_length=MAX_TARGET_LENGTH,
+                num_beams=4,
+                early_stopping=True
+            )
+            
+            pred = tokenizer.decode(output_ids[0], skip_special_tokens=True)
+            predictions.append(pred)
+            references.append(row['target'])
+    
+    # Compute BLEU
+    bleu = corpus_bleu(predictions, [references])
+    
+    return {"bleu": bleu.score}
+
+
 def main():
     """Train the model."""
     print_section("STEP 3: TRAINING MODEL", width=80)
@@ -205,23 +258,50 @@ def main():
     print(f"   Scheduler: {LR_SCHEDULER}")
     print(f"   Label smoothing: {LABEL_SMOOTHING}")
     print(f"   Device: {DEVICE}")
+    if COMPUTE_BLEU_ON_VALIDATION:
+        print(f"   🎯 BLEU tracking: ENABLED ({BLEU_EVAL_SAMPLES} samples/epoch)")
+    if USE_BACK_TRANSLATION and Path(AUGMENTED_DATA_FILE).exists():
+        print(f"   🔄 Back-translation: AUGMENTED ({n_train:,} total pairs)")
     
     # Data collator
     data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
     
-    # Trainer
+    # Create compute_metrics callback for BLEU tracking
+    def compute_metrics(eval_preds):
+        """Compute BLEU metrics on validation set."""
+        predictions, labels = eval_preds
+        predictions = np.where(predictions != -100, predictions, tokenizer.pad_token_id)
+        
+        predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
+        labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+        
+        if not COMPUTE_BLEU_ON_VALIDATION or len(predictions) < 1:
+            return {"bleu": 0.0}
+        
+        # Compute BLEU on sample
+        sample_idx = min(BLEU_EVAL_SAMPLES, len(predictions))
+        bleu_score = corpus_bleu(predictions[:sample_idx], [labels[:sample_idx]])
+        
+        return {"bleu": bleu_score.score}
+    
+    # Trainer with compute_metrics
     trainer = Seq2SeqTrainer(
         model=model,
         args=training_args,
         train_dataset=train_tokenized,
         eval_dataset=val_tokenized,
         data_collator=data_collator,
+        compute_metrics=compute_metrics if COMPUTE_BLEU_ON_VALIDATION else None,
     )
     
     # Train
     print("\n" + "="*80)
     print(f"[INFO] STARTING TRAINING")
     print(f"   Dataset: {n_train:,} training samples")
+    if USE_BACK_TRANSLATION and Path(AUGMENTED_DATA_FILE).exists():
+        aug_count = n_train - len(pd.read_csv(PROCESSED_DATA_DIR / "train.csv"))
+        if aug_count > 0:
+            print(f"   + {aug_count:,} augmented samples via back-translation")
     print(f"   Estimated time: 5-15 minutes on GPU, 30-60 minutes on CPU")
     print("="*80 + "\n")
     
