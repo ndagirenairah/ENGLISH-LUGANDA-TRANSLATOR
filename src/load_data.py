@@ -52,13 +52,13 @@ def load_all_datasets(balance_per_source: int = 1000) -> pd.DataFrame:
             print(f"   ⚠️  Empty or invalid")
             continue
         
-        # Validate text pairs
+        # Validate text pairs - use lenient constraints to keep more data
         valid_mask = df.apply(
             lambda row: validate_pair(
                 row['english'], 
                 row['luganda'],
-                min_len=TEXT_MIN_LENGTH,
-                max_len=TEXT_MAX_LENGTH
+                min_len=1,  # Allow very short text
+                max_len=1000  # Allow longer text (was 256)
             ),
             axis=1
         )
