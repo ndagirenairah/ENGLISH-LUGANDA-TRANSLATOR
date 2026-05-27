@@ -295,6 +295,3 @@ TRAINING_METRICS_FILE = OUTPUTS_DIR / "training_metrics.json"
 
 ### Disable/Customize Enhancements
 
-```python
-# To disable back-translation:
-USE_BACK_TRANSLATION = False
