@@ -269,8 +269,3 @@ COLAB_TRAINING_ML_PIPELINE.ipynb
 
 ### `src/config.py` - Key Additions
 
-```python
-# MODEL SELECTION
-MODEL_NAME = "Helsinki-NLP/opus-mt-en-lg"
-BACK_TRANSLATION_MODEL = "Helsinki-NLP/opus-mt-lg-en"
-
