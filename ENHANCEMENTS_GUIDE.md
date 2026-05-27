@@ -317,9 +317,3 @@ BACK_TRANSLATION_SAMPLES = 10000  # Default: 5000
 - **Cause**: Running on CPU
 - **Solution**: Use GPU if available, or reduce BACK_TRANSLATION_SAMPLES
 
-### Issue: Out of memory during augmentation
-- **Cause**: Batch size too large
-- **Solution**: In augmentation.py, reduce batch_size in generate_back_translations()
-
-
-
