@@ -79,6 +79,8 @@ TRAIN_OUTPUT_DIR = MODELS_DIR / "trained_model"
 EVAL_OUTPUT_FILE = OUTPUTS_DIR / "evaluation_results.json"
 PREDICTIONS_FILE = OUTPUTS_DIR / "predictions.csv"
 METRICS_FILE = OUTPUTS_DIR / "metrics.json"
+AUGMENTED_DATA_FILE = OUTPUTS_DIR / "augmented_train.csv"  # Back-translation augmented data
+TRAINING_METRICS_FILE = OUTPUTS_DIR / "training_metrics.json"  # Validation BLEU per epoch
 
 # ============================================================================
 # LOGGING CONFIGURATION
