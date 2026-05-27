@@ -101,11 +101,3 @@ Epoch 2/8:
 ### Problem
 Limited training data diversity. Model sees same English→Luganda patterns repeatedly.
 
-### Solution
-Generate synthetic training pairs using back-translation:
-1. Take existing Luganda translations
-2. Translate Luganda → English using reverse model
-3. Create synthetic pairs: (back-translated EN → original LU)
-4. Double training dataset size
-5. Train on mixed original + synthetic data
-
