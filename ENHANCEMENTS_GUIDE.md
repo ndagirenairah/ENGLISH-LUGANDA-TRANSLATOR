@@ -151,12 +151,3 @@ AUGMENTED_DATA_FILE = "outputs/augmented_train.csv"    # Save location
 
 ### Expected Impact
 **+3-5 BLEU points** - Augmented data significantly improves generalization.
-
-### Running Augmentation
-
-**Option 1: Jupyter Notebook**
-```python
-# In COLAB_TRAINING_ML_PIPELINE.ipynb, run STEP 4.5
-# This will generate augmented_train.csv automatically
-```
-
