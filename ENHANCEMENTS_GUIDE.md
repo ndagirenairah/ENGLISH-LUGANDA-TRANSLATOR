@@ -230,17 +230,4 @@ python src/evaluate.py
 
 ## Expected Results
 
-### BLEU Score Progression
-
-```
-Baseline (original model):        ~20.74
-+ Stronger model (opus-mt-en-lg): ~22.5  (+1.76)
-+ Back-translation (5k samples):  ~25.5  (+3.0)
-+ Hyperparameter tuning:          ~27.0  (+1.5)
-+ BLEU tracking optimization:     ~28.5+ (+1.5)
-
-TARGET: 28-30 (Grade A) ✅
-```
-
----
 
