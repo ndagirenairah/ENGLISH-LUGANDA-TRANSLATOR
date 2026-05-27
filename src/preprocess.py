@@ -20,7 +20,7 @@ try:
         PROCESSED_DATA_DIR, TEST_SET_FRACTION, VAL_SET_FRACTION, 
         RANDOM_SEED, TEXT_MIN_LENGTH, TEXT_MAX_LENGTH
     )
-    from utils import print_section, clean_text
+    from utils import print_section, clean_text, validate_pair
     from load_data import load_all_datasets
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
@@ -28,7 +28,7 @@ except ImportError:
         PROCESSED_DATA_DIR, TEST_SET_FRACTION, VAL_SET_FRACTION, 
         RANDOM_SEED, TEXT_MIN_LENGTH, TEXT_MAX_LENGTH
     )
-    from utils import print_section, clean_text
+    from utils import print_section, clean_text, validate_pair
     from load_data import load_all_datasets
 
 
