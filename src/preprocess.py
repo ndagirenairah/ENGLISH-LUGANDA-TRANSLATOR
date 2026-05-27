@@ -53,18 +53,15 @@ def preprocess_and_split(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, 
     df['english'] = df['english'].apply(clean_text)
     df['luganda'] = df['luganda'].apply(clean_text)
     
-    # Remove any empty entries after cleaning
+    # Filter invalid pairs, remove noise, and deduplicate
     before = len(df)
-    df = df[(df['english'].str.len() > 0) & (df['luganda'].str.len() > 0)]
+    df = df[df.apply(lambda row: validate_pair(row['english'], row['luganda']), axis=1)]
+    df = df.drop_duplicates(subset=['english', 'luganda']).reset_index(drop=True)
     removed = before - len(df)
     if removed > 0:
-        print(f"   Removed {removed} empty entries")
-    
-    print(f"   ✅ {len(df):,} valid pairs")
-    
-    # Split: first separate test set
-    print("\n[INFO] Creating train/val/test splits...")
-    print(f"   Train: 80% | Val: 10% | Test: 10%")
+        print(f"   Removed {removed} invalid/duplicate entries")
+
+    print(f"   ✅ {len(df):,} clean pairs")
     
     # Test set split (10%)
     train_val_df, test_df = train_test_split(
