@@ -353,33 +353,3 @@ models/
       └── tokenizer_config.json     # Tokenizer config
 ```
 
-### Monitor Training
-
-1. **Console Output**: Watch BLEU improve each epoch
-2. **training_metrics.json**: Epoch-by-epoch BLEU scores
-3. **Model Checkpoints**: Best model saved to trained_model/
-
----
-
-## Summary: What Changed?
-
-✅ **Stronger base model** optimized for English-Luganda
-✅ **Validation BLEU tracking** to monitor progress
-✅ **Back-translation augmentation** for 2x training data
-✅ **Improved hyperparameters** for faster convergence
-✅ **Full end-to-end pipeline** validated and ready
-
-**Expected Result**: 28-30 BLEU score (Grade A) ✓
-
----
-
-## Next Steps
-
-1. Review this guide
-2. Run notebook STEP 4.5 to generate augmented data
-3. Run notebook STEP 5 to train with enhancements
-4. Monitor validation BLEU improvement in console
-5. Run STEP 6 to evaluate final score
-6. Check if BLEU ≥ 28 (Grade A achieved!)
-
-Good luck! 🚀
