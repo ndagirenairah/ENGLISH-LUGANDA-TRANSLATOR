@@ -73,10 +73,3 @@ trainer = Seq2SeqTrainer(
 )
 ```
 
-### Configuration
-**File**: `src/config.py`
-```python
-COMPUTE_BLEU_ON_VALIDATION = True   # Enable BLEU tracking
-BLEU_EVAL_SAMPLES = 200              # Use 200 samples per epoch
-TRAINING_METRICS_FILE = "outputs/training_metrics.json"  # Save results
-```
