@@ -93,11 +93,3 @@ Epoch 2/8:
   
 ...continues each epoch...
 ```
-
----
-
-## Enhancement 3: Back-Translation Data Augmentation
-
-### Problem
-Limited training data diversity. Model sees same English→Luganda patterns repeatedly.
-
