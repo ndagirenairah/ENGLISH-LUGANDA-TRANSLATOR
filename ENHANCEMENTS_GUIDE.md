@@ -298,7 +298,3 @@ TRAINING_METRICS_FILE = OUTPUTS_DIR / "training_metrics.json"
 ```python
 # To disable back-translation:
 USE_BACK_TRANSLATION = False
-
-# To disable BLEU tracking:
-COMPUTE_BLEU_ON_VALIDATION = False
-
