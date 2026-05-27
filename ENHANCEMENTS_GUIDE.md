@@ -18,12 +18,3 @@ This guide documents three major enhancements implemented to improve the English
 ### Problem
 Original model was general-purpose multilingual, not optimized for English-Luganda translation.
 
-### Solution
-Changed from `Helsinki-NLP/opus-mt-en-mul` → `Helsinki-NLP/opus-mt-en-lg`
-
-- **opus-mt-en-mul**: General multilingual (trained on many language pairs)
-- **opus-mt-en-lg**: English→Luganda specific (optimized for this exact task)
-
-### Expected Impact
-**+2-3 BLEU points** - Language-specific models consistently outperform general models.
-
