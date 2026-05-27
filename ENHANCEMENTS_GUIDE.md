@@ -41,12 +41,3 @@ BACK_TRANSLATION_MODEL = "Helsinki-NLP/opus-mt-lg-en"  # For augmentation
 ### Problem
 No visibility into validation BLEU improvement during training. Couldn't monitor overfitting or convergence.
 
-### Solution
-Implemented `compute_metrics` callback in training loop.
-
-**Features**:
-- Computes BLEU score after **each epoch** on validation set
-- Uses 200 validation samples for speed (configurable)
-- Logs to console during training
-- Enables early stopping based on BLEU progress
-
