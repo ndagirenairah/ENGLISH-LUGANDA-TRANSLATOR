@@ -27,10 +27,3 @@ Changed from `Helsinki-NLP/opus-mt-en-mul` → `Helsinki-NLP/opus-mt-en-lg`
 ### Expected Impact
 **+2-3 BLEU points** - Language-specific models consistently outperform general models.
 
-### Configuration
-**File**: `src/config.py`
-```python
-MODEL_NAME = "Helsinki-NLP/opus-mt-en-lg"  # Stronger: English-to-Luganda specific
-BACK_TRANSLATION_MODEL = "Helsinki-NLP/opus-mt-lg-en"  # For augmentation
-```
-
