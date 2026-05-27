@@ -328,11 +328,5 @@ BACK_TRANSLATION_SAMPLES = 10000  # Default: 5000
   2. Reduce LEARNING_RATE to 2e-5
   3. Increase BACK_TRANSLATION_SAMPLES
 
-### Issue: Training too slow
-- **Cause**: BLEU tracking overhead
-- **Solution**: Reduce BLEU_EVAL_SAMPLES or disable COMPUTE_BLEU_ON_VALIDATION
-
----
-
 
 
