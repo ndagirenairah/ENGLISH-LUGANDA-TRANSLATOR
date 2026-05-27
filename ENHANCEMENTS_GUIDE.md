@@ -109,19 +109,3 @@ Generate synthetic training pairs using back-translation:
 4. Double training dataset size
 5. Train on mixed original + synthetic data
 
-### Process Flow
-```
-Original Pair:
-  English: "Hello world"
-  Luganda: "Habari dunia"
-  
-Back-Translation Step 1 (LU→EN):
-  Input: "Habari dunia"
-  Back-Translated EN: "Hello universe"
-  
-Synthetic Pair Created:
-  English: "Hello universe" (back-translated)
-  Luganda: "Habari dunia" (original)
-  
-Result: Dataset size ~2x, more diverse patterns
-```
