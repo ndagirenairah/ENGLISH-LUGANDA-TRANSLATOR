@@ -11,10 +11,3 @@ This guide documents three major enhancements implemented to improve the English
 | **Validation BLEU Tracking** | ✅ Complete | Enables Optimization | src/train.py |
 | **Back-Translation Augmentation** | ✅ Complete | +3-5 BLEU | src/augmentation.py + Notebook STEP 4.5 |
 
----
-
-## Enhancement 1: Stronger Base Model Selection
-
-### Problem
-Original model was general-purpose multilingual, not optimized for English-Luganda translation.
-
