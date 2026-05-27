@@ -190,13 +190,4 @@ Enhanced training configuration for better convergence:
 
 ---
 
-## Training Pipeline
-
-### Step-by-Step Execution
-
-**1. Data Preparation (STEP 1-4)**
-```bash
-# Automatic in Jupyter notebook or:
-python src/preprocess.py
-```
 
