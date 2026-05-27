@@ -244,13 +244,3 @@ TARGET: 28-30 (Grade A) ✅
 
 ---
 
-## File Structure
-
-```
-src/
-  ├── config.py              # Configuration (enhanced)
-  ├── train.py              # Training with BLEU tracking (enhanced)
-  ├── evaluate.py           # Evaluation (enhanced)
-  ├── augmentation.py       # Back-translation augmentation (NEW)
-  ├── preprocess.py         # Data preprocessing
-  └── utils.py              # Utilities
