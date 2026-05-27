@@ -219,9 +219,3 @@ python src/augmentation.py
 python src/train.py
 ```
 
-**4. Evaluation (STEP 6)**
-- **Time**: 1-2 min
-- **Output**: Final BLEU score on test set
-```bash
-python src/evaluate.py
-```
