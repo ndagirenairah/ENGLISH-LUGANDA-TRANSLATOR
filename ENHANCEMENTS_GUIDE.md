@@ -160,15 +160,3 @@ AUGMENTED_DATA_FILE = "outputs/augmented_train.csv"    # Save location
 # This will generate augmented_train.csv automatically
 ```
 
-**Option 2: Command Line**
-```bash
-python src/augmentation.py
-```
-
-**Output**:
-- Creates `outputs/augmented_train.csv` with original + synthetic pairs
-- Logs augmentation progress to console
-- Training automatically uses augmented data if file exists
-
----
-
