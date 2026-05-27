@@ -313,7 +313,4 @@ BACK_TRANSLATION_SAMPLES = 10000  # Default: 5000
 
 ## Troubleshooting
 
-### Issue: Back-translation is slow
-- **Cause**: Running on CPU
-- **Solution**: Use GPU if available, or reduce BACK_TRANSLATION_SAMPLES
 
