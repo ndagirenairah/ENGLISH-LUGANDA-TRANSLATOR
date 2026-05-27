@@ -80,16 +80,3 @@ COMPUTE_BLEU_ON_VALIDATION = True   # Enable BLEU tracking
 BLEU_EVAL_SAMPLES = 200              # Use 200 samples per epoch
 TRAINING_METRICS_FILE = "outputs/training_metrics.json"  # Save results
 ```
-
-### Expected Output During Training
-```
-Epoch 1/8: 
-  BLEU: 18.42
-  Loss: 2.15
-  
-Epoch 2/8:
-  BLEU: 20.67 (+2.25)
-  Loss: 1.89
-  
-...continues each epoch...
-```
