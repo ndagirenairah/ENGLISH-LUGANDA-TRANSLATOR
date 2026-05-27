@@ -172,22 +172,3 @@ python src/augmentation.py
 
 ---
 
-## Hyperparameter Improvements
-
-Enhanced training configuration for better convergence:
-
-| Parameter | Old | New | Reason |
-|---|---|---|---|
-| Epochs | 3 | 8 | More training iterations |
-| Learning Rate | 2e-5 | 3e-5 | Stronger gradient updates |
-| Warmup Steps | 500 | 1000 | Gradual learning rate warmup |
-| Scheduler | linear | cosine | Smooth learning rate decay |
-| Label Smoothing | - | 0.1 | Regularization |
-| Gradient Accumulation | 1 | 2 | Stability |
-| Beam Search | 4 | 6 | Better decoding quality |
-
-**File**: `src/config.py`
-
----
-
-
