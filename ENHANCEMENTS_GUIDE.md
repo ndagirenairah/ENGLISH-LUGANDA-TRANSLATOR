@@ -139,15 +139,3 @@ from augmentation import generate_augmented_data
 augmented_df = generate_augmented_data(train_df)
 ```
 
-### Configuration
-**File**: `src/config.py`
-```python
-USE_BACK_TRANSLATION = True
-BACK_TRANSLATION_SAMPLES = 5000           # Generate 5000 synthetic pairs
-BACK_TRANSLATION_BEAM_SIZE = 4            # Beam search quality
-BACK_TRANSLATION_MODEL = "Helsinki-NLP/opus-mt-lg-en"  # Luganda→English
-AUGMENTED_DATA_FILE = "outputs/augmented_train.csv"    # Save location
-```
-
-### Expected Impact
-**+3-5 BLEU points** - Augmented data significantly improves generalization.
