@@ -334,10 +334,5 @@ BACK_TRANSLATION_SAMPLES = 10000  # Default: 5000
 
 ---
 
-## Results Tracking
-
-### Output Files Generated
-
-
 
 
