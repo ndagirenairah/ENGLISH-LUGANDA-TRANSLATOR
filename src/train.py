@@ -158,15 +158,19 @@ def main():
         learning_rate=LEARNING_RATE,
         warmup_steps=WARMUP_STEPS,
         weight_decay=WEIGHT_DECAY,
+        label_smoothing_factor=LABEL_SMOOTHING,
+        lr_scheduler_type=LR_SCHEDULER,
         
-        # Evaluation and saving - avoid pickle issues
+        # Evaluation and saving
         eval_strategy="epoch",
-        save_strategy="no",  # Don't save checkpoints (causes pickle error in Colab)
+        save_strategy="epoch",
+        save_total_limit=1,
         load_best_model_at_end=False,
         
-        # Regularization (Week 3 concepts)
+        # Regularization and stability
         gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
         gradient_checkpointing=True,
+        max_grad_norm=1.0,
         fp16=torch.cuda.is_available(),
         
         # Logging
@@ -176,11 +180,14 @@ def main():
         
         # Generation for evaluation
         predict_with_generate=True,
+        generation_max_length=MAX_TARGET_LENGTH,
     )
     
     print(f"   Epochs: {NUM_EPOCHS}")
     print(f"   Batch size: {BATCH_SIZE}")
     print(f"   Learning rate: {LEARNING_RATE}")
+    print(f"   Scheduler: {LR_SCHEDULER}")
+    print(f"   Label smoothing: {LABEL_SMOOTHING}")
     print(f"   Device: {DEVICE}")
     
     # Data collator
