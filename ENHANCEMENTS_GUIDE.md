@@ -292,6 +292,3 @@ BACK_TRANSLATION_BEAM_SIZE = 4
 AUGMENTED_DATA_FILE = OUTPUTS_DIR / "augmented_train.csv"
 TRAINING_METRICS_FILE = OUTPUTS_DIR / "training_metrics.json"
 ```
-
-### Disable/Customize Enhancements
-
