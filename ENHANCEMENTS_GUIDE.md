@@ -347,9 +347,4 @@ outputs/
   ├── predictions.csv               # Sample predictions
   └── evaluation_results.csv        # Detailed metrics
 
-models/
-  └── trained_model/
-      ├── pytorch_model.bin         # Model weights
-      ├── config.json               # Model config
-      └── tokenizer_config.json     # Tokenizer config
-```
+
