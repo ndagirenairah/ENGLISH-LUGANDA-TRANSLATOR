@@ -66,10 +66,3 @@ def compute_bleu_metrics(eval_dataset, model, tokenizer, sample_size=BLEU_EVAL_S
     # Computes BLEU using sacrebleu
     # Returns {"bleu": score}
 
-# In Seq2SeqTrainer:
-trainer = Seq2SeqTrainer(
-    ...,
-    compute_metrics=compute_metrics if COMPUTE_BLEU_ON_VALIDATION else None,
-)
-```
-
