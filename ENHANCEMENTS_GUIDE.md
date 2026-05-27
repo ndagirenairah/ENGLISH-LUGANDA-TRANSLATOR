@@ -207,15 +207,3 @@ python src/preprocess.py
 # Automatic in Jupyter or:
 python src/augmentation.py
 ```
-
-**3. Training with BLEU Tracking (STEP 5)**
-- **Time**: 5-15 min (GPU) / 30-60 min (CPU)
-- **Features**:
-  - Uses augmented data if available
-  - Computes validation BLEU per epoch
-  - Saves best model checkpoint
-```bash
-# Automatic in Jupyter or:
-python src/train.py
-```
-
