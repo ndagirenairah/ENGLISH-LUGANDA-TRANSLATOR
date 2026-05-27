@@ -321,12 +321,5 @@ BACK_TRANSLATION_SAMPLES = 10000  # Default: 5000
 - **Cause**: Batch size too large
 - **Solution**: In augmentation.py, reduce batch_size in generate_back_translations()
 
-### Issue: BLEU score not improving
-- **Cause**: Possible underfitting
-- **Solution**: 
-  1. Increase NUM_EPOCHS to 10-12
-  2. Reduce LEARNING_RATE to 2e-5
-  3. Increase BACK_TRANSLATION_SAMPLES
-
 
 
