@@ -58,11 +58,3 @@ Two key functions added:
 1. **`compute_bleu_metrics()`** - Computes BLEU on validation set
 2. **`compute_metrics()` callback** - Integrated with Seq2SeqTrainer
 
-```python
-def compute_bleu_metrics(eval_dataset, model, tokenizer, sample_size=BLEU_EVAL_SAMPLES):
-    """Compute BLEU score on validation set during training"""
-    # Samples 200 validation examples
-    # Generates predictions with model
-    # Computes BLEU using sacrebleu
-    # Returns {"bleu": score}
-
