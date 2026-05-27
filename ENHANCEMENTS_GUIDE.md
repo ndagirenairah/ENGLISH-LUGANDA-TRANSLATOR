@@ -254,12 +254,3 @@ src/
   ├── augmentation.py       # Back-translation augmentation (NEW)
   ├── preprocess.py         # Data preprocessing
   └── utils.py              # Utilities
-
-COLAB_TRAINING_ML_PIPELINE.ipynb
-  ├── STEP 1-4: Data preparation
-  ├── STEP 4.5: Back-translation augmentation (NEW)
-  ├── STEP 5: Training with BLEU tracking
-  ├── STEP 6: Evaluation
-  └── STEP 7.5: Visualization dashboard
-```
-
