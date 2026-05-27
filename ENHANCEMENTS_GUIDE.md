@@ -225,9 +225,3 @@ python src/train.py
 ```bash
 python src/evaluate.py
 ```
-
----
-
-## Expected Results
-
-
