@@ -50,11 +50,3 @@ Implemented `compute_metrics` callback in training loop.
 - Logs to console during training
 - Enables early stopping based on BLEU progress
 
-### Implementation Details
-
-**File**: `src/train.py`
-
-Two key functions added:
-1. **`compute_bleu_metrics()`** - Computes BLEU on validation set
-2. **`compute_metrics()` callback** - Integrated with Seq2SeqTrainer
-
