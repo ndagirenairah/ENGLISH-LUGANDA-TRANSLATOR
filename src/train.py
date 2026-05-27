@@ -53,17 +53,25 @@ except ImportError:
 
 
 def load_training_data():
-    """Load preprocessed train/val/test splits."""
-    train_path = PROCESSED_DATA_DIR / "train.csv"
+    """Load preprocessed train/val/test splits, optionally with augmented data."""
+    # Try to use augmented data if available
+    augmented_path = AUGMENTED_DATA_FILE if USE_BACK_TRANSLATION else None
+    if augmented_path and Path(augmented_path).exists():
+        print(f"📊 Loading AUGMENTED training data: {augmented_path}")
+        train_df = pd.read_csv(augmented_path)
+        print(f"   ✅ Loaded {len(train_df):,} augmented pairs (original + synthetic)")
+    else:
+        # Fall back to standard training data
+        train_path = PROCESSED_DATA_DIR / "train.csv"
+        if not train_path.exists():
+            raise FileNotFoundError(
+                f"❌ Training data not found at {train_path}\n"
+                f"   Run: python src/2_preprocess.py first"
+            )
+        train_df = pd.read_csv(train_path)
+        print(f"📁 Loaded standard training data: {len(train_df):,} pairs")
+    
     val_path = PROCESSED_DATA_DIR / "val.csv"
-    
-    if not train_path.exists():
-        raise FileNotFoundError(
-            f"❌ Training data not found at {train_path}\n"
-            f"   Run: python src/2_preprocess.py first"
-        )
-    
-    train_df = pd.read_csv(train_path)
     val_df = pd.read_csv(val_path)
     
     train_dataset = Dataset.from_dict({
