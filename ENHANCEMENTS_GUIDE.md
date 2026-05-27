@@ -302,7 +302,3 @@ USE_BACK_TRANSLATION = False
 # To disable BLEU tracking:
 COMPUTE_BLEU_ON_VALIDATION = False
 
-# To use original model:
-MODEL_NAME = "Helsinki-NLP/opus-mt-en-mul"
-
-
