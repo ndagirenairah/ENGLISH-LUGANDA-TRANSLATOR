@@ -200,10 +200,3 @@ Enhanced training configuration for better convergence:
 python src/preprocess.py
 ```
 
-**2. Back-Translation Augmentation (STEP 4.5)**
-- **Time**: 2-5 min (GPU) / 10-30 min (CPU)
-- **Memory**: 5-10 GB RAM
-```bash
-# Automatic in Jupyter or:
-python src/augmentation.py
-```
