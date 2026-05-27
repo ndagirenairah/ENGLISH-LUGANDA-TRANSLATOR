@@ -340,11 +340,6 @@ BACK_TRANSLATION_SAMPLES = 10000  # Default: 5000
 
 During training and evaluation:
 ```
-outputs/
-  ├── augmented_train.csv           # Synthetic data (5k+orig pairs)
-  ├── training_metrics.json         # BLEU per epoch
-  ├── evaluation_results.json       # Final test BLEU
-  ├── predictions.csv               # Sample predictions
-  └── evaluation_results.csv        # Detailed metrics
+
 
 
