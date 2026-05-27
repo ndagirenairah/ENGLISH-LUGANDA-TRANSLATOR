@@ -305,9 +305,4 @@ COMPUTE_BLEU_ON_VALIDATION = False
 # To use original model:
 MODEL_NAME = "Helsinki-NLP/opus-mt-en-mul"
 
-# To increase synthetic data:
-BACK_TRANSLATION_SAMPLES = 10000  # Default: 5000
-```
-
----
 
