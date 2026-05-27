@@ -34,10 +34,3 @@ MODEL_NAME = "Helsinki-NLP/opus-mt-en-lg"  # Stronger: English-to-Luganda specif
 BACK_TRANSLATION_MODEL = "Helsinki-NLP/opus-mt-lg-en"  # For augmentation
 ```
 
----
-
-## Enhancement 2: Validation BLEU Tracking During Training
-
-### Problem
-No visibility into validation BLEU improvement during training. Couldn't monitor overfitting or convergence.
-
