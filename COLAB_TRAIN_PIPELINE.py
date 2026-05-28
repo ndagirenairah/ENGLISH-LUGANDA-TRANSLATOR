@@ -217,6 +217,7 @@ print("\n[SUCCESS] Files prepared for download")
 print("\n[CELL 9: Test Inference (Optional)]")
 
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+import torch
 
 print("\n[INFO] Testing model inference...")
 
@@ -224,33 +225,33 @@ try:
     model_path = "models/trained_model"
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
-    
+
     # Test translations
     test_sentences = [
         "Hello, how are you?",
         "Thank you very much.",
         "What is your name?",
     ]
-    
+
     print("\n[INFO] Sample Translations:")
-    
+
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = model.to(device)
-    
+
     for sentence in test_sentences:
         inputs = tokenizer(sentence, return_tensors="pt", padding=True)
         inputs = {k: v.to(device) for k, v in inputs.items()}
-        
+
         output_ids = model.generate(
             inputs['input_ids'],
             attention_mask=inputs['attention_mask'],
             max_length=128,
         )
-        
+
         translation = tokenizer.decode(output_ids[0], skip_special_tokens=True)
         print(f"\n   English:  {sentence}")
         print(f"   Luganda:  {translation}")
-        
+
 except Exception as e:
     print(f"[WARN] Inference test failed: {e}")
 
