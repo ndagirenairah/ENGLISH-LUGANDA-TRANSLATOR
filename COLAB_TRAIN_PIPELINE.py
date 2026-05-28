@@ -117,12 +117,12 @@ print(f"   Val: {len(val_df):,}")
 print(f"   Test: {len(test_df):,}")
 
 # ============================================================================
-# CELL 5: Run Pipeline Step 3 - Train Model
+# CELL 5: Train Model (Step 3)
 # ============================================================================
 
 print("\n[CELL 5: Step 3 - Train Model]")
-print("\n[WARN] This will take 5-15 minutes on GPU")
-print("   (The GPU makes it ~5-10x faster than CPU)")
+print("\n[WARN] Training may take 5-15 minutes on GPU")
+print("   (GPU can be ~5-10x faster than CPU)")
 
 import torch
 
