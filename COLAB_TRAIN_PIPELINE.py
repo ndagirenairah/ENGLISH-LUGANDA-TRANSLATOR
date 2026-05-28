@@ -260,36 +260,36 @@ except Exception as e:
 # ============================================================================
 
 print("\n" + "="*80)
-print("[SUCCESS] PIPELINE COMPLETE!")
+print("[SUCCESS] Pipeline complete")
 print("="*80)
 
 print("""
-Summary:
-  [DONE] Step 1: Loaded all 5 datasets from your project
-  [DONE] Step 2: Created train/val/test splits
-  [DONE] Step 3: Trained model on GPU (5-15 minutes)
-  [DONE] Step 4: Evaluated on test set (BLEU score)
-  [DONE] Step 5: Downloaded trained model & results
+Pipeline Summary:
+    [DONE] Step 1: Loaded all 5 datasets from your project
+    [DONE] Step 2: Created train/val/test splits
+    [DONE] Step 3: Trained model on GPU (5-15 minutes)
+    [DONE] Step 4: Evaluated on test set (BLEU score)
+    [DONE] Step 5: Downloaded trained model & results
 
 Model Location:
-  - Local: models/trained_model/
-  - Download: trained_model.zip
+    - Local: models/trained_model/
+    - Download: trained_model.zip
 
 Results:
-  - BLEU Score: See evaluation_outputs.zip
-  - Predictions: evaluation_outputs.zip
+    - BLEU Score: See evaluation_outputs.zip
+    - Predictions: evaluation_outputs.zip
 
 Next Steps:
-  1. Download trained model & results
-  2. Upload to your local machine
-  3. Use for inference or further training
+    1. Download trained model & results
+    2. Upload to your local machine
+    3. Use for inference or further training
 
 Performance:
-  - Training time: 5-15 minutes on GPU
-  - GPU used: Tesla T4 (free in Colab)
-  - Speedup vs CPU: 5-10x faster
+    - Training time: 5-15 minutes on GPU
+    - GPU used: Tesla T4 (free in Colab)
+    - Speedup vs CPU: 5-10x faster
 
 Questions?
-  - Check README_ML_PIPELINE.md for details
-  - Review training logs above
+    - Check README_ML_PIPELINE.md for details
+    - Review training logs above
 """)
