@@ -161,12 +161,13 @@ except Exception as e:
     traceback.print_exc()
 
 # ============================================================================
-# CELL 7: Display Results
+# CELL 7: Display Results (Step 5)
 # ============================================================================
 
 print("\n[CELL 7: Results Summary]")
 
 import json
+from pathlib import Path
 
 eval_file = Path("outputs/evaluation_results.json")
 if eval_file.exists():
