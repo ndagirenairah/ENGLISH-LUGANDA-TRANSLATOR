@@ -49,7 +49,7 @@ for package in packages:
 print("[SUCCESS] All packages installed")
 
 # ============================================================================
-# CELL 2: Clone or Mount Project
+# CELL 2: Mount or Clone Project
 # ============================================================================
 
 print("\n[CELL 2: Setting up project]")
@@ -67,8 +67,8 @@ COLAB_PROJECT_PATH = "/content/drive/My Drive/English-Luganda-Translator/ENGLISH
 
 if not os.path.exists(COLAB_PROJECT_PATH):
     print(f"\n[WARN] Path not found: {COLAB_PROJECT_PATH}")
-    print("Try uploading the project folder to your Google Drive first")
-    print("Or use: !git clone https://github.com/YOUR_REPO/english-luganda-translator.git")
+    print("Try uploading the project folder to your Google Drive.")
+    print("Or clone the repository with: !git clone https://github.com/ndagirenairah/ENGLISH-LUGANDA-TRANSLATOR.git")
 else:
     os.chdir(COLAB_PROJECT_PATH)
     print(f"[SUCCESS] Working directory: {os.getcwd()}")
