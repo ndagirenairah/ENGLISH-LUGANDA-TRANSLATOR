@@ -144,7 +144,7 @@ except Exception as e:
     traceback.print_exc()
 
 # ============================================================================
-# CELL 6: Run Pipeline Step 4 - Evaluate
+# CELL 6: Evaluate Model (Step 4)
 # ============================================================================
 
 print("\n[CELL 6: Step 4 - Evaluate Model]")
