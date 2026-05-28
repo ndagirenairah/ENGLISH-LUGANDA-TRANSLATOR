@@ -74,16 +74,17 @@ else:
     print(f"[SUCCESS] Working directory: {os.getcwd()}")
 
 # ============================================================================
-# CELL 3: Run Pipeline Step 1 - Load Data
+# CELL 3: Load Data (Step 1)
 # ============================================================================
 
 print("\n[CELL 3: Step 1 - Load Data]")
 
 import sys
+import os
 from pathlib import Path
 
-# Add src to path
-sys.path.insert(0, "src")
+# Add `src` to sys.path (use current working directory in Colab)
+sys.path.insert(0, os.path.join(os.getcwd(), "src"))
 
 from load_data import load_all_datasets, get_dataset_statistics
 from utils import print_section
