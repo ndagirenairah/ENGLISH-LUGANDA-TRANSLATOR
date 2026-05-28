@@ -99,13 +99,14 @@ print(f"   English text - Avg length: {stats['avg_english_length']:.1f}")
 print(f"   Luganda text - Avg length: {stats['avg_luganda_length']:.1f}")
 
 # ============================================================================
-# CELL 4: Run Pipeline Step 2 - Preprocess
+# CELL 4: Preprocess & Create Splits (Step 2)
 # ============================================================================
 
 print("\n[CELL 4: Step 2 - Preprocess & Create Splits]")
 
 from preprocess import preprocess_and_split, save_splits
 
+# Run preprocessing and save splits
 print("\n" + "="*80)
 train_df, val_df, test_df = preprocess_and_split(combined_df)
 save_splits(train_df, val_df, test_df)
