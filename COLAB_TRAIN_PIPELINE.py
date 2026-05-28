@@ -124,6 +124,7 @@ print("\n[CELL 5: Step 3 - Train Model]")
 print("\n[WARN] Training may take 5-15 minutes on GPU")
 print("   (GPU can be ~5-10x faster than CPU)")
 
+import subprocess
 import torch
 
 print(f"\n[INFO] GPU Status:")
@@ -133,10 +134,10 @@ if torch.cuda.is_available():
     print(f"   Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
 
 print("\n" + "="*80)
-from train import main as train_main
+print("[INFO] Running training in a fresh Python process")
 
 try:
-    model, tokenizer = train_main()
+    subprocess.check_call([sys.executable, "src/train.py"])
     print(f"\n[SUCCESS] Training complete!")
 except Exception as e:
     print(f"[ERROR] Training error: {e}")
