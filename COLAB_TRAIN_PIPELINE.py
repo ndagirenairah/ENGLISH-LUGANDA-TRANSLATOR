@@ -19,6 +19,14 @@ Usage:
 print("="*80)
 print("ENGLISH-LUGANDA TRANSLATOR - COLAB ML PIPELINE")
 print("="*80)
+print("\nGROUP D MEMBERS")
+print("-"*80)
+print("Names                 | Student Number | Registration Number")
+print("Aturinzire Hargearve   | 2400722603     | 24/U/22603/PS")
+print("Akankunda Rita         | 2400703072     | 24/U/03072/PS")
+print("Ndagire Nairah         | 2400710032     | 24/U/10032/PS")
+print("Mutebi Stuart          | 2400725953     | 24/U/25953/PS")
+print("-"*80)
 print("\n[CELL 1: Setting up environment]")
 
 # Install required packages
