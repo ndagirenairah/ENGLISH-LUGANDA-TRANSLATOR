@@ -183,7 +183,7 @@ if eval_file.exists():
     print(f"   Avg reference length: {results['avg_reference_length']:.1f} tokens")
 
 # ============================================================================
-# CELL 8: Download Results & Model
+# CELL 8: Download Results & Model (Step 6)
 # ============================================================================
 
 print("\n[CELL 8: Download Files]")
@@ -194,21 +194,21 @@ import shutil
 print("\n[INFO] Preparing files for download...")
 
 # Create a zip of the trained model
-print("   Zipping trained model...")
+print("   Creating trained_model.zip...")
 shutil.make_archive("trained_model", "zip", "models")
 
 # Zip evaluation results
-print("   Zipping evaluation results...")
+print("   Creating evaluation_outputs.zip...")
 shutil.make_archive("evaluation_outputs", "zip", "outputs")
 
 print("\n[INFO] Download files:")
-print("   1. trained_model.zip - Use for inference")
+print("   1. trained_model.zip - use for inference")
 print("   2. evaluation_outputs.zip - BLEU scores and predictions")
 
 files.download("trained_model.zip")
 files.download("evaluation_outputs.zip")
 
-print("\n[SUCCESS] Files downloaded!")
+print("\n[SUCCESS] Files prepared for download")
 
 # ============================================================================
 # CELL 9: (Optional) Test Inference
