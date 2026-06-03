@@ -20,11 +20,11 @@ from sacrebleu import corpus_bleu
 import numpy as np
 
 try:
-    from config import PROCESSED_DATA_DIR, TRAIN_OUTPUT_DIR, OUTPUTS_DIR, EVAL_OUTPUT_FILE, DEVICE
+    from config import PROCESSED_DATA_DIR, TRAIN_OUTPUT_DIR, OUTPUTS_DIR, EVAL_OUTPUT_FILE, DEVICE, MAX_TARGET_LENGTH
     from utils import print_section
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
-    from config import PROCESSED_DATA_DIR, TRAIN_OUTPUT_DIR, OUTPUTS_DIR, EVAL_OUTPUT_FILE, DEVICE
+    from config import PROCESSED_DATA_DIR, TRAIN_OUTPUT_DIR, OUTPUTS_DIR, EVAL_OUTPUT_FILE, DEVICE, MAX_TARGET_LENGTH
     from utils import print_section
 
 
@@ -58,11 +58,11 @@ def load_trained_model():
     return model, tokenizer
 
 
-def generate_translations(model, tokenizer, texts, max_length=128):
+def generate_translations(model, tokenizer, texts, max_length=MAX_TARGET_LENGTH):
     """Generate translations for a batch of texts."""
     inputs = tokenizer(
         texts,
-        max_length=128,
+        max_length=max_length,
         truncation=True,
         padding="max_length",
         return_tensors="pt"
@@ -77,7 +77,9 @@ def generate_translations(model, tokenizer, texts, max_length=128):
             inputs['input_ids'],
             attention_mask=inputs['attention_mask'],
             max_length=max_length,
-            num_beams=4,
+            num_beams=6,
+            no_repeat_ngram_size=2,
+            length_penalty=1.0,
             early_stopping=True,
         )
     

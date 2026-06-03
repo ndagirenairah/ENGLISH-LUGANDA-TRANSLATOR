@@ -25,14 +25,23 @@ except ImportError:
     from utils import load_csv_safe, print_section, validate_pair
 
 
-def load_all_datasets() -> pd.DataFrame:
+def load_all_datasets(balance_per_source: int = None) -> pd.DataFrame:
     """
     Load all datasets from data/raw/ and combine them.
+    
+    Args:
+        balance_per_source: If set to a number, sample that many pairs from each source.
+                           If None or 0, use ALL data (recommended for large datasets).
     
     Returns:
         pd.DataFrame with columns: ['english', 'luganda', 'source']
     """
     print_section("STEP 1: LOADING DATASETS", width=80)
+    
+    if balance_per_source:
+        print(f"\n[INFO] BALANCED SAMPLING MODE: {balance_per_source} samples per source")
+    else:
+        print(f"\n[INFO] LOADING ALL AVAILABLE DATA (no sampling)")
     
     frames: List[pd.DataFrame] = []
     total_loaded = 0
@@ -45,26 +54,26 @@ def load_all_datasets() -> pd.DataFrame:
             print(f"   ⚠️  Empty or invalid")
             continue
         
-        # Validate text pairs
-        valid_mask = df.apply(
-            lambda row: validate_pair(
-                row['english'], 
-                row['luganda'],
-                min_len=TEXT_MIN_LENGTH,
-                max_len=TEXT_MAX_LENGTH
-            ),
-            axis=1
-        )
-        
-        df = df[valid_mask].reset_index(drop=True)
+        # Keep all data - just ensure both columns have non-empty text after cleaning
+        # Just ensure both columns have non-empty text after cleaning
+        df = df[
+            (df['english'].str.len() > 0) & 
+            (df['luganda'].str.len() > 0)
+        ].reset_index(drop=True)
         
         if df.empty:
             print(f"   ⚠️  No valid pairs after filtering")
             continue
         
+        # Apply balanced sampling if specified
+        if balance_per_source and len(df) > balance_per_source:
+            df = df.sample(n=balance_per_source, random_state=42).reset_index(drop=True)
+            print(f"   ✅ Sampled {len(df):,} pairs (balanced) | Source: {df['source'].iloc[0]}")
+        else:
+            print(f"   ✅ Loaded {len(df):,} pairs | Source: {df['source'].iloc[0]}")
+        
         frames.append(df)
         total_loaded += len(df)
-        print(f"   ✅ Loaded {len(df):,} valid pairs | Source: {df['source'].iloc[0]}")
     
     if not frames:
         raise ValueError("❌ No datasets loaded! Check data/raw/ directory.")

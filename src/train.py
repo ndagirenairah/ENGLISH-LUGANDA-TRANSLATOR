@@ -16,6 +16,7 @@ import sys
 import json
 import pandas as pd
 import torch
+import numpy as np
 from datasets import Dataset
 from transformers import (
     AutoModelForSeq2SeqLM,
@@ -24,13 +25,17 @@ from transformers import (
     Seq2SeqTrainingArguments,
     DataCollatorForSeq2Seq,
 )
+from sacrebleu import corpus_bleu
 
 try:
     from config import (
         MODEL_NAME, DEVICE, BATCH_SIZE, LEARNING_RATE, NUM_EPOCHS,
         MAX_SOURCE_LENGTH, MAX_TARGET_LENGTH, DROPOUT,
         PROCESSED_DATA_DIR, TRAIN_OUTPUT_DIR, WARMUP_STEPS,
-        GRADIENT_ACCUMULATION_STEPS, WEIGHT_DECAY
+        GRADIENT_ACCUMULATION_STEPS, WEIGHT_DECAY,
+        LABEL_SMOOTHING, LR_SCHEDULER,
+        COMPUTE_BLEU_ON_VALIDATION, BLEU_EVAL_SAMPLES,
+        USE_BACK_TRANSLATION, AUGMENTED_DATA_FILE, TRAINING_METRICS_FILE
     )
     from utils import print_section
 except ImportError:
@@ -39,23 +44,34 @@ except ImportError:
         MODEL_NAME, DEVICE, BATCH_SIZE, LEARNING_RATE, NUM_EPOCHS,
         MAX_SOURCE_LENGTH, MAX_TARGET_LENGTH, DROPOUT,
         PROCESSED_DATA_DIR, TRAIN_OUTPUT_DIR, WARMUP_STEPS,
-        GRADIENT_ACCUMULATION_STEPS, WEIGHT_DECAY
+        GRADIENT_ACCUMULATION_STEPS, WEIGHT_DECAY,
+        LABEL_SMOOTHING, LR_SCHEDULER,
+        COMPUTE_BLEU_ON_VALIDATION, BLEU_EVAL_SAMPLES,
+        USE_BACK_TRANSLATION, AUGMENTED_DATA_FILE, TRAINING_METRICS_FILE
     )
     from utils import print_section
 
 
 def load_training_data():
-    """Load preprocessed train/val/test splits."""
-    train_path = PROCESSED_DATA_DIR / "train.csv"
+    """Load preprocessed train/val/test splits, optionally with augmented data."""
+    # Try to use augmented data if available
+    augmented_path = AUGMENTED_DATA_FILE if USE_BACK_TRANSLATION else None
+    if augmented_path and Path(augmented_path).exists():
+        print(f"📊 Loading AUGMENTED training data: {augmented_path}")
+        train_df = pd.read_csv(augmented_path)
+        print(f"   ✅ Loaded {len(train_df):,} augmented pairs (original + synthetic)")
+    else:
+        # Fall back to standard training data
+        train_path = PROCESSED_DATA_DIR / "train.csv"
+        if not train_path.exists():
+            raise FileNotFoundError(
+                f"❌ Training data not found at {train_path}\n"
+                f"   Run: python src/2_preprocess.py first"
+            )
+        train_df = pd.read_csv(train_path)
+        print(f"📁 Loaded standard training data: {len(train_df):,} pairs")
+    
     val_path = PROCESSED_DATA_DIR / "val.csv"
-    
-    if not train_path.exists():
-        raise FileNotFoundError(
-            f"❌ Training data not found at {train_path}\n"
-            f"   Run: python src/2_preprocess.py first"
-        )
-    
-    train_df = pd.read_csv(train_path)
     val_df = pd.read_csv(val_path)
     
     train_dataset = Dataset.from_dict({
@@ -115,6 +131,59 @@ def tokenize_data(train_dataset, val_dataset, tokenizer):
     return train_tokenized, val_tokenized
 
 
+def compute_bleu_metrics(eval_dataset, model, tokenizer, sample_size=BLEU_EVAL_SAMPLES):
+    """
+    Compute BLEU score on validation set during training.
+    
+    Args:
+        eval_dataset: Validation dataset
+        model: Trained/training model
+        tokenizer: Tokenizer
+        sample_size: Number of samples to evaluate (for speed)
+        
+    Returns:
+        Dict with 'bleu' key
+    """
+    if not COMPUTE_BLEU_ON_VALIDATION:
+        return {"bleu": 0.0}
+    
+    # Sample subset for faster BLEU computation
+    eval_df = eval_dataset.to_pandas().head(sample_size)
+    
+    predictions = []
+    references = []
+    
+    model.eval()
+    with torch.no_grad():
+        for _, row in eval_df.iterrows():
+            # Tokenize source
+            inputs = tokenizer(
+                row['source'],
+                max_length=MAX_SOURCE_LENGTH,
+                truncation=True,
+                return_tensors="pt"
+            )
+            inputs = {k: v.to(DEVICE) for k, v in inputs.items()}
+            
+            # Generate prediction
+            output_ids = model.generate(
+                inputs['input_ids'],
+                attention_mask=inputs['attention_mask'],
+                max_length=MAX_TARGET_LENGTH,
+                num_beams=4,
+                early_stopping=True
+            )
+            
+            pred = tokenizer.decode(output_ids[0], skip_special_tokens=True)
+            predictions.append(pred)
+            references.append(row['target'])
+    
+    # Compute BLEU
+    bleu = corpus_bleu(predictions, [references])
+    
+    return {"bleu": bleu.score}
+
+
 def main():
     """Train the model."""
     print_section("STEP 3: TRAINING MODEL", width=80)
@@ -158,16 +227,19 @@ def main():
         learning_rate=LEARNING_RATE,
         warmup_steps=WARMUP_STEPS,
         weight_decay=WEIGHT_DECAY,
+        label_smoothing_factor=LABEL_SMOOTHING,
+        lr_scheduler_type=LR_SCHEDULER,
         
         # Evaluation and saving
         eval_strategy="epoch",
         save_strategy="epoch",
-        load_best_model_at_end=True,
-        metric_for_best_model="eval_loss",
+        save_total_limit=1,
+        load_best_model_at_end=False,
         
-        # Regularization (Week 3 concepts)
+        # Regularization and stability
         gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
         gradient_checkpointing=True,
+        max_grad_norm=1.0,
         fp16=torch.cuda.is_available(),
         
         # Logging
@@ -177,29 +249,59 @@ def main():
         
         # Generation for evaluation
         predict_with_generate=True,
+        generation_max_length=MAX_TARGET_LENGTH,
     )
     
     print(f"   Epochs: {NUM_EPOCHS}")
     print(f"   Batch size: {BATCH_SIZE}")
     print(f"   Learning rate: {LEARNING_RATE}")
+    print(f"   Scheduler: {LR_SCHEDULER}")
+    print(f"   Label smoothing: {LABEL_SMOOTHING}")
     print(f"   Device: {DEVICE}")
+    if COMPUTE_BLEU_ON_VALIDATION:
+        print(f"   🎯 BLEU tracking: ENABLED ({BLEU_EVAL_SAMPLES} samples/epoch)")
+    if USE_BACK_TRANSLATION and Path(AUGMENTED_DATA_FILE).exists():
+        print(f"   🔄 Back-translation: AUGMENTED ({n_train:,} total pairs)")
     
     # Data collator
     data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
     
-    # Trainer
+    # Create compute_metrics callback for BLEU tracking
+    def compute_metrics(eval_preds):
+        """Compute BLEU metrics on validation set."""
+        predictions, labels = eval_preds
+        predictions = np.where(predictions != -100, predictions, tokenizer.pad_token_id)
+        
+        predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
+        labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+        
+        if not COMPUTE_BLEU_ON_VALIDATION or len(predictions) < 1:
+            return {"bleu": 0.0}
+        
+        # Compute BLEU on sample
+        sample_idx = min(BLEU_EVAL_SAMPLES, len(predictions))
+        bleu_score = corpus_bleu(predictions[:sample_idx], [labels[:sample_idx]])
+        
+        return {"bleu": bleu_score.score}
+    
+    # Trainer with compute_metrics
     trainer = Seq2SeqTrainer(
         model=model,
         args=training_args,
         train_dataset=train_tokenized,
         eval_dataset=val_tokenized,
         data_collator=data_collator,
+        compute_metrics=compute_metrics if COMPUTE_BLEU_ON_VALIDATION else None,
     )
     
     # Train
     print("\n" + "="*80)
     print(f"[INFO] STARTING TRAINING")
     print(f"   Dataset: {n_train:,} training samples")
+    if USE_BACK_TRANSLATION and Path(AUGMENTED_DATA_FILE).exists():
+        aug_count = n_train - len(pd.read_csv(PROCESSED_DATA_DIR / "train.csv"))
+        if aug_count > 0:
+            print(f"   + {aug_count:,} augmented samples via back-translation")
     print(f"   Estimated time: 5-15 minutes on GPU, 30-60 minutes on CPU")
     print("="*80 + "\n")
     

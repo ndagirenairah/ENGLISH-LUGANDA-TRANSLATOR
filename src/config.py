@@ -44,8 +44,8 @@ DEVICE = "cuda"  # or "cpu"
 
 # Training hyperparameters (Week 2: ML Pipeline)
 BATCH_SIZE = 8
-LEARNING_RATE = 2e-5
-NUM_EPOCHS = 3
+LEARNING_RATE = 3e-5
+NUM_EPOCHS = 8
 MAX_SOURCE_LENGTH = 128
 MAX_TARGET_LENGTH = 128
 
@@ -53,9 +53,11 @@ MAX_TARGET_LENGTH = 128
 DROPOUT = 0.1
 ATTENTION_DROPOUT = 0.1
 WEIGHT_DECAY = 0.01
+LABEL_SMOOTHING = 0.1
+LR_SCHEDULER = "cosine"
 
 # Learning rate scheduler (Week 3 concepts)
-WARMUP_STEPS = 500
+WARMUP_STEPS = 1000
 GRADIENT_ACCUMULATION_STEPS = 2
 
 # ============================================================================
@@ -77,6 +79,8 @@ TRAIN_OUTPUT_DIR = MODELS_DIR / "trained_model"
 EVAL_OUTPUT_FILE = OUTPUTS_DIR / "evaluation_results.json"
 PREDICTIONS_FILE = OUTPUTS_DIR / "predictions.csv"
 METRICS_FILE = OUTPUTS_DIR / "metrics.json"
+AUGMENTED_DATA_FILE = OUTPUTS_DIR / "augmented_train.csv"  # Back-translation augmented data
+TRAINING_METRICS_FILE = OUTPUTS_DIR / "training_metrics.json"  # Validation BLEU per epoch
 
 # ============================================================================
 # LOGGING CONFIGURATION
